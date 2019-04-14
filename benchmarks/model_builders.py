@@ -1,7 +1,7 @@
 from torch import cuda, backends
 from torch.nn import Module, DataParallel
 from torch.optim import Optimizer, SGD
-from typing import Tuple, Type
+from typing import Tuple, Type, Callable
 
 from core.arm import Arm
 from core.model_builder import ModelBuilder
@@ -28,6 +28,19 @@ class CNNArm(Arm):
         self.gamma = None
 
 
+def update_model_for_gpu(construct_model_function: Callable) -> Callable:
+    """ decorator to update the model under construction to work with GPUs
+    """
+    def wrapper(self: ModelBuilder) -> Tuple[Module, Optimizer]:
+        model, optimizer = construct_model_function(self)
+        if cuda.is_available():
+            model.cuda()
+            model = DataParallel(model, device_ids=range(cuda.device_count()))
+            backends.cudnn.benchmark = True
+        return model, optimizer
+    return wrapper
+
+
 class CNNBuilder(ModelBuilder):
 
     def __init__(self, arm: CNNArm, ml_model: Type[CudaConvNet2] = CudaConvNet2, optimizer: Type[SGD] = SGD):
@@ -37,6 +50,7 @@ class CNNBuilder(ModelBuilder):
         self.ml_model = ml_model
         self.optimizer = optimizer
 
+    @update_model_for_gpu
     def construct_model(self) -> Tuple[Module, Optimizer]:
         """ Construct model and optimizer based on hyperparameters
         :return: instances of each (model, optimizer) using the hyperparameters as specified by the arm
@@ -45,12 +59,6 @@ class CNNBuilder(ModelBuilder):
         base_lr = arm.learning_rate
 
         model = self.ml_model(3, int(arm.n_units_1), int(arm.n_units_2), int(arm.n_units_3))  # n_channels = 3
-
-        if cuda.is_available():
-            model.cuda()
-            model = DataParallel(model, device_ids=range(cuda.device_count()))
-            backends.cudnn.benchmark = True
-
         optimizer = self.optimizer(model.parameters(), lr=base_lr, momentum=arm.momentum, weight_decay=arm.weight_decay)
         return model, optimizer
 
@@ -79,6 +87,7 @@ class LogisticRegressionBuilder(ModelBuilder):
         self.ml_model = ml_model
         self.optimizer = optimizer
 
+    @update_model_for_gpu
     def construct_model(self) -> Tuple[Module, Optimizer]:
         """ Construct model and optimizer based on hyperparameters
         :return: instances of each (model, optimizer) using the hyperparameters as specified by the arm
@@ -87,11 +96,5 @@ class LogisticRegressionBuilder(ModelBuilder):
         base_lr = arm.learning_rate
 
         model = self.ml_model(input_size=784, num_classes=10)
-
-        if cuda.is_available():
-            model.cuda()
-            model = DataParallel(model, device_ids=range(cuda.device_count()))
-            backends.cudnn.benchmark = True
-
         optimizer = self.optimizer(model.parameters(), lr=base_lr, momentum=arm.momentum, weight_decay=arm.weight_decay)
         return model, optimizer
