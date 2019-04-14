@@ -1,6 +1,6 @@
 import argparse
 
-from ..benchmarks.cifar_problem_2 import CifarProblem2
+from ..benchmarks.model_builder import CifarProblem2
 
 # input_dir = '/Users/signapoop/Desktop/data/'
 # output_dir = '/Users/signapoop/Desktop/autotune/autotune/experiments/checkpoint/'

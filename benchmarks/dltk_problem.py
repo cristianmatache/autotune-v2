@@ -19,7 +19,6 @@ EVAL_EVERY_N_STEPS = 100
 EVAL_STEPS = 1
 # RESOURCES_MULTIPLIER = 10000
 RESOURCES_MULTIPLIER = 1
-MAX_STEPS = 100000 # TODO remove: unused
 BATCH_SIZE = 4
 
 
@@ -59,6 +58,26 @@ class DLTKBoilerplate(object):
         self.step_cnt_hook = step_cnt_hook
         self.train_filenames = train_filenames
         self.validation_filename = val_filenames
+
+class TrainingMetrics(tf.train.SessionRunHook):
+
+    def __init__(self):
+        import collections
+
+        self.losses = []
+        # how many losses to keep over moving average
+        self.LOSS_WINDOW = 5
+        self.last_losses = collections.deque(maxlen=self.LOSS_WINDOW)
+        self.mean_loss = 0
+
+    def after_run(self, run_context, run_values):
+        import numpy as np
+
+        self.losses = run_context.session.graph.get_collection("losses")
+        new_train_loss = run_context.session.run(self.losses)[0]
+        self.last_losses.append(new_train_loss)
+        self.mean_loss = np.mean(self.last_losses)
+
 
 class DLTKProblem(CifarProblem):
 
@@ -146,7 +165,7 @@ class DLTKProblem(CifarProblem):
         # order as the insertion order
         params = OrderedDict([
             ("num_residual_units", IntParam("num_residual_units", 1, 3, 3)),
-            ("learning_rate", Param("learning_rate", -6, -1, distrib='uniform',
+            ("learning_rate", Param("learning_rate", -6, -1.1, distrib='uniform',
                                     scale='log', logbase=10)),
             ("nb_scales", IntParam("nb_scales", 1, 5, 4)),
             # FIXME what is a proper default value??
@@ -157,23 +176,6 @@ class DLTKProblem(CifarProblem):
         ])
 
         return params
-
-
-    def save_checkpoint(self, path, model, reader, reader_example_shapes):
-        '''
-        Checkpoint model at current steps.
-        this is only called in eval_arm so no need to respect prototype
-        :param path:
-        :param model:
-        :param reader:
-        :param reader_example_shapes:
-        :return:
-        '''
-
-        export_dir = model.export_saved_model(
-            export_dir_base=path,
-            serving_input_receiver_fn=reader.serving_input_receiver_fn(reader_example_shapes))
-        print('Model saved to {}.'.format(export_dir))
 
     def build_model_from_config(self, save_path, config_dictionary, resume=True):
         '''
@@ -257,18 +259,29 @@ class DLTKProblem(CifarProblem):
         try:
             results_val = synapse_model.train_and_evaluate(self.utils, model, n_steps)
 
-            print('Step = {}; val loss = {:.5f};'.format(
-                results_val['global_step'], results_val['loss']))
+            print('Step = {}; val loss = {:.5f}; mean train loss = {:.5f}; dice = {:.5f}'.format(
+                results_val['global_step'], results_val['loss'], results_val['train_loss'], results_val['dice']))
 
         except KeyboardInterrupt:
             pass
 
+        # no need to checkpoint with estimators: model is checkpointed automatically at beginning and completion of training
+
+        # return results_val
+        return results_val['train_loss'], results_val['loss']
+
 
 class SynapseMultiAtlas(object):
 
+    penalty_values = {
+        'dice': 0.0,
+        'train_loss': 10000.0,
+        'loss': 10000.0
+    }
+
     def __init__(self):
         self.NUM_CLASSES = 14
-
+        self.training_metrics = TrainingMetrics()
 
     # MODEL
     def model_fn(self, features, labels, mode, params):
@@ -346,7 +359,7 @@ class SynapseMultiAtlas(object):
 
         # 3. define a training op and ops for updating
         # moving averages (i.e. for batch normalisation)
-        global_step = tf.train.get_global_step()
+        global_step = tf.train.get_or_create_global_step()
         if params["opt"] == 'adam':
             optimiser = tf.train.AdamOptimizer(
                 learning_rate=params["learning_rate"], epsilon=1e-5)
@@ -381,11 +394,16 @@ class SynapseMultiAtlas(object):
         [tf.summary.scalar('dsc_l{}'.format(i), dice_tensor[i])
          for i in range(self.NUM_CLASSES)]
 
+        # average dice over all classes
+        dice_metric = tf.metrics.mean(dice_tensor)
+        metrics = { 'dice': dice_metric }
+
         # 5. Return EstimatorSpec object
         return tf.estimator.EstimatorSpec(
             mode=mode, predictions=net_output_ops,
             loss=loss, train_op=train_op,
-            eval_metric_ops=None)
+            training_hooks=[self.training_metrics],
+            eval_metric_ops=metrics)
 
 
     def train_and_evaluate(self, utils, net, nb_training_steps):
@@ -398,14 +416,24 @@ class SynapseMultiAtlas(object):
         """
         print("<<< parameters >>> {}".format(net.params))
 
-        net.train(
-                input_fn=utils.train_input_fn,
-                hooks=[utils.train_qinit_hook, utils.step_cnt_hook],
-                steps=nb_training_steps)
+        # # set metrics to "penalty value" when model diverges with:
+        # ERROR:tensorflow:Model diverged with loss = NaN.
+        # tensorflow.python.training.basic_session_run_hooks.NanLossDuringTrainingError: NaN loss during training.
+        try:
+            net.train(
+                    input_fn=utils.train_input_fn,
+                    hooks=[utils.train_qinit_hook, utils.step_cnt_hook],
+                    steps=nb_training_steps)
 
-        results_val = net.evaluate(
-            input_fn=utils.val_input_fn,
-            hooks=[utils.val_qinit_hook, utils.val_summary_hook],
-            steps=EVAL_STEPS)
+            results_val = net.evaluate(
+                input_fn=utils.val_input_fn,
+                hooks=[utils.val_qinit_hook, utils.val_summary_hook],
+                steps=EVAL_STEPS)
+
+            results_val['train_loss'] = self.training_metrics.mean_loss
+
+        except:
+            results_val = SynapseMultiAtlas.penalty_values.copy()
+            results_val['global_step'] = "n/a"
 
         return results_val

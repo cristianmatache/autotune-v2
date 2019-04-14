@@ -1,102 +1,70 @@
-from __future__ import division
 import numpy as np
-import torch
-import torch.nn as nn
+from typing import Tuple, Dict
+from colorama import Fore, Style
 
-from torch_net_problem import TorchNetProblem
-from ..core.params import *
-from data.mnist_data_loader import get_train_val_set, get_test_set
-from ml_models.logistic_regression import LogisticRegression
+from core.params import Param
+from core.problem_def import HyperparameterOptimizationProblem
+from benchmarks.data.image_dataset_loaders import MNISTLoader
+from benchmarks.evaluator import TorchEvaluator
+from benchmarks.model_builder import LogisticRegressionArm, LogisticRegressionBuilder
 
 
-class MnistProblem(TorchNetProblem):
+LEARNING_RATE = Param('learning_rate', np.log(10 ** -6), np.log(10 ** 0), distrib='uniform', scale='log')
+WEIGHT_DECAY = Param('weight_decay', np.log(10 ** -6), np.log(10 ** -1), distrib='uniform', scale='log')
+MOMENTUM = Param('momentum', 0.3, 0.999, distrib='uniform', scale='linear')
+BATCH_SIZE = Param('batch_size', 20, 2000, distrib='uniform', scale='linear', interval=1)
+HYPERPARAMS_DOMAIN = {
+    'learning_rate': LEARNING_RATE,
+    'weight_decay': WEIGHT_DECAY,
+    'momentum': MOMENTUM,
+    'batch_size': BATCH_SIZE
+}
 
-    def __init__(self, data_dir, output_dir):
-        super(MnistProblem, self).__init__(data_dir, output_dir)
-        self.hps = None
 
-    def initialise_data(self):
-        # 48k train, 12k val, 10k test
-        print('==> Preparing data..')
-        train_data, val_data, train_sampler, val_sampler = get_train_val_set(data_dir=self.data_dir,
-                                                                             valid_size=0.2)
-        test_data = get_test_set(data_dir=self.data_dir)
+class MnistEvaluator(TorchEvaluator):
 
-        self.val_loader = torch.utils.data.DataLoader(val_data, batch_size=100, sampler=val_sampler,
-                                                      num_workers=2, pin_memory=False)
-        self.test_loader = torch.utils.data.DataLoader(test_data, batch_size=100, shuffle=True,
-                                                       num_workers=2, pin_memory=False)
-        self.train_data = train_data
-        self.train_sampler = train_sampler
+    def evaluate(self, n_resources: int) -> Tuple[float, float]:
+        print(f"\n\n\n{Fore.CYAN}{'-' * 20} Evaluating model on arm {'-' * 20}\n{self.arm}{Style.RESET_ALL}")
 
-    def construct_model(self, arm):
-        arm['filename'] = arm['dir'] + "/model.pth"
-
-        # Construct model and optimizer based on hyperparameters
-        base_lr = arm['learning_rate']
-        momentum = arm['momentum']
-        weight_decay = arm['weight_decay']
-
-        input_size = 784
-        num_classes = 10
-        model = LogisticRegression(input_size, num_classes)
-        if self.use_cuda:
-            model.cuda()
-            model = torch.nn.DataParallel(model, device_ids=range(torch.cuda.device_count()))
-            torch.backends.cudnn.benchmark = True
-
-        optimizer = torch.optim.SGD(model.parameters(), lr=base_lr, momentum=momentum, weight_decay=weight_decay)
-
-        self.save_checkpoint(arm['filename'], 0, model, optimizer, 1, 1)
-        return arm['filename']
-
-    def eval_arm(self, arm, n_resources):
-        print("\nLoading arm with parameters.....")
-
-        arm['n_resources'] = arm['n_resources'] + n_resources
-        print(arm)
+        self.n_resources += n_resources
+        arm = self.arm
 
         # Load model and optimiser from file to resume training
-        checkpoint = torch.load(arm['filename'])
-        start_epoch = checkpoint['epoch']
-        model = checkpoint['model']
-        optimizer = checkpoint['optimizer']
+        start_epoch = self.resume_from_checkpoint()
 
         # Rest of the tunable hyperparameters
-        batch_size = int(arm['batch_size'])
-
-        # Initialise train_loader based on batch size
-        train_loader = torch.utils.data.DataLoader(self.train_data, batch_size=batch_size,
-                                                   sampler=self.train_sampler,
-                                                   num_workers=2, pin_memory=False)
-
+        batch_size = int(arm.batch_size)
         # Compute derived hyperparameters
         n_batches = int(n_resources * 10000 / batch_size)  # each unit of resource = 10,000 examples
-        batches_per_epoch = len(train_loader)
+
+        batches_per_epoch = len(self.dataset_loader.train_loader(batch_size))
         max_epochs = int(n_batches / batches_per_epoch) + 1
 
-        criterion = nn.CrossEntropyLoss()
-
-        for epoch in range(start_epoch, start_epoch+max_epochs):
+        for epoch in range(start_epoch, start_epoch + max_epochs):
             # Train the net for one epoch
-            self.train(train_loader, model, optimizer, criterion, epoch, min(n_batches, batches_per_epoch))
-
+            self._train(epoch, min(n_batches, batches_per_epoch), batch_size=batch_size)
             # Decrement n_batches remaining
-            n_batches = n_batches - batches_per_epoch
+            n_batches -= batches_per_epoch
 
         # Evaluate trained net on val and test set
-        val_error = self.test(self.val_loader, model, criterion)
-        test_error = self.test(self.test_loader, model, criterion)
+        val_error = self._test(is_validation=True)
+        test_error = self._test(is_validation=False)
 
-        self.save_checkpoint(arm['filename'], epoch, model, optimizer, val_error, test_error)
-
+        self.save_checkpoint(start_epoch + max_epochs, val_error, test_error)
         return val_error, test_error
 
-    def initialise_domain(self):
-        params = {
-            'learning_rate': Param('learning_rate', np.log(10**-6), np.log(10**0), distrib='uniform', scale='log'),
-            'weight_decay': Param('weight_decay', np.log(10**-6), np.log(10**-1), distrib='uniform', scale='log'),
-            'momentum': Param('momentum', 0.3, 0.999, distrib='uniform', scale='linear'),
-            'batch_size': Param('batch_size', 20, 2000, distrib='uniform', scale='linear', interval=1),
-        }
-        return params
+
+class MnistProblem(HyperparameterOptimizationProblem):
+
+    def __init__(self, data_dir: str, output_dir: str,
+                 hyperparams_domain: Dict[str, Param] = HYPERPARAMS_DOMAIN, hyperparams_to_opt: Tuple[str, ...] = ()):
+        dataset_loader = MNISTLoader(data_dir)
+        super().__init__(hyperparams_domain, dataset_loader, hyperparams_to_opt)
+        self.output_dir = output_dir
+        self.dataset_loader = dataset_loader
+
+    def get_evaluator(self) -> MnistEvaluator:
+        arm = LogisticRegressionArm()
+        arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)
+        model_builder = LogisticRegressionBuilder(arm)
+        return MnistEvaluator(model_builder, self.dataset_loader, output_dir=self.output_dir)

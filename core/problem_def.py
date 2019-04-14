@@ -1,48 +1,26 @@
-import pprint
-import abc
+from abc import abstractmethod
+from pprint import PrettyPrinter
+from typing import Dict, Tuple
 
-from collections import OrderedDict
+from benchmarks.data.dataset_loader import DatasetLoader
+from benchmarks.evaluator import Evaluator
+from core.params import Param
 
-class Problem(object):
 
-    __metaclass__ = abc.ABCMeta
+class HyperparameterOptimizationProblem:
 
-    def __init__(self):
-        # make sure keys are retrieved in same order for pair parameters
-        self.domain = OrderedDict()
-        # FIXME awful trick to retrieve generated values from PairParams given current design
-        self.current_arm = {}
+    def __init__(self, hyperparams_domain: Dict[str, Param], dataset_loader: DatasetLoader,
+                 hyperparams_to_opt: Tuple[str, ...] = ()):
+        self.domain = hyperparams_domain
+        self.hyperparams_to_opt = hyperparams_to_opt if hyperparams_to_opt else list(self.domain.keys())
+        print(f"\n> Hyperparameters to optimize:\n    {'' if hyperparams_to_opt else 'ALL:'} {self.hyperparams_to_opt}")
 
-    def generate_arms(self, n, hps=None):
-        arms = []
-        for i in range(n):
-            arms.append(self.generate_random_arm(hps))
-        return arms
-
-    def generate_random_arm(self, hps=None):
-        if not hps:
-            hps = self.domain.keys()
-        self.current_arm.clear()
-        for hp in self.domain.keys():
-            # if sample is required, draw from param range
-            if hp in hps:
-                val = self.domain[hp].get_param_range(1, stochastic=True)
-                self.current_arm[hp] = val[0]
-            # else set to default
-            else:
-                val = self.domain[hp].init_val
-                assert val is not None, "No default value is set for param {}".format(hp)
-                self.current_arm[hp] = val
-        return self.current_arm.copy()
+        self.dataset_loader = dataset_loader
 
     def print_domain(self):
-        pp = pprint.PrettyPrinter(indent=4)
-        pp.pprint(self.domain)
+        print(f"\n> Problem {type(self).__name__} hyperparameters domain:")
+        PrettyPrinter(indent=4).pprint(self.domain)
 
-    @abc.abstractmethod
-    def eval_arm(self, arm, n_resources):
-        pass
-
-    @abc.abstractmethod
-    def initialise_domain(self):
+    @abstractmethod
+    def get_evaluator(self) -> Evaluator:
         pass

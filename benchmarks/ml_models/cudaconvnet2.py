@@ -10,9 +10,9 @@ class CudaConvNet2(nn.Module):
         self.conv2 = nn.Conv2d(n_units_1, n_units_2, 5, 1, 2)
         self.conv3 = nn.Conv2d(n_units_2, n_units_3, 5, 1, 2)
 
-        self.norm1 = nn.BatchNorm1d(n_units_1)
-        self.norm2 = nn.BatchNorm1d(n_units_2)
-        self.norm3 = nn.BatchNorm1d(n_units_3)
+        self.norm1 = nn.BatchNorm2d(n_units_1)
+        self.norm2 = nn.BatchNorm2d(n_units_2)
+        self.norm3 = nn.BatchNorm2d(n_units_3)
 
         self.fc1 = nn.Linear(n_units_3 * 4 * 4, 10)
 

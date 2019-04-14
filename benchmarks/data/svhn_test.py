@@ -7,7 +7,6 @@ import numpy as np
 
 import torch
 import torchvision
-from torchvision import datasets
 from torchvision import transforms
 
 
@@ -111,48 +110,5 @@ class SVHN(data.Dataset):
         fmt_str += '{0}{1}'.format(tmp, self.target_transform.__repr__().replace('\n', '\n' + ' ' * len(tmp)))
         return fmt_str
 
-def main():
-    data_dir = '/Users/signapoop/Desktop/data/'
 
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-    ])
-
-    train_data = SVHN(
-        root=data_dir, split='train', transform=transform
-    )
-
-    # train_data = datasets.MNIST(
-    #     root=data_dir, train=True,
-    #     download=True, transform=transform,
-    # )
-
-    print('Number of samples: ', len(train_data))
-
-    trainloader = torch.utils.data.DataLoader(train_data, batch_size=4,
-                                              shuffle=True, num_workers=2)
-
-    import matplotlib.pyplot as plt
-
-    # functions to show an image
-
-    def imshow(img):
-        # img = img / 2 + 0.5  # unnormalize
-        npimg = img.numpy()
-        foo  = 1
-        # plt.imshow(npimg)
-        plt.imshow(np.transpose(npimg, (1, 2, 0)))
-
-    # get some random training images
-    dataiter = iter(trainloader)
-    images, labels = dataiter.next()
-
-    # show images
-    imshow(torchvision.utils.make_grid(images))
-    plt.show(block=True)
-    # print labels
-    print(' '.join('%5s' % labels[j] for j in range(4)))
-
-
-if __name__ == "__main__":
-    main()
+# TODO: What is this? is it still needed?
