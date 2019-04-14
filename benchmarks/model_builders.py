@@ -2,23 +2,11 @@ from torch import cuda, backends
 from torch.nn import Module, DataParallel
 from torch.optim import Optimizer, SGD
 from typing import Tuple, Type
-from abc import abstractmethod
 
 from core.arm import Arm
+from core.model_builder import ModelBuilder
 from benchmarks.ml_models.cudaconvnet2 import CudaConvNet2
 from benchmarks.ml_models.logistic_regression import LogisticRegression
-
-
-class ModelBuilder:
-
-    def __init__(self, arm: Arm, ml_model: Type[Module], optimizer: Type[Optimizer] = SGD):
-        self.arm = arm
-        self.ml_model = ml_model
-        self.optimizer = optimizer
-
-    @abstractmethod
-    def construct_model(self) -> Tuple[Module, Optimizer]:
-        pass
 
 
 class CNNArm(Arm):

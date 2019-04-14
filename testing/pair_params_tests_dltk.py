@@ -22,7 +22,7 @@ class ProblemTest(object):
 
 
 if __name__ == "__main__":
-    data_dir = '/home/jopasserat/postdoc/openmole/hyperparam-tuning/data'
+    data_dir = '/home/jopasserat/postdoc/openmole/hyperparam-tuning/datasets'
     output_dir = '/tmp/exp1'
 
     parser = argparse.ArgumentParser(description='DLTK Synapse Training')

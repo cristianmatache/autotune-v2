@@ -1,11 +1,11 @@
 import pickle
 import argparse
 
-from core.HyperbandOptimiser import HyperbandOptimiser
+from optimisers.HyperbandOptimiser import HyperbandOptimiser
 from benchmarks.dltk_problem import DLTKProblem
 import os
 
-data_dir = '/home/jopasserat/postdoc/openmole/hyperparam-tuning/data'
+data_dir = '/home/jopasserat/postdoc/openmole/hyperparam-tuning/datasets'
 output_dir = '/tmp/exp1'
 
 parser = argparse.ArgumentParser(description='DLTK Synapse Training')

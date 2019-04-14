@@ -2,11 +2,11 @@ import numpy as np
 from typing import Tuple, Dict
 from colorama import Fore, Style
 
-from core.params import Param
+from optimisers.params import Param
 from core.problem_def import HyperparameterOptimizationProblem
-from benchmarks.data.image_dataset_loaders import MNISTLoader
-from benchmarks.evaluator import TorchEvaluator
-from benchmarks.model_builder import LogisticRegressionArm, LogisticRegressionBuilder
+from datasets.image_dataset_loaders import MNISTLoader
+from benchmarks.torch_evaluator import TorchEvaluator
+from benchmarks.model_builders import LogisticRegressionArm, LogisticRegressionBuilder
 
 
 LEARNING_RATE = Param('learning_rate', np.log(10 ** -6), np.log(10 ** 0), distrib='uniform', scale='log')

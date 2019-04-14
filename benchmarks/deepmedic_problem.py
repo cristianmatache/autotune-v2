@@ -2,8 +2,8 @@ from __future__ import division
 # import torch
 #
 from benchmarks.cifar_problem import CifarProblem
-# from data.svhn_data_loader import get_train_val_set, get_test_set
-from core.params import *
+# from datasets.svhn_data_loader import get_train_val_set, get_test_set
+from optimisers.params import *
 from collections import OrderedDict
 
 
@@ -22,14 +22,14 @@ class DLTKProblem(CifarProblem):
 
     # def initialise_data(self):
     #     # 40k train, 10k val, 10k test
-    #     print('==> Preparing data..')
+    #     print('==> Preparing datasets..')
     #     train_data, val_data, train_sampler, val_sampler = get_train_val_set(data_dir=self.data_dir,
     #  valid_size=0.2)
     #     test_data = get_test_set(data_dir=self.data_dir)
     #
-    #     self.val_loader = torch.utils.data.DataLoader(val_data, batch_size=100, sampler=val_sampler,
+    #     self.val_loader = torch.utils.datasets.DataLoader(val_data, batch_size=100, sampler=val_sampler,
     #   num_workers=2, pin_memory=False)
-    #     self.test_loader = torch.utils.data.DataLoader(test_data, batch_size=100, shuffle=True,
+    #     self.test_loader = torch.utils.datasets.DataLoader(test_data, batch_size=100, shuffle=True,
     #    num_workers=2, pin_memory=False)
     #     self.train_data = train_data
     #     self.train_sampler = train_sampler

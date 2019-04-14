@@ -2,9 +2,9 @@ from abc import abstractmethod
 from pprint import PrettyPrinter
 from typing import Dict, Tuple
 
-from benchmarks.data.dataset_loader import DatasetLoader
-from benchmarks.evaluator import Evaluator
-from core.params import Param
+from datasets.dataset_loader import DatasetLoader
+from benchmarks.torch_evaluator import Evaluator
+from optimisers.params import Param
 
 
 class HyperparameterOptimizationProblem:

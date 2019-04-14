@@ -1,5 +1,3 @@
-import os
-from os.path import join as join_path
 from abc import abstractmethod
 import torch
 from torch.nn import Module
@@ -8,62 +6,16 @@ from torch import cuda
 from torch.utils.data import DataLoader
 from typing import Tuple
 
-from benchmarks.model_builder import ModelBuilder
+from core.evaluator import Evaluator
+from benchmarks.model_builders import ModelBuilder
 from util.progress_bar import progress_bar
-from benchmarks.data.image_dataset_loaders import ImageDatasetLoader
-
-
-def ensure_dir(path: str) -> str:
-    if not os.path.exists(path):
-        os.makedirs(path)
-    return path
+from datasets.image_dataset_loaders import ImageDatasetLoader
 
 
 def print_accuracy(train_val_or_test: str, correct: int, total: int) -> None:
     accuracy = 100. * correct / total
     padding = ' ' * (len("validation") - len(train_val_or_test))
     print(f"{train_val_or_test} accuracy:{padding} {accuracy:.3f}% ({correct}/{total})")
-
-
-class Evaluator:
-
-    def __init__(self, model_builder: ModelBuilder, criterion: Module = torch.nn.CrossEntropyLoss(),
-                 output_dir: str = ".", file_name: str = "model.pth"):
-        """
-        :param output_dir: directory where to save the arms and their progress so far
-        :param file_name: file (at output_dir/arm<i>/file_name) which records the progress of the evaluation of an arm
-        """
-        self.output_dir = output_dir
-        subdirs = next(os.walk(output_dir))[1]
-        last_arm_number = len(subdirs)
-
-        self.directory = ensure_dir(join_path(output_dir, f"arm{last_arm_number + 1}"))
-        self.file_path = join_path(self.directory, file_name)
-
-        self.ml_model, self.optimizer = model_builder.construct_model()
-        self.arm = model_builder.arm
-        self.criterion = criterion
-
-        # save first checkpoint to file file_path
-        self.save_checkpoint(epoch=0, val_error=1, test_error=1)
-
-        self.n_resources = 0
-
-    @abstractmethod
-    def save_checkpoint(self, epoch: int, val_error: float, test_error: float) -> None:
-        pass
-
-    @abstractmethod
-    def _train(self, *args, **kwargs) -> float:
-        pass
-
-    @abstractmethod
-    def _test(self, *args, **kwargs) -> float:
-        pass
-
-    @abstractmethod
-    def evaluate(self, *args, **kwargs) -> Tuple[float, float]:
-        pass
 
 
 class TorchEvaluator(Evaluator):

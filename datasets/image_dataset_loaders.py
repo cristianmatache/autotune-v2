@@ -5,8 +5,8 @@ from typing import Tuple
 from torch.utils.data.dataset import Dataset
 from torch.utils.data import DataLoader
 
-from benchmarks.data.dataset_loader import DatasetLoader
-from benchmarks.data.MRBI import MRBI
+from datasets.dataset_loader import DatasetLoader
+from datasets import MRBI
 
 
 class ImageDatasetLoader(DatasetLoader):
@@ -37,7 +37,7 @@ class ImageDatasetLoader(DatasetLoader):
         self.val_data = val_data
         self.test_data = test_data
 
-        # creating data samplers
+        # creating datasets samplers
         train_sampler, val_sampler = self.get_samplers(self.train_data, valid_size, shuffle)
         self.train_sampler = train_sampler
         self.val_sampler = val_sampler

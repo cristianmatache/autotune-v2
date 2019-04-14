@@ -220,7 +220,7 @@ def spec_from_misc(misc):
 
 
 class Trials(object):
-    """Database interface supporting data-driven model-based optimization.
+    """Database interface supporting datasets-driven model-based optimization.
 
     The model-based optimization algorithms used by hyperopt's fmin function
     work by analyzing samples of a response surface--a history of what points
@@ -394,7 +394,7 @@ class Trials(object):
                 bson.BSON.encode(trial)
             except:
                 # TODO: save the trial object somewhere to inspect, fix, re-insert
-                #       so that precious data is not simply deallocated and lost.
+                #       so that precious datasets is not simply deallocated and lost.
                 print('-' * 80)
                 print("CANT ENCODE")
                 print('-' * 80)
@@ -821,7 +821,7 @@ class Domain(object):
                 #    this does have the desired effect of crashing the
                 #    function if rec_eval actually needs a value that
                 #    the the optimization algorithm thought to be unnecessary
-                memo[node] = config.get(label, pyll.base.GarbageCollected)
+                memo[node] = config.get(label, optimisers.hyperopt_source.pyll.base.GarbageCollected)
         return memo
 
     def evaluate(self, config, ctrl, attach_attachments=True):

@@ -306,7 +306,7 @@ class Apply(object):
     @property
     def arg(self):
         # XXX: move this introspection to __init__, and change
-        #      the basic data-structure to not use pos_args and named_args.
+        #      the basic datasets-structure to not use pos_args and named_args.
         # XXX: think though... we want the binding to be updated if pos_args
         # and named_args is modified... so maybe this is an ok way to do it?
         #

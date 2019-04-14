@@ -1,13 +1,11 @@
 import pickle
 import argparse
 
-from ..core.HyperbandOptimiser import HyperbandOptimiser
-from ..core.TpeOptimiser import TpeOptimiser
-from ..core.RandomOptimiser import RandomOptimiser
+from optimisers.RandomOptimiser import RandomOptimiser
 # from ..benchmarks.mnist_problem import MnistProblem
 # from ..benchmarks.cifar_problem import CifarProblem
 # from ..benchmarks.svhn_problem import SvhnProblem
-from ..benchmarks.mrbi_problem import MrbiProblem
+from benchmarks.mrbi_problem import MrbiProblem
 
 
 parser = argparse.ArgumentParser(description='PyTorch Training')

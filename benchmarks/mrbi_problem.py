@@ -17,7 +17,7 @@ class MrbiProblem(CifarProblem):
 
     def initialise_data(self):
         # 9.6k train, 2.4k val, 50k test
-        print('==> Preparing data..')
+        print('==> Preparing datasets..')
         train_data, val_data, train_sampler, val_sampler = get_train_val_set(data_dir=self.data_dir,
                                                                              valid_size=0.2)
         test_data = get_test_set(data_dir=self.data_dir)

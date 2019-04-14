@@ -1,7 +1,7 @@
 import time
 from math import log, ceil
 import numpy as np
-from core.RandomOptimiser import RandomOptimiser
+from optimisers.RandomOptimiser import RandomOptimiser
 
 
 class HyperbandOptimiser(RandomOptimiser):

@@ -55,7 +55,7 @@ class ExprEvaluator(object):
             raise ValueError('deepcopy_inputs should be bool', deepcopy_inputs)
         self.deepcopy_inputs = deepcopy_inputs
         if max_program_len is None:
-            self.max_program_len = pyll.base.DEFAULT_MAX_PROGRAM_LEN
+            self.max_program_len = optimisers.hyperopt_source.pyll.base.DEFAULT_MAX_PROGRAM_LEN
         else:
             self.max_program_len = max_program_len
         self.memo_gc = memo_gc
@@ -140,14 +140,14 @@ class ExprEvaluator(object):
 
         """
         if self.memo_gc:
-            assert v is not pyll.base.GarbageCollected
+            assert v is not optimisers.hyperopt_source.pyll.base.GarbageCollected
             memo[k] = v
             for ii in k.inputs():
                 # -- if all clients of ii are already in the memo
                 #    then we can free memo[ii] by replacing it
                 #    with a dummy symbol
                 if all(iic in memo for iic in self.clients[ii]):
-                    memo[ii] = pyll.base.GarbageCollected
+                    memo[ii] = optimisers.hyperopt_source.pyll.base.GarbageCollected
         else:
             memo[k] = v
 
@@ -198,7 +198,7 @@ class ExprEvaluator(object):
             # -- Ensure no computed argument has been (accidentally) freed for
             #    garbage-collection.
             for aa in args + list(kwargs.values()):
-                assert aa is not pyll.base.GarbageCollected
+                assert aa is not optimisers.hyperopt_source.pyll.base.GarbageCollected
 
         if self.deepcopy_inputs:
             # -- I think this is supposed to be skipped if node.pure == True

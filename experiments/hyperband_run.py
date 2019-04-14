@@ -1,10 +1,9 @@
 import pickle
 import argparse
 
-from ..core.HyperbandOptimiser import HyperbandOptimiser
-from ..core.RandomOptimiser import RandomOptimiser
+from optimisers.HyperbandOptimiser import HyperbandOptimiser
 # from ..benchmarks.mnist_problem import MnistProblem
-from ..benchmarks.cifar_problem import CifarProblem
+from benchmarks.cifar_problem import CifarProblem
 
 parser = argparse.ArgumentParser(description='PyTorch Training')
 parser.add_argument('-i', '--input_dir', type=str, help='input dir')

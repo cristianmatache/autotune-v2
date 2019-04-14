@@ -1,9 +1,9 @@
 import pickle
 import argparse
 
-from ..core.HyperbandOptimiser import HyperbandOptimiser
-from ..core.RandomOptimiser import RandomOptimiser
-from ..benchmarks.cifar_problem import CifarProblem
+from optimisers.HyperbandOptimiser import HyperbandOptimiser
+from optimisers.RandomOptimiser import RandomOptimiser
+from benchmarks.cifar_problem import CifarProblem
 # from ..benchmarks.svhn_problem import SvhnProblem
 
 parser = argparse.ArgumentParser(description='PyTorch Training')

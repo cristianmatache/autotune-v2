@@ -2,7 +2,7 @@ import argparse
 
 # from ..benchmarks.mnist_problem import MnistProblem
 # from ..benchmarks.cifar_problem import CifarProblem
-from ..benchmarks.svhn_problem import SvhnProblem
+from benchmarks.svhn_problem import SvhnProblem
 
 
 class ProblemTest(object):
@@ -20,7 +20,7 @@ class ProblemTest(object):
 
 
 if __name__ == "__main__":
-    data_dir = '/Users/signapoop/Desktop/data/'
+    data_dir = '/Users/signapoop/Desktop/datasets/'
     output_dir = '/Users/signapoop/Desktop/autotune/autotune/experiments/checkpoint/exp1/'
 
     parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')

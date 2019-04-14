@@ -5,9 +5,9 @@ import json
 
 from benchmarks.cifar_problem import CifarProblem
 from dltk.io.abstract_reader import Reader
-from benchmarks.dltk.reader import read_fn
+from data import read_fn
 
-from core.params import *
+from optimisers.params import *
 from collections import OrderedDict
 from util.dict import merge_two_dicts
 from util.rich_numpy import convert_if_numpy
@@ -28,7 +28,7 @@ def get_param_vals(arm, param_key):
 def setup_reader():
     NUM_CHANNELS = 1
 
-    # Set up a data reader to handle the file i/o.
+    # Set up a datasets reader to handle the file i/o.
     reader_params = {
         'n_examples': 32,
         'example_size': [64, 64, 64],
@@ -122,7 +122,7 @@ class DLTKProblem(CifarProblem):
         (reader, reader_example_shapes, reader_params) = setup_reader()
 
         # Get input functions and queue initialisation hooks
-        # for training and validation data
+        # for training and validation datasets
         train_input_fn, train_qinit_hook = reader.get_inputs(
             train_filenames,
             tf.estimator.ModeKeys.TRAIN,

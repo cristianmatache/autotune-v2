@@ -18,10 +18,10 @@ def get_mean_and_std(dataset):
 
 
 def main():
-    data_dir = '/Users/signapoop/Desktop/data/'
+    data_dir = '/Users/signapoop/Desktop/datasets/'
     from autotune.benchmarks.data.mrbi_data_loader import get_train_val_set, get_test_set
 
-    print('==> Preparing data..')
+    print('==> Preparing datasets..')
     train_data, val_data, train_sampler, val_sampler = get_train_val_set(data_dir=data_dir,
                                                                          valid_size=0.2)
     mean, std = get_mean_and_std(train_data)

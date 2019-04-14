@@ -302,7 +302,7 @@ class MongoJobs(object):
 
         jobs - Mongo Collection handle
             collection within `db` to use for job arguments, return vals,
-            and various bookkeeping stuff and meta-data. Typically this is
+            and various bookkeeping stuff and meta-datasets. Typically this is
             `db['jobs']`
 
         gfs - Mongo GridFS handle
@@ -557,7 +557,7 @@ class MongoJobs(object):
         return list(map(as_str, doc.get('_attachments', [])))
 
     def set_attachment(self, doc, blob, name, collection=None):
-        """Attach potentially large data string `blob` to `doc` by name `name`
+        """Attach potentially large datasets string `blob` to `doc` by name `name`
 
         blob must be a string
 
@@ -601,7 +601,7 @@ class MongoJobs(object):
         # return new_file_id
 
     def get_attachment(self, doc, name):
-        """Retrieve data attached to `doc` by `attach_blob`.
+        """Retrieve datasets attached to `doc` by `attach_blob`.
 
         Raises OperationFailure if `name` does not correspond to an attached blob.
 
@@ -705,7 +705,7 @@ class MongoTrials(Trials):
                                                  projection=['_id', 'version']))
             # -- pull down a fresh list of ids from mongo
             if db_data:
-                # make numpy data arrays
+                # make numpy datasets arrays
                 db_data = numpy.rec.array([(x['_id'], int(x['version']))
                                            for x in db_data],
                                           names=['_id', 'version'])
@@ -724,11 +724,11 @@ class MongoTrials(Trials):
                 # filtering out out-of-date records
                 _trials = [_trials[_ind] for _ind in existing_in_db.nonzero()[0]]
 
-                # new data is what's in db that's not in existing
+                # new datasets is what's in db that's not in existing
                 new_data = db_data[numpy.invert(db_in_existing)]
 
-                # having removed the new and out of data data,
-                # concentrating on data in db and existing for state changes
+                # having removed the new and out of datasets datasets,
+                # concentrating on datasets in db and existing for state changes
                 db_data = db_data[db_in_existing]
                 existing_data = existing_data[existing_in_db]
                 try:
@@ -769,7 +769,7 @@ class MongoTrials(Trials):
                 _trials = [_trials[_i] for _i in get_most_recent_inds(_trials)]
             num_new = len(_trials)
 
-        logger.debug('Refresh data download took %f seconds for %d ids' %
+        logger.debug('Refresh datasets download took %f seconds for %d ids' %
                      (time.time() - t0, num_new))
 
         if tids is not None:

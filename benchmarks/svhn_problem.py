@@ -1,30 +1,13 @@
-from __future__ import division
-import torch
+from typing import Tuple, Dict
 
-from cifar_problem import CifarProblem
-from data.svhn_data_loader import get_train_val_set, get_test_set
+from benchmarks.cifar_problem import CifarProblem, HYPERPARAMS_DOMAIN, DEF_HYPERPARAMETERS_TO_OPTIMIZE
+from optimisers.params import Param
+from datasets.image_dataset_loaders import SVHNLoader
 
 
 class SvhnProblem(CifarProblem):
 
-    def __init__(self, data_dir, output_dir):
-        super(SvhnProblem, self).__init__(data_dir, output_dir)
-
-        # Set this to choose a subset of tunable hyperparams
-        # self.hps = None
-        self.hps = ['learning_rate', 'n_units_1', 'n_units_2', 'n_units_3', 'batch_size']
-
-    def initialise_data(self):
-        # 40k train, 10k val, 10k test
-        print('==> Preparing data..')
-        train_data, val_data, train_sampler, val_sampler = get_train_val_set(data_dir=self.data_dir,
-                                                                             valid_size=0.2)
-        test_data = get_test_set(data_dir=self.data_dir)
-
-        self.val_loader = torch.utils.data.DataLoader(val_data, batch_size=100, sampler=val_sampler,
-                                                      num_workers=2, pin_memory=False)
-        self.test_loader = torch.utils.data.DataLoader(test_data, batch_size=100, shuffle=True,
-                                                       num_workers=2, pin_memory=False)
-        self.train_data = train_data
-        self.train_sampler = train_sampler
-
+    def __init__(self, data_dir: str, output_dir: str,
+                 hyperparams_domain: Dict[str, Param] = HYPERPARAMS_DOMAIN,
+                 hyperparams_to_opt: Tuple[str, ...] = DEF_HYPERPARAMETERS_TO_OPTIMIZE):
+        super().__init__(data_dir, output_dir, SVHNLoader, hyperparams_domain, hyperparams_to_opt)

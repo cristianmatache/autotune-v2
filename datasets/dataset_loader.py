@@ -11,7 +11,7 @@ class DatasetLoader:
     def get_samplers(train_data: Dataset, valid_size: float = 0.2, shuffle: bool = True) \
             -> Tuple[SubsetRandomSampler, SubsetRandomSampler]:
         """
-        :param train_data: train data
+        :param train_data: train datasets
         :param valid_size: percentage split of the training set used for the validation set. Should be in range [0, 1].
         :param shuffle: whether to shuffle the train/validation indices
         :return: train sampler, validation sampler

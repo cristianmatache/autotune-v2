@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-from benchmarks.data.image_dataset_loaders import CIFARLoader, SVHNLoader, MRBILoader
+from datasets.image_dataset_loaders import CIFARLoader, SVHNLoader, MRBILoader
 
 
 DATA_DIR = "D:/datasets/"

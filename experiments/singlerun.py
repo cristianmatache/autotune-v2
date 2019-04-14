@@ -1,11 +1,11 @@
 import argparse
 
-from ..benchmarks.model_builder import CifarProblem2
+from ..benchmarks.model_builders import CifarProblem2
 
-# input_dir = '/Users/signapoop/Desktop/data/'
+# input_dir = '/Users/signapoop/Desktop/datasets/'
 # output_dir = '/Users/signapoop/Desktop/autotune/autotune/experiments/checkpoint/'
 
-# input_dir = '/data/'
+# input_dir = '/datasets/'
 # output_dir = '/checkpoint/'
 
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
