@@ -11,6 +11,11 @@ from benchmarks.ml_models.logistic_regression import LogisticRegression
 
 class CNNArm(Arm):
 
+    """
+    This class is used to create the type and enforce stronger type/method checking.
+    Note the attributes are dynamically created by Arm.draw_hp_val()
+    """
+
     def __init__(self):
         self.learning_rate = None
         self.n_units_1 = None
@@ -27,12 +32,15 @@ class CNNBuilder(ModelBuilder):
 
     def __init__(self, arm: CNNArm, ml_model: Type[CudaConvNet2] = CudaConvNet2, optimizer: Type[SGD] = SGD):
         super().__init__(arm, ml_model, optimizer)
+        # the below are re-set for type/attribute checking
         self.arm = arm
         self.ml_model = ml_model
         self.optimizer = optimizer
 
     def construct_model(self) -> Tuple[Module, Optimizer]:
-        # Construct model and optimizer based on hyperparameters
+        """ Construct model and optimizer based on hyperparameters
+        :return: instances of each (model, optimizer) using the hyperparameters as specified by the arm
+        """
         arm = self.arm
         base_lr = arm.learning_rate
 
@@ -49,6 +57,11 @@ class CNNBuilder(ModelBuilder):
 
 class LogisticRegressionArm(Arm):
 
+    """
+    This class is used to create the type and enforce stronger type checking.
+    Note the attributes are dynamically created by Arm.draw_hp_val()
+    """
+
     def __init__(self):
         self.learning_rate = None
         self.momentum = None
@@ -61,12 +74,15 @@ class LogisticRegressionBuilder(ModelBuilder):
     def __init__(self, arm: LogisticRegressionArm, ml_model: Type[LogisticRegression] = LogisticRegression,
                  optimizer: Type[SGD] = SGD):
         super().__init__(arm, ml_model, optimizer)
+        # the below are re-set for type/attribute checking
         self.arm = arm
         self.ml_model = ml_model
         self.optimizer = optimizer
 
     def construct_model(self) -> Tuple[Module, Optimizer]:
-        # Construct model and optimizer based on hyperparameters
+        """ Construct model and optimizer based on hyperparameters
+        :return: instances of each (model, optimizer) using the hyperparameters as specified by the arm
+        """
         arm = self.arm
         base_lr = arm.learning_rate
 
