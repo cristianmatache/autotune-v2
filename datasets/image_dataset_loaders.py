@@ -12,7 +12,7 @@ from datasets import MRBI
 class ImageDatasetLoader(DatasetLoader):
 
     @abc.abstractmethod
-    def split_dataset(self) -> Tuple[Dataset, Dataset, Dataset]:
+    def _split_dataset(self) -> Tuple[Dataset, Dataset, Dataset]:
         """
         :return: train_data, validation_data, test_data
         """
@@ -31,21 +31,18 @@ class ImageDatasetLoader(DatasetLoader):
         else:
             self.def_transform = transforms.Compose([transforms.ToTensor()])
 
-        # set the split datasets
-        train_data, val_data, test_data = self.split_dataset()
-        self.train_data = train_data
-        self.val_data = val_data
-        self.test_data = test_data
+        # Set the split datasets
+        train_data, val_data, test_data = self._split_dataset()
+        self.train_data, self.val_data, self.test_data = train_data, val_data, test_data
 
-        # creating datasets samplers
-        train_sampler, val_sampler = self.get_samplers(self.train_data, valid_size, shuffle)
-        self.train_sampler = train_sampler
-        self.val_sampler = val_sampler
-        # set loaders
+        # Creating datasets samplers
+        train_sampler, val_sampler = self.get_samplers(train_data, valid_size, shuffle)
+        self._train_sampler, self._val_sampler = train_sampler, val_sampler
 
+        # Note that the loaders are the most important and lucrative parts of this class
         self.val_loader = DataLoader(val_data, batch_size=100, sampler=val_sampler, num_workers=2, pin_memory=False)
         self.test_loader = DataLoader(test_data, batch_size=100, shuffle=True, num_workers=2, pin_memory=False)
-        # the train loader depends on the batch size -> so it is a function
+        # The training set loader depends on the batch size -> so it is a function
 
     def train_loader(self, batch_size: int = 100) -> DataLoader:
         """
@@ -53,7 +50,7 @@ class ImageDatasetLoader(DatasetLoader):
         :return:
         """
         train_data = self.train_data
-        train_sampler = self.train_sampler
+        train_sampler = self._train_sampler
         return DataLoader(train_data, batch_size=batch_size, sampler=train_sampler, num_workers=2, pin_memory=False)
 
 
@@ -64,7 +61,7 @@ class CIFARLoader(ImageDatasetLoader):
         self.augment = augment
         super().__init__(data_dir, mean_normalize, std_normalize)
 
-    def split_dataset(self):
+    def _split_dataset(self):
         """
         :return: train_data, validation_data, test_data
         """
@@ -91,7 +88,7 @@ class MNISTLoader(ImageDatasetLoader):
     def __init__(self, data_dir,  mean_normalize=(0.1307,), std_normalize=(0.3081,)):
         super().__init__(data_dir, mean_normalize, std_normalize)
 
-    def split_dataset(self):
+    def _split_dataset(self):
         train_data = MNIST(root=self.data_dir, train=True, download=True, transform=self.def_transform)
         val_data = MNIST(root=self.data_dir, train=True, download=True, transform=self.def_transform)
         test_data = MNIST(root=self.data_dir, train=False, download=True, transform=self.def_transform)
@@ -104,7 +101,7 @@ class SVHNLoader(ImageDatasetLoader):
     def __init__(self, data_dir, mean_normalize=(0.4377, 0.4438, 0.4728), std_normalize=(0.1201, 0.1231, 0.1052)):
         super().__init__(data_dir, mean_normalize, std_normalize)
 
-    def split_dataset(self):
+    def _split_dataset(self):
         train_data = SVHN(root=self.data_dir, split='train', download=True, transform=self.def_transform)
         val_data = SVHN(root=self.data_dir, split='train', download=True, transform=self.def_transform)
         test_data = SVHN(root=self.data_dir, split='test', download=True, transform=self.def_transform)
@@ -117,7 +114,7 @@ class MRBILoader(ImageDatasetLoader):
     def __init__(self, data_dir, mean_normalize=(0.5406,), std_normalize=(0.2318,)):
         super().__init__(data_dir, mean_normalize, std_normalize)
 
-    def split_dataset(self):
+    def _split_dataset(self):
         train_data = MRBI(root=self.data_dir, split="train", transform=self.def_transform)
         val_data = MRBI(root=self.data_dir, split="train", transform=self.def_transform)
         test_data = MRBI(root=self.data_dir, split="test", transform=self.def_transform)

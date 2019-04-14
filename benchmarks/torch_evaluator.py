@@ -25,7 +25,7 @@ class TorchEvaluator(Evaluator):
         super().__init__(model_builder, criterion, output_dir, file_name)
         self.dataset_loader = dataset_loader
 
-    def save_checkpoint(self, epoch: int, val_error: float, test_error: float) -> None:
+    def _save_checkpoint(self, epoch: int, val_error: float, test_error: float) -> None:
         torch.save({
             'epoch': epoch,
             'model': self.ml_model,

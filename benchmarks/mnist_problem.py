@@ -50,7 +50,7 @@ class MnistEvaluator(TorchEvaluator):
         val_error = self._test(is_validation=True)
         test_error = self._test(is_validation=False)
 
-        self.save_checkpoint(start_epoch + max_epochs, val_error, test_error)
+        self._save_checkpoint(start_epoch + max_epochs, val_error, test_error)
         return val_error, test_error
 
 

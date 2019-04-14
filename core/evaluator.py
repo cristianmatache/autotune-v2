@@ -43,7 +43,7 @@ class Evaluator:
         self.criterion = criterion
 
         # save first checkpoint to file file_path
-        self.save_checkpoint(epoch=0, val_error=1, test_error=1)
+        self._save_checkpoint(epoch=0, val_error=1, test_error=1)
 
         self.n_resources = 0
 
@@ -71,7 +71,7 @@ class Evaluator:
         pass
 
     @abstractmethod
-    def save_checkpoint(self, epoch: int, val_error: float, test_error: float) -> None:
+    def _save_checkpoint(self, epoch: int, val_error: float, test_error: float) -> None:
         """ Stores the progress of the evaluation of an arm (i.e. a checkpoint)
         :param epoch: the number of the latest epoch
         :param val_error: validation error
