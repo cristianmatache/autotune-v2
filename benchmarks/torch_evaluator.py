@@ -43,63 +43,51 @@ class TorchEvaluator(Evaluator):
         return start_epoch
 
     def _train(self, epoch: int, max_batches: int, batch_size: int = 100) -> float:
-        model = self.ml_model
-        optimizer = self.optimizer
-        criterion = self.criterion
         loader = self.dataset_loader.train_loader(batch_size=batch_size)
 
         print('\nEpoch: %d' % epoch)
-        model.train()
-        train_loss = 0
-        correct = 0
-        total = 0
+        self.ml_model.train()
 
+        train_loss, correct, total = 0, 0, 0
         for batch_idx, (inputs, targets) in enumerate(loader, start=1):
             if batch_idx >= max_batches:
                 break
 
             if cuda.is_available():
                 inputs, targets = inputs.cuda(), targets.cuda()
-            optimizer.zero_grad()
+
+            self.optimizer.zero_grad()
             inputs, targets = Variable(inputs), Variable(targets)
-            outputs = model(inputs)
-            loss = criterion(outputs, targets)
+            outputs = self.ml_model(inputs)
+            loss = self.criterion(outputs, targets)
             loss.backward()
-            optimizer.step()
+            self.optimizer.step()
 
             train_loss += loss.data.item()
             _, predicted = torch.max(outputs.data, 1)
             total += targets.size(0)
             correct += predicted.eq(targets.data).cpu().sum()
 
-            # self._display_progress_bar(batch_idx, loader, correct, total, train_loss, disp_interval=500, "Train")
-
         return train_loss
 
     def _test(self, is_validation: bool) -> float:
-        model = self.ml_model
-        criterion = self.criterion
         loader = self.dataset_loader.val_loader if is_validation else self.dataset_loader.test_loader
 
-        model.eval()
-        test_loss = 0
-        correct = 0
-        total = 0
+        self.ml_model.eval()
+        test_loss, correct, total = 0, 0, 0
 
         for batch_idx, (inputs, targets) in enumerate(loader, start=1):
             if cuda.is_available():
                 inputs, targets = inputs.cuda(), targets.cuda()
+
             inputs, targets = Variable(inputs, volatile=True), Variable(targets)
-            outputs = model(inputs)
-            loss = criterion(outputs, targets)
+            outputs = self.ml_model(inputs)
+            loss = self.criterion(outputs, targets)
 
             test_loss += loss.data.item()
             _, predicted = torch.max(outputs.data, 1)
             total += targets.size(0)
             correct += predicted.eq(targets.data).cpu().sum().item()
-
-            # self._display_progress_bar(batch_idx, loader, correct, total, test_loss, disp_interval=100,
-            #                            "Validation" if is_validation else "Test")
 
         print_accuracy("Validation" if is_validation else "Test", correct, total)
         return 1 - correct / total
@@ -110,8 +98,8 @@ class TorchEvaluator(Evaluator):
 
     @staticmethod
     def _display_progress_bar(batch_idx: int, loader: DataLoader, correct: int, total: int, total_loss: int,
-                              disp_interval: int, train_val_or_test: str) -> None:
-        if train_val_or_test not in ["Train", "Validation", "Test"]:
+                              disp_interval: int, train_val_or_test: str = None) -> None:
+        if train_val_or_test not in ["Train", "Validation", "Test", None]:
             raise ValueError('train_val_or_test must be "Train", "Validation" or "Test"')
 
         if batch_idx % disp_interval == 0 or batch_idx == len(loader):
