@@ -1,28 +1,22 @@
 import time
-import numpy as np
 from colorama import Fore, Style
+from typing import Dict, Union
 
 from core.problem_def import HyperparameterOptimizationProblem
 from core.arm import Arm
+from core.optimiser import Optimiser
 
 
-class RandomOptimiser:
+class RandomOptimiser(Optimiser):
 
     """ Note that in this class we will use the terms "evaluation" and "iteration" interchangeably.
     An evaluation means: trying a combination of hyperparameters (an arm) and getting the validation, test errors
     """
 
     def __init__(self, n_resources: int, max_iter: int = None, max_time: int = None):
+        super().__init__(n_resources, max_iter, max_time)
         self.name = "Random"
         self.eval_history = []
-
-        # stop conditions
-        self.n_resources = n_resources
-        self.max_time = np.inf if max_time is None else max_time
-        self.max_iter = np.inf if max_iter is None else max_iter
-        if (max_iter is None) and (max_time is None):
-            raise ValueError("max_iter and max_time cannot be None simultaneously")
-        self._print_stop_conditions()
 
     def _init_optimization_metrics(self) -> None:
         self.time_zero = time.time()  # start time of optimization
@@ -46,18 +40,19 @@ class RandomOptimiser:
             'test_error': test_error        # test errors so far
         })
 
-    def _update_evaluation_metrics(self):
+    def _update_evaluation_metrics(self) -> None:
         self.cum_time = time.time() - self.time_zero
         self.num_iterations += 1
         self.checkpoints.append(self.cum_time)
 
-    def run_optimization(self, problem: HyperparameterOptimizationProblem, n_resources: int, verbosity: bool = False):
+    def run_optimization(self, problem: HyperparameterOptimizationProblem, verbosity: bool = False) \
+            -> Dict[str, Union[Arm, float]]:
         self._init_optimization_metrics()
 
         while not self._needs_to_stop():
             # Draw random sample
             evaluator = problem.get_evaluator()
-            val_error, test_error = evaluator.evaluate(n_resources)
+            val_error, test_error = evaluator.evaluate(self.n_resources)
             # Evaluate arm on problem
             # Update evaluation history: arms tried so far, validation and test errors so far
             self._update_evaluation_history(evaluator.arm, val_error, test_error)
@@ -69,7 +64,7 @@ class RandomOptimiser:
 
         return min(self.eval_history, key=lambda x: x['test_error'])
 
-    def _print_evaluation(self, test_error):
+    def _print_evaluation(self, test_error: float) -> None:
         num_spaces = 8
         best_test_error_so_far = min([x['test_error'] for x in self.eval_history])
         print(f"{Fore.GREEN if test_error == best_test_error_so_far else Fore.RED}"
@@ -78,10 +73,3 @@ class RandomOptimiser:
               f"current_test_error: {test_error:.5f},{num_spaces * ' '}"
               f" best_test_error_so_far: {best_test_error_so_far:.5f}"
               f"{Style.RESET_ALL}")
-
-    def _print_stop_conditions(self):
-        print(f"\n> Starting  RANDOM optimisation\n"
-              f"  Stop when:\n"
-              f"    Max iterations          = {self.max_iter}\n"
-              f"    Max time                = {self.max_time} seconds\n"
-              f"  Resource per iteration    = {self.n_resources}")
