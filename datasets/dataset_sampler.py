@@ -8,7 +8,7 @@ from datasets.image_dataset_loaders import CIFARLoader, SVHNLoader, MRBILoader
 
 
 DATA_DIR = "D:/datasets/"
-PROBLEM = 'cifar'
+PROBLEM = 'mrbi'
 
 
 def get_train_data(problem, data_dir):

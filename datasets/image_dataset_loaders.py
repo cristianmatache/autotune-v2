@@ -6,7 +6,7 @@ from torch.utils.data.dataset import Dataset
 from torch.utils.data import DataLoader
 
 from datasets.dataset_loader import DatasetLoader
-from datasets import MRBI
+from datasets.MRBI import MRBI
 
 
 class ImageDatasetLoader(DatasetLoader):
