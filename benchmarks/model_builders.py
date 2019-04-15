@@ -43,8 +43,10 @@ def update_model_for_gpu(construct_model_function: Callable) -> Callable:
 
 class CNNBuilder(ModelBuilder):
 
-    def __init__(self, arm: CNNArm, ml_model: Type[CudaConvNet2] = CudaConvNet2, optimizer: Type[SGD] = SGD):
+    def __init__(self, arm: CNNArm, ml_model: Type[CudaConvNet2] = CudaConvNet2, optimizer: Type[SGD] = SGD,
+                 in_channels: int = 3):
         super().__init__(arm, ml_model, optimizer)
+        self.in_channels = in_channels
         # the below are re-set for type/attribute checking
         self.arm = arm
         self.ml_model = ml_model
@@ -58,7 +60,7 @@ class CNNBuilder(ModelBuilder):
         arm = self.arm
         base_lr = arm.learning_rate
 
-        model = self.ml_model(3, int(arm.n_units_1), int(arm.n_units_2), int(arm.n_units_3))  # n_channels = 3
+        model = self.ml_model(self.in_channels, int(arm.n_units_1), int(arm.n_units_2), int(arm.n_units_3))
         optimizer = self.optimizer(model.parameters(), lr=base_lr, momentum=arm.momentum, weight_decay=arm.weight_decay)
         return model, optimizer
 

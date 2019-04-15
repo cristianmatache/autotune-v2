@@ -11,7 +11,7 @@ DEF_INPUT_DIR = "D:/datasets/"
 DEF_OUTPUT_DIR = "D:/datasets/output"
 DEF_N_RESOURCES = 3
 MAX_ITER = 2
-PROBLEM = "svhn"
+PROBLEM = "cifar"
 
 
 def _get_args():
