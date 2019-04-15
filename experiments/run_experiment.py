@@ -38,11 +38,6 @@ def _get_args():
 
     Problem:          {arguments.problem.upper()}
     Method:           {arguments.method.upper()}
-
-    Stopping conditions:
-        Max iter:     {arguments.max_iter}
-        Max time:     {arguments.max_time}
-        # resources:  {arguments.n_resources}
     """)
     return arguments
 
@@ -73,6 +68,7 @@ if __name__ == "__main__":
     problem = get_problem()
     optimiser = get_optimiser()
 
+    print(optimiser)
     optimum = optimiser.run_optimization(problem, verbosity=True)
     print(f"Best hyperparams:\n{optimum['arm']}\nwith\n  - test error: {optimum['test_error']}\n"
           f"  - validation error: {optimum['validation_error']}")

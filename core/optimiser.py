@@ -20,7 +20,6 @@ class Optimiser:
         self.max_iter = np.inf if max_iter is None else max_iter
         if (max_iter is None) and (max_time is None):
             raise ValueError("max_iter and max_time cannot be None simultaneously")
-        self._print_stop_conditions()
 
     @abstractmethod
     def run_optimization(self, problem: HyperparameterOptimizationProblem, verbosity: bool) \
@@ -32,9 +31,9 @@ class Optimiser:
         """
         pass
 
-    def _print_stop_conditions(self) -> None:
-        print(f"\n> Starting  RANDOM optimisation\n"
-              f"  Stop when:\n"
-              f"    Max iterations          = {self.max_iter}\n"
-              f"    Max time                = {self.max_time} seconds\n"
-              f"  Resource per iteration    = {self.n_resources}")
+    def __str__(self) -> str:
+        return f"\n> Starting  RANDOM optimisation\n" \
+               f"  Stop when:\n" \
+               f"    Max iterations          = {self.max_iter}\n" \
+               f"    Max time                = {self.max_time} seconds\n" \
+               f"  Resource per iteration    = {self.n_resources}"
