@@ -1,7 +1,5 @@
 # Code excerpt taken from Hyperband experiments, L. Li 2016
-# parameter represention module
-
-
+# parameter representation module
 
 import numpy
 import random
@@ -9,9 +7,9 @@ import copy
 
 
 class Param(object):
-    '''
+    """
     define different properties and helper functions
-    '''
+    """
 
     def __init__(self, name, min_val, max_val, init_val=None,
                  distrib='uniform', scale='log', logbase=numpy.e, interval=None):
@@ -73,9 +71,9 @@ class Param(object):
 
 
 class IntParam(Param):
-    '''
+    """
     discrete (integer) parameters
-    '''
+    """
     def __init__(self, name, min_val, max_val, init_val=None):
         super(IntParam, self).__init__(name, min_val, max_val, init_val=init_val)
         self.param_type = "integer"
@@ -90,9 +88,9 @@ class IntParam(Param):
 
 
 class CategoricalParam(object):
-    '''
+    """
     categorical parameters
-    '''
+    """
     def __init__(self, name, val_list, default):
         self.name = name
         self.val_list = val_list
@@ -118,9 +116,9 @@ def random_indices(high, size):
     return numpy.random.randint(high, size=size)
 
 
-def random_combinations(val_list, num_vals, unique = True):
+def random_combinations(val_list, num_vals, unique=True):
     rand_indices = random_indices(len(val_list), num_vals)
-    if(unique):
+    if unique:
         indices = numpy.unique(rand_indices)
     else:
         indices = rand_indices
@@ -128,12 +126,12 @@ def random_combinations(val_list, num_vals, unique = True):
 
 
 def random_power_of_2(upper_bound, values=[2]):
-    '''
+    """
     Generate power of 2 up to upper bound (included)
     :param upper_bound: greatest power of 2 to generate
     :param values: list storing powers of 2, initially containing [2]
     :return: a random power of 2 lower or equal to upper_bound
-    '''
+    """
     values_count = len(values)
     if (values_count > 0) and (values[-1] > upper_bound):
         rand_idx = random_indices(values_count - 1, 1)[0]
@@ -145,9 +143,9 @@ def random_power_of_2(upper_bound, values=[2]):
 
 
 class DenseCategoricalParam(object):
-    '''
+    """
     Similar to CategoricalParam, but draws with replacement
-    '''
+    """
     def __init__(self, name, val_list, mandatory_elements = []):
         self.name = name
         self.val_list = val_list
@@ -163,10 +161,11 @@ class DenseCategoricalParam(object):
         else:
             return (self.mandatory_elements + self.val_list)[:num_vals]
 
+
 class PairParam(object):
-    '''
+    """
     parameters composed of two sub-parameters (keys, values)
-    '''
+    """
     def __init__(self, name, get_param1_val, param1_key, current_arm, param2,
                  default):
         self.name = name
@@ -190,9 +189,9 @@ class PairParam(object):
 
 
 class ConditionalParam(object):
-    '''
+    """
     draws a parameter with a constrained condition
-    '''
+    """
     def __init__(self, cond_param, cond_val, param):
         self.name = param.name
         self.cond_param = cond_param
@@ -209,9 +208,9 @@ class ConditionalParam(object):
 
 
 class FactoredParam(object):
-    '''
+    """
     Parameters created by this class are linked by a multiplier to their predecessor
-    '''
+    """
     def __init__(self, name, first_value_generator, first_val_upper_bound, upper_bound, multipliers):
         self.previous_value = None
         self.name = name
@@ -238,14 +237,14 @@ def generate_factor(multipliers, previous_value):
 
 
 def generate_factors(previous_value, multipliers, values, target_num_vals, upper_bound):
-    '''
+    """
     Generate a list of values bound to their predecessor by a random multiplier
     :param previous_value: Previous value generated or initial value on first call
     :param multipliers: List of potential multiplier to randomly pick from
     :param values: List of generated values so far, contains [first_val] on first call
     :param target_num_vals: Number of values to generate
     :return: List of generated values
-    '''
+    """
     if target_num_vals == len(values):
         return values
     else:
@@ -260,9 +259,9 @@ def generate_factors(previous_value, multipliers, values, target_num_vals, upper
 # Adaptive heuristic zooms into a local portion of the search space.
 # Not recommended for actual use as there are no theoretical guarantees.
 def zoom_space(params, center, pct=0.40):
-    '''
+    """
     todo
-    '''
+    """
     new_params = copy.deepcopy(params)
     for p in params.keys():
         range = params[p].max_val - params[p].min_val
