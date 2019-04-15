@@ -4,7 +4,7 @@ from typing import Dict, Tuple
 
 from datasets.dataset_loader import DatasetLoader
 from benchmarks.torch_evaluator import Evaluator
-from optimisers.params import Param
+from core.params import Param
 
 
 class HyperparameterOptimizationProblem:

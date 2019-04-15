@@ -7,7 +7,7 @@ from benchmarks.cifar_problem import CifarProblem
 from dltk.io.abstract_reader import Reader
 from data import read_fn
 
-from optimisers.params import *
+from core.params import *
 from collections import OrderedDict
 from util.dict import merge_two_dicts
 from util.rich_numpy import convert_if_numpy

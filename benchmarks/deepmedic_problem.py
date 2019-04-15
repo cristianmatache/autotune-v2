@@ -3,7 +3,7 @@ from __future__ import division
 #
 from benchmarks.cifar_problem import CifarProblem
 # from datasets.svhn_data_loader import get_train_val_set, get_test_set
-from optimisers.params import *
+from core.params import *
 from collections import OrderedDict
 
 

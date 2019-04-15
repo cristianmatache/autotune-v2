@@ -1,6 +1,6 @@
 from typing import Dict, Tuple
 
-from optimisers.params import Param
+from core.params import Param
 
 
 class Arm:

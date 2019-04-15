@@ -1,7 +1,7 @@
 from typing import Tuple, Dict
 
 from benchmarks.cifar_problem import CifarProblem, HYPERPARAMS_DOMAIN, DEF_HYPERPARAMETERS_TO_OPTIMIZE
-from optimisers.params import Param
+from core.params import Param
 from datasets.image_dataset_loaders import MRBILoader
 
 

@@ -2,7 +2,7 @@ import numpy as np
 from typing import Tuple, Dict, Type
 from colorama import Fore, Style
 
-from optimisers.params import Param
+from core.params import Param
 from core.problem_def import HyperparameterOptimizationProblem
 from datasets.image_dataset_loaders import CIFARLoader, ImageDatasetLoader
 from benchmarks.torch_evaluator import TorchEvaluator
