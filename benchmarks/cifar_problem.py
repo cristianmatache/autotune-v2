@@ -83,14 +83,15 @@ class CifarProblem(HyperparameterOptimizationProblem):
 
     def __init__(self, data_dir: str, output_dir: str, dataset_loader: Type[ImageDatasetLoader] = CIFARLoader,
                  hyperparams_domain: Dict[str, Param] = HYPERPARAMS_DOMAIN,
-                 hyperparams_to_opt: Tuple[str, ...] = DEF_HYPERPARAMETERS_TO_OPTIMIZE):
+                 hyperparams_to_opt: Tuple[str, ...] = DEF_HYPERPARAMETERS_TO_OPTIMIZE, in_channels: int = 3):
         dataset_loader = dataset_loader(data_dir)
         super().__init__(hyperparams_domain, dataset_loader, hyperparams_to_opt)
         self.output_dir = output_dir
+        self.in_channels = in_channels
         self.dataset_loader = dataset_loader
 
     def get_evaluator(self) -> CifarEvaluator:
         arm = CNNArm()
         arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)
-        model_builder = CNNBuilder(arm)
+        model_builder = CNNBuilder(arm, in_channels=self.in_channels)
         return CifarEvaluator(model_builder, self.dataset_loader, output_dir=self.output_dir)
