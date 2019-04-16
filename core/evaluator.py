@@ -3,9 +3,11 @@ from os.path import join as join_path
 from abc import abstractmethod
 import torch
 from torch.nn import Module
-from typing import Tuple, Any
+from typing import Any
 
-from benchmarks.model_builders import ModelBuilder
+
+from core.model_builder import ModelBuilder
+from core.optimization_goals import OptimizationGoals
 
 
 def ensure_dir(path: str) -> str:
@@ -52,12 +54,13 @@ class Evaluator:
         self.n_resources = 0
 
     @abstractmethod
-    def evaluate(self, *args: Any, **kwargs: Any) -> Tuple[float, float]:
+    def evaluate(self, *args: Any, **kwargs: Any) -> OptimizationGoals:
         """ Aggregate the steps:
             - train model (available through self._train)
             - evaluate model with respect to the test/validation set(s) (available through self._test)
             - report performance
-        :return: validation error, test error
+        :return: optimization goals - metrics in terms of which we can perform optimization
+                 Eg. validation error, test error
         """
         pass
 

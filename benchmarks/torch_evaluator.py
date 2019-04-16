@@ -4,18 +4,12 @@ from torch.nn import Module
 from torch.autograd import Variable
 from torch import cuda
 from torch.utils.data import DataLoader
-from typing import Tuple
 
 from core.evaluator import Evaluator
+from core.optimization_goals import OptimizationGoals
 from benchmarks.model_builders import ModelBuilder
 from util.progress_bar import progress_bar
 from datasets.image_dataset_loaders import ImageDatasetLoader
-
-
-def print_accuracy(train_val_or_test: str, correct: int, total: int) -> None:
-    accuracy = 100. * correct / total
-    padding = ' ' * (len("validation") - len(train_val_or_test))
-    print(f"{train_val_or_test} accuracy:{padding} {accuracy:.3f}% ({correct}/{total})")
 
 
 class TorchEvaluator(Evaluator):
@@ -93,15 +87,5 @@ class TorchEvaluator(Evaluator):
         return 1 - correct / total
 
     @abstractmethod
-    def evaluate(self, n_resources: int) -> Tuple[float, float]:
+    def evaluate(self, n_resources: int) -> OptimizationGoals:
         pass
-
-    @staticmethod
-    def _display_progress_bar(batch_idx: int, loader: DataLoader, correct: int, total: int, total_loss: int,
-                              disp_interval: int, train_val_or_test: str = None) -> None:
-        if train_val_or_test not in ["Train", "Validation", "Test", None]:
-            raise ValueError('train_val_or_test must be "Train", "Validation" or "Test"')
-
-        if batch_idx % disp_interval == 0 or batch_idx == len(loader):
-            progress_bar(batch_idx, len(loader), f'Loss: %.3f | {train_val_or_test} Acc: %.3f%% (%d/%d)'
-                         % (total_loss / batch_idx, 100. * correct / total, correct, total))

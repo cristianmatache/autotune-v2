@@ -9,11 +9,13 @@ from core.arm import Arm
 
 class Optimiser:
 
-    def __init__(self, n_resources: int, max_iter: int = None, max_time: int = None):
+    def __init__(self, n_resources: int, max_iter: int = None, max_time: int = None,
+                 optimization_goal: str = "test_error"):
         """ Every optimiser should have a stopping condition
         :param n_resources: max resources
         :param max_iter: max iteration (considered infinity if None)
         :param max_time: max time a user is willing to wait for (considered infinity if None)
+        :param optimization_goal: what part of the OptimizationGoals the Optimiser will minimize eg. "test_error"
         """
         # stop conditions
         self.n_resources = n_resources
@@ -21,6 +23,17 @@ class Optimiser:
         self.max_iter = np.inf if max_iter is None else max_iter
         if (max_iter is None) and (max_time is None):
             raise ValueError("max_iter and max_time cannot be None simultaneously")
+        self.eval_history = []
+        self.optimization_goal = optimization_goal
+
+    def _update_evaluation_history(self, arm: Arm, validation_error: float, test_error: float, **kwargs: float) -> None:
+        latest_evaluation = {
+            'arm': arm,                            # combinations of hyperparameters (arms) tried so far
+            'validation_error': validation_error,  # validation errors so far
+            'test_error': test_error               # test errors so far
+        }
+        latest_evaluation.update(kwargs)
+        self.eval_history.append(latest_evaluation)
 
     @abstractmethod
     def run_optimization(self, problem: HyperparameterOptimizationProblem, verbosity: bool) \
@@ -32,13 +45,13 @@ class Optimiser:
         """
         pass
 
-    def _init_optimization_metrics(self) -> None:
+    def _init_optimizer_metrics(self) -> None:
         self.time_zero = time.time()  # start time of optimization
         self.cum_time = 0             # cumulative time = time of last evaluation/iteration - start time
         self.num_iterations = 0       #
         self.checkpoints = []         # list of cum_times of successful evaluations/iterations so far
 
-    def _update_evaluation_metrics(self) -> None:
+    def _update_optimizer_metrics(self) -> None:
         self.cum_time = time.time() - self.time_zero
         self.num_iterations += 1
         self.checkpoints.append(self.cum_time)

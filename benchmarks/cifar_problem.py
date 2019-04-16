@@ -3,6 +3,7 @@ from typing import Tuple, Dict, Type
 
 from core.params import Param
 from core.problem_def import HyperparameterOptimizationProblem
+from core.optimization_goals import OptimizationGoals
 from datasets.image_dataset_loaders import CIFARLoader, ImageDatasetLoader
 from benchmarks.torch_evaluator import TorchEvaluator
 from benchmarks.model_builders import CNNArm, CNNBuilder
@@ -41,8 +42,8 @@ class CifarEvaluator(TorchEvaluator):
         for param_group in self.optimizer.param_groups:
             param_group['lr'] = lr
 
-    @print_evaluation
-    def evaluate(self, n_resources: int) -> Tuple[float, float]:
+    @print_evaluation(verbose=False)
+    def evaluate(self, n_resources: int) -> OptimizationGoals:
         self.n_resources += n_resources
         arm = self.arm
 
@@ -75,7 +76,7 @@ class CifarEvaluator(TorchEvaluator):
         test_error = self._test(is_validation=False)
 
         self._save_checkpoint(start_epoch + max_epochs, val_error, test_error)
-        return val_error, test_error
+        return OptimizationGoals(validation_error=val_error, test_error=test_error)
 
 
 class CifarProblem(HyperparameterOptimizationProblem):
