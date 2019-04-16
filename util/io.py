@@ -1,4 +1,4 @@
-from typing import Callable, Any
+from typing import Callable, Any, Tuple
 from colorama import Fore, Style
 from torch.utils.data import DataLoader
 
@@ -6,13 +6,17 @@ from core.optimization_goals import OptimizationGoals
 from util.progress_bar import progress_bar
 
 
-def print_evaluation(verbose: bool = False) -> Callable:
+def print_evaluation(verbose: bool = False, goals_to_print: Tuple[str] = ()) -> Callable:
     def decorator(evaluate_method: Callable) -> Callable:
         def wrapper(self, *args: Any, **kwargs: Any) -> OptimizationGoals:
             print(f"\n\n\n{Fore.CYAN}{'-' * 20} Evaluating model on arm {'-' * 20}\n{self.arm}{Style.RESET_ALL}")
             opt_goal = evaluate_method(self, *args, **kwargs)
             if verbose:
-                print(f"\n{opt_goal}")
+                print("\n" + opt_goal.goals_to_str(goals_to_print))
+                if hasattr(opt_goal, "val_correct") and hasattr(opt_goal, "val_total"):
+                    print_accuracy("Validation", opt_goal.val_correct, opt_goal.val_total)
+                if hasattr(opt_goal, "test_correct") and hasattr(opt_goal, "test_total"):
+                    print_accuracy("Test", opt_goal.val_correct, opt_goal.val_total)
             return opt_goal
         return wrapper
     return decorator

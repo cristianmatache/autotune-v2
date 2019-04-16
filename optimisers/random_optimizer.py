@@ -38,10 +38,11 @@ class RandomOptimiser(Optimiser):
     def _print_evaluation(self, goal_value: float) -> None:
         num_spaces = 8
         best_test_error_so_far = min([x[self.optimization_goal] for x in self.eval_history])
+        opt_goal_str = str(self.optimization_goal).replace('_', ' ')
 
         print(f"{Fore.GREEN if goal_value == best_test_error_so_far else Fore.RED}"
-              f"\n> SUMMARY: iteration_number: {self.num_iterations},{num_spaces * ' '}"
-              f"time_elapsed: {self.cum_time:.2f}s,{num_spaces * ' '}"
-              f"current_test_error: {goal_value:.5f},{num_spaces * ' '}"
-              f" best_test_error_so_far: {best_test_error_so_far:.5f}"
+              f"\n> SUMMARY: iteration number: {self.num_iterations},{num_spaces * ' '}"
+              f"time elapsed: {self.cum_time:.2f}s,{num_spaces * ' '}"
+              f"current {opt_goal_str}: {goal_value:.5f},{num_spaces * ' '}"
+              f" best {opt_goal_str} so far: {best_test_error_so_far:.5f}"
               f"{Style.RESET_ALL}")

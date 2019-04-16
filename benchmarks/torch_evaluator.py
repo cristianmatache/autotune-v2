@@ -3,12 +3,11 @@ import torch
 from torch.nn import Module
 from torch.autograd import Variable
 from torch import cuda
-from torch.utils.data import DataLoader
+from typing import Tuple
 
 from core.evaluator import Evaluator
 from core.optimization_goals import OptimizationGoals
 from benchmarks.model_builders import ModelBuilder
-from util.progress_bar import progress_bar
 from datasets.image_dataset_loaders import ImageDatasetLoader
 
 
@@ -64,7 +63,7 @@ class TorchEvaluator(Evaluator):
 
         return train_loss
 
-    def _test(self, is_validation: bool) -> float:
+    def _test(self, is_validation: bool) -> Tuple[float, ...]:
         loader = self.dataset_loader.val_loader if is_validation else self.dataset_loader.test_loader
 
         self.ml_model.eval()
@@ -83,8 +82,7 @@ class TorchEvaluator(Evaluator):
             total += targets.size(0)
             correct += predicted.eq(targets.data).cpu().sum().item()
 
-        print_accuracy("Validation" if is_validation else "Test", correct, total)
-        return 1 - correct / total
+        return 1 - correct / total, correct, total
 
     @abstractmethod
     def evaluate(self, n_resources: int) -> OptimizationGoals:

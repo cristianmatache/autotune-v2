@@ -3,7 +3,7 @@ from os.path import join as join_path
 from abc import abstractmethod
 import torch
 from torch.nn import Module
-from typing import Any
+from typing import Any, Tuple
 
 
 from core.model_builder import ModelBuilder
@@ -71,7 +71,7 @@ class Evaluator:
         pass
 
     @abstractmethod
-    def _test(self, *args: Any, **kwargs: Any) -> float:
+    def _test(self, *args: Any, **kwargs: Any) -> Tuple[float, ...]:
         """ compare the outputs of the trained model versus a benchmark dataset (i.e. validation/test sets)
         :return: test/validation error
         """
