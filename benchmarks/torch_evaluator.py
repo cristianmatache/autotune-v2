@@ -7,7 +7,7 @@ from typing import Tuple
 
 from core.evaluator import Evaluator
 from core.optimization_goals import OptimizationGoals
-from benchmarks.model_builders import ModelBuilder
+from benchmarks.torch_model_builders import ModelBuilder
 from datasets.image_dataset_loaders import ImageDatasetLoader
 
 

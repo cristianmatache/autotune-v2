@@ -6,7 +6,7 @@ from core.problem_def import HyperparameterOptimizationProblem
 from core.optimization_goals import OptimizationGoals
 from datasets.image_dataset_loaders import CIFARLoader, ImageDatasetLoader
 from benchmarks.torch_evaluator import TorchEvaluator
-from benchmarks.model_builders import CNNArm, CNNBuilder
+from benchmarks.torch_model_builders import CNNArm, CNNBuilder
 from util.io import print_evaluation
 
 

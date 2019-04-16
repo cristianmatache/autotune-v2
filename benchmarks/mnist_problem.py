@@ -6,7 +6,7 @@ from core.problem_def import HyperparameterOptimizationProblem
 from core.optimization_goals import OptimizationGoals
 from datasets.image_dataset_loaders import MNISTLoader
 from benchmarks.torch_evaluator import TorchEvaluator
-from benchmarks.model_builders import LogisticRegressionArm, LogisticRegressionBuilder
+from benchmarks.torch_model_builders import LogisticRegressionArm, LogisticRegressionBuilder
 from util.io import print_evaluation
 
 
