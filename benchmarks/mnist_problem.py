@@ -1,12 +1,12 @@
 import numpy as np
 from typing import Tuple, Dict
-from colorama import Fore, Style
 
 from core.params import Param
 from core.problem_def import HyperparameterOptimizationProblem
 from datasets.image_dataset_loaders import MNISTLoader
 from benchmarks.torch_evaluator import TorchEvaluator
 from benchmarks.model_builders import LogisticRegressionArm, LogisticRegressionBuilder
+from util.io import print_evaluation
 
 
 LEARNING_RATE = Param('learning_rate', np.log(10 ** -6), np.log(10 ** 0), distrib='uniform', scale='log')
@@ -23,9 +23,8 @@ HYPERPARAMS_DOMAIN = {
 
 class MnistEvaluator(TorchEvaluator):
 
+    @print_evaluation
     def evaluate(self, n_resources: int) -> Tuple[float, float]:
-        print(f"\n\n\n{Fore.CYAN}{'-' * 20} Evaluating model on arm {'-' * 20}\n{self.arm}{Style.RESET_ALL}")
-
         self.n_resources += n_resources
         arm = self.arm
 

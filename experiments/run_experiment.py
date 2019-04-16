@@ -18,7 +18,7 @@ N_RESOURCES = 3
 MAX_TIME = None
 MAX_ITER = 2
 
-PROBLEM = "svhn"
+PROBLEM = "mnist"
 METHOD = "random"
 
 

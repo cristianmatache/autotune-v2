@@ -9,6 +9,10 @@ from benchmarks.model_builders import ModelBuilder
 
 
 def ensure_dir(path: str) -> str:
+    """ if the directory at given path doesn't exist, it will create it
+    :param path: path to directory
+    :return: path to directory
+    """
     if not os.path.exists(path):
         os.makedirs(path)
     return path
