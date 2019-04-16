@@ -78,3 +78,6 @@ class Evaluator:
         :param test_error: test error
         """
         pass
+
+    def __str__(self) -> str:
+        return f"Evaluator of arm:\n{self.arm}"
