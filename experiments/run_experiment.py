@@ -18,7 +18,7 @@ N_RESOURCES = 3
 MAX_TIME = None
 MAX_ITER = 2
 
-PROBLEM = "mnist"
+PROBLEM = "cifar"
 METHOD = "random"
 
 
@@ -59,7 +59,8 @@ def get_optimiser() -> Optimiser:
         "random": RandomOptimiser
     }[args.method.lower()]
     # Define maximum units of resource assigned to each optimisation iteration
-    optimiser_instance = optimiser_class(n_resources=args.n_resources, max_iter=args.max_iter, max_time=args.max_time)
+    optimiser_instance = optimiser_class(n_resources=args.n_resources, max_iter=args.max_iter, max_time=args.max_time,
+                                         optimization_goal="test_correct", min_or_max=max)
     return optimiser_instance
 
 

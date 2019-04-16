@@ -1,5 +1,5 @@
 from colorama import Fore, Style
-from typing import Dict, Union
+from typing import Dict, Union, Callable
 
 from core.problem_def import HyperparameterOptimizationProblem
 from core.arm import Arm
@@ -12,8 +12,9 @@ class RandomOptimiser(Optimiser):
     An evaluation means: trying a combination of hyperparameters (an arm) and getting the validation, test errors
     """
 
-    def __init__(self, n_resources: int, max_iter: int = None, max_time: int = None):
-        super().__init__(n_resources, max_iter, max_time)
+    def __init__(self, n_resources: int, max_iter: int = None, max_time: int = None,
+                 optimization_goal: str = "test_error", min_or_max: Callable = min):
+        super().__init__(n_resources, max_iter, max_time, optimization_goal, min_or_max)
         self.name = "Random"
 
     def run_optimization(self, problem: HyperparameterOptimizationProblem, verbosity: bool = False) \
@@ -31,13 +32,13 @@ class RandomOptimiser(Optimiser):
             self._update_optimizer_metrics()
 
             if verbosity:
-                self._print_evaluation(opt_goals.test_error)
+                self._print_evaluation(getattr(opt_goals, self.optimization_goal))
 
-        return min(self.eval_history, key=lambda x: x[self.optimization_goal])
+        return self.min_or_max(self.eval_history, key=lambda x: x[self.optimization_goal])
 
     def _print_evaluation(self, goal_value: float) -> None:
         num_spaces = 8
-        best_test_error_so_far = min([x[self.optimization_goal] for x in self.eval_history])
+        best_test_error_so_far = self.min_or_max([x[self.optimization_goal] for x in self.eval_history])
         opt_goal_str = str(self.optimization_goal).replace('_', ' ')
 
         print(f"{Fore.GREEN if goal_value == best_test_error_so_far else Fore.RED}"

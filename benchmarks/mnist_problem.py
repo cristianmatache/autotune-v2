@@ -2,11 +2,12 @@ import numpy as np
 from typing import Tuple, Dict
 
 from core.params import Param
+from core.arm import Arm
 from core.problem_def import HyperparameterOptimizationProblem
 from core.optimization_goals import OptimizationGoals
 from datasets.image_dataset_loaders import MNISTLoader
 from benchmarks.torch_evaluator import TorchEvaluator
-from benchmarks.torch_model_builders import LogisticRegressionArm, LogisticRegressionBuilder
+from benchmarks.torch_model_builders import LogisticRegressionBuilder
 from util.io import print_evaluation
 
 
@@ -24,7 +25,7 @@ HYPERPARAMS_DOMAIN = {
 
 class MnistEvaluator(TorchEvaluator):
 
-    @print_evaluation(verbose=True, goals_to_print=("validation_error", "test_error"))
+    @print_evaluation(verbose=True, goals_to_print=())
     def evaluate(self, n_resources: int) -> OptimizationGoals:
         self.n_resources += n_resources
         arm = self.arm
@@ -65,7 +66,7 @@ class MnistProblem(HyperparameterOptimizationProblem):
         self.dataset_loader = dataset_loader
 
     def get_evaluator(self) -> MnistEvaluator:
-        arm = LogisticRegressionArm()
+        arm = Arm()
         arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)
         model_builder = LogisticRegressionBuilder(arm)
         return MnistEvaluator(model_builder, self.dataset_loader, output_dir=self.output_dir)

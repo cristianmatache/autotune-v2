@@ -1,12 +1,13 @@
 import numpy as np
 from typing import Tuple, Dict, Type
 
+from core.arm import Arm
 from core.params import Param
 from core.problem_def import HyperparameterOptimizationProblem
 from core.optimization_goals import OptimizationGoals
 from datasets.image_dataset_loaders import CIFARLoader, ImageDatasetLoader
 from benchmarks.torch_evaluator import TorchEvaluator
-from benchmarks.torch_model_builders import CNNArm, CNNBuilder
+from benchmarks.torch_model_builders import CNNBuilder
 from util.io import print_evaluation
 
 
@@ -92,7 +93,7 @@ class CifarProblem(HyperparameterOptimizationProblem):
         self.dataset_loader = dataset_loader
 
     def get_evaluator(self) -> CifarEvaluator:
-        arm = CNNArm()
+        arm = Arm()
         arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)
         model_builder = CNNBuilder(arm, in_channels=self.in_channels)
         return CifarEvaluator(model_builder, self.dataset_loader, output_dir=self.output_dir)
