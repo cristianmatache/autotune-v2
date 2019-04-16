@@ -30,7 +30,7 @@ HYPERPARAMS_DOMAIN = {
     'momentum': MOMENTUM,
 }
 
-DEF_HYPERPARAMETERS_TO_OPTIMIZE = ('learning_rate', 'n_units_1', 'n_units_2', 'n_units_3', 'batch_size')
+HYPERPARAMETERS_TO_OPTIMIZE = ('learning_rate', 'n_units_1', 'n_units_2', 'n_units_3', 'batch_size')
 
 
 class CifarEvaluator(TorchEvaluator):
@@ -83,7 +83,7 @@ class CifarProblem(HyperparameterOptimizationProblem):
 
     def __init__(self, data_dir: str, output_dir: str, dataset_loader: Type[ImageDatasetLoader] = CIFARLoader,
                  hyperparams_domain: Dict[str, Param] = HYPERPARAMS_DOMAIN,
-                 hyperparams_to_opt: Tuple[str, ...] = DEF_HYPERPARAMETERS_TO_OPTIMIZE, in_channels: int = 3):
+                 hyperparams_to_opt: Tuple[str, ...] = HYPERPARAMETERS_TO_OPTIMIZE, in_channels: int = 3):
         dataset_loader = dataset_loader(data_dir)
         super().__init__(hyperparams_domain, dataset_loader, hyperparams_to_opt)
         self.output_dir = output_dir
