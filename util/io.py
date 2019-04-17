@@ -8,7 +8,8 @@ from util.progress_bar import progress_bar
 def print_evaluation(verbose: bool = False, goals_to_print: Tuple[str] = ()) -> Callable:
     def decorator(evaluate_method: Callable) -> Callable:
         def wrapper(self, *args: Any, **kwargs: Any) -> OptimizationGoals:
-            print(f"\n\n\n{Fore.CYAN}{'-' * 20} Evaluating model on arm {'-' * 20}\n{self.arm}{Style.RESET_ALL}")
+            if verbose:
+                print(f"\n\n\n{Fore.CYAN}{'-' * 20} Evaluating model on arm {'-' * 20}\n{self.arm}{Style.RESET_ALL}")
             opt_goal = evaluate_method(self, *args, **kwargs)
             if verbose:
                 print("\n" + opt_goal.goals_to_str(goals_to_print))

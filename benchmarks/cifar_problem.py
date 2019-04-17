@@ -43,7 +43,7 @@ class CifarEvaluator(TorchEvaluator):
         for param_group in self.optimizer.param_groups:
             param_group['lr'] = lr
 
-    @print_evaluation(verbose=False, goals_to_print=("validation_error", "test_error"))
+    @print_evaluation(verbose=True, goals_to_print=("validation_error", "test_error"))
     def evaluate(self, n_resources: int) -> OptimizationGoals:
         self.n_resources += n_resources
         arm = self.arm
@@ -90,7 +90,6 @@ class CifarProblem(HyperparameterOptimizationProblem):
         super().__init__(hyperparams_domain, dataset_loader, hyperparams_to_opt)
         self.output_dir = output_dir
         self.in_channels = in_channels
-        self.dataset_loader = dataset_loader
 
     def get_evaluator(self) -> CifarEvaluator:
         arm = Arm()

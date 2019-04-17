@@ -2,6 +2,7 @@ from abc import abstractmethod
 import numpy as np
 from typing import Dict, Union, Callable
 import time
+from colorama import Fore, Style
 
 from core.problem_def import HyperparameterOptimizationProblem
 from core.arm import Arm
@@ -9,17 +10,15 @@ from core.arm import Arm
 
 class Optimiser:
 
-    def __init__(self, n_resources: int, max_iter: int = None, max_time: int = None,
+    def __init__(self, max_iter: int = None, max_time: int = None,
                  optimization_goal: str = "test_error", min_or_max: Callable = min):
         """ Every optimiser should have a stopping condition
-        :param n_resources: max resources
         :param max_iter: max iteration (considered infinity if None)
         :param max_time: max time a user is willing to wait for (considered infinity if None)
         :param optimization_goal: what part of the OptimizationGoals the Optimiser will minimize/maximize eg. test_error
         :param min_or_max: min/max (built in functions) - whether to minimize or to maximize the optimization_goal
         """
         # stop conditions
-        self.n_resources = n_resources
         self.max_time = np.inf if max_time is None else max_time
         self.max_iter = np.inf if max_iter is None else max_iter
         if (max_iter is None) and (max_time is None):
@@ -74,5 +73,16 @@ class Optimiser:
                f"  Stop when:\n" \
                f"    Max iterations          = {self.max_iter}\n" \
                f"    Max time                = {self.max_time} seconds\n" \
-               f"  Resource per iteration    = {self.n_resources}\n" \
                f"  Optimizing ({self.min_or_max.__name__}) {self.optimization_goal}"
+
+    def _print_evaluation(self, goal_value: float) -> None:
+        num_spaces = 8
+        best_test_error_so_far = self.min_or_max([x[self.optimization_goal] for x in self.eval_history])
+        opt_goal_str = str(self.optimization_goal).replace('_', ' ')
+
+        print(f"{Fore.GREEN if goal_value == best_test_error_so_far else Fore.RED}"
+              f"\n> SUMMARY: iteration number: {self.num_iterations},{num_spaces * ' '}"
+              f"time elapsed: {self.cum_time:.2f}s,{num_spaces * ' '}"
+              f"current {opt_goal_str}: {goal_value:.5f},{num_spaces * ' '}"
+              f" best {opt_goal_str} so far: {best_test_error_so_far:.5f}"
+              f"{Style.RESET_ALL}")

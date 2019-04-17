@@ -25,7 +25,7 @@ HYPERPARAMS_DOMAIN = {
 
 class MnistEvaluator(TorchEvaluator):
 
-    @print_evaluation(verbose=True, goals_to_print=())
+    @print_evaluation(verbose=True, goals_to_print=("test_correct",))
     def evaluate(self, n_resources: int) -> OptimizationGoals:
         self.n_resources += n_resources
         arm = self.arm
@@ -63,7 +63,6 @@ class MnistProblem(HyperparameterOptimizationProblem):
         dataset_loader = MNISTLoader(data_dir)
         super().__init__(hyperparams_domain, dataset_loader, hyperparams_to_opt)
         self.output_dir = output_dir
-        self.dataset_loader = dataset_loader
 
     def get_evaluator(self) -> MnistEvaluator:
         arm = Arm()

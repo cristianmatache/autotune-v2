@@ -25,10 +25,13 @@ class OptimizationGoals:
         if not goals_to_print:
             goals_to_print = tuple(self.__dict__.keys())
         goals = {g: self.__dict__[g] for g in goals_to_print if g in self.__dict__}
-        max_len = max([len(g) for g in goals.keys()]) + 1
-        def padding(word) -> int: return max_len - len(word)
-        goals_strings = [f"  {g}:{padding(g) * ' '}{val}" for g, val in goals.items()]
-        return "\n".join(["> Optimization goals:", *goals_strings])
+        try:
+            max_len = max([len(g) for g in goals.keys()]) + 1
+            def padding(word) -> int: return max_len - len(word)
+            goals_strings = [f"  {g}:{padding(g) * ' '}{val}" for g, val in goals.items()]
+            return "\n".join(["> Optimization goals:", *goals_strings])
+        except ValueError:
+            return ""
 
     def __str__(self) -> str:
         """

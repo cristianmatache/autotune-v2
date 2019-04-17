@@ -1,5 +1,4 @@
-from colorama import Fore, Style
-from typing import Dict, Union, Callable
+from typing import Dict, Union, Callable, Optional
 
 from core.problem_def import HyperparameterOptimizationProblem
 from core.arm import Arm
@@ -12,9 +11,17 @@ class RandomOptimiser(Optimiser):
     An evaluation means: trying a combination of hyperparameters (an arm) and getting the validation, test errors
     """
 
-    def __init__(self, n_resources: int, max_iter: int = None, max_time: int = None,
+    def __init__(self, n_resources: Optional[int], max_iter: int = None, max_time: int = None,
                  optimization_goal: str = "test_error", min_or_max: Callable = min):
-        super().__init__(n_resources, max_iter, max_time, optimization_goal, min_or_max)
+        """ Random search
+        :param n_resources: number of resources per evaluation (of each arm)
+        :param max_iter: max iteration (considered infinity if None)
+        :param max_time: max time a user is willing to wait for (considered infinity if None)
+        :param optimization_goal: what part of the OptimizationGoals the Optimiser will minimize/maximize eg. test_error
+        :param min_or_max: min/max (built in functions) - whether to minimize or to maximize the optimization_goal
+        """
+        super().__init__(max_iter, max_time, optimization_goal, min_or_max)
+        self.n_resources = n_resources
         self.name = "Random"
 
     def run_optimization(self, problem: HyperparameterOptimizationProblem, verbosity: bool = False) \
@@ -35,15 +42,3 @@ class RandomOptimiser(Optimiser):
                 self._print_evaluation(getattr(opt_goals, self.optimization_goal))
 
         return self.min_or_max(self.eval_history, key=lambda x: x[self.optimization_goal])
-
-    def _print_evaluation(self, goal_value: float) -> None:
-        num_spaces = 8
-        best_test_error_so_far = self.min_or_max([x[self.optimization_goal] for x in self.eval_history])
-        opt_goal_str = str(self.optimization_goal).replace('_', ' ')
-
-        print(f"{Fore.GREEN if goal_value == best_test_error_so_far else Fore.RED}"
-              f"\n> SUMMARY: iteration number: {self.num_iterations},{num_spaces * ' '}"
-              f"time elapsed: {self.cum_time:.2f}s,{num_spaces * ' '}"
-              f"current {opt_goal_str}: {goal_value:.5f},{num_spaces * ' '}"
-              f" best {opt_goal_str} so far: {best_test_error_so_far:.5f}"
-              f"{Style.RESET_ALL}")
