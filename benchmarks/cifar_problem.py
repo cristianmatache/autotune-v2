@@ -91,8 +91,9 @@ class CifarProblem(HyperparameterOptimizationProblem):
         self.output_dir = output_dir
         self.in_channels = in_channels
 
-    def get_evaluator(self) -> CifarEvaluator:
-        arm = Arm()
-        arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)
+    def get_evaluator(self, arm: Arm = None) -> CifarEvaluator:
+        if arm is None:  # if no arm is provided, generate a random arm
+            arm = Arm()
+            arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)
         model_builder = CNNBuilder(arm, in_channels=self.in_channels)
         return CifarEvaluator(model_builder, self.dataset_loader, output_dir=self.output_dir)

@@ -25,7 +25,7 @@ HYPERPARAMS_DOMAIN = {
 
 class MnistEvaluator(TorchEvaluator):
 
-    @print_evaluation(verbose=True, goals_to_print=("test_correct",))
+    @print_evaluation(verbose=True, goals_to_print=("test_correct", "validation_error"))
     def evaluate(self, n_resources: int) -> OptimizationGoals:
         self.n_resources += n_resources
         arm = self.arm
@@ -64,8 +64,9 @@ class MnistProblem(HyperparameterOptimizationProblem):
         super().__init__(hyperparams_domain, dataset_loader, hyperparams_to_opt)
         self.output_dir = output_dir
 
-    def get_evaluator(self) -> MnistEvaluator:
-        arm = Arm()
-        arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)
+    def get_evaluator(self, arm: Arm = None) -> MnistEvaluator:
+        if arm is None:  # if no arm is provided, generate a random arm
+            arm = Arm()
+            arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)
         model_builder = LogisticRegressionBuilder(arm)
         return MnistEvaluator(model_builder, self.dataset_loader, output_dir=self.output_dir)
