@@ -4,7 +4,6 @@ from colorama import Style, Fore
 
 from core.arm import Arm
 from core.problem_def import HyperparameterOptimizationProblem
-from core.optimization_goals import OptimizationGoals
 
 from optimisers.hyperband_optimiser import HyperbandOptimiser
 from optimisers.tpe_optimiser import TpeOptimiser
@@ -46,7 +45,6 @@ class HybridHyperbandTPE(HyperbandOptimiser):
                 n_i = n*eta**(-i)  # evaluate n_i evaluators/configurations/arms
                 r_i = r*eta**i     # each with r_i resources
 
-                print(f"{Fore.YELLOW}" + 'i' * 60 + f"i: {i}       n_i: {n_i}       r_i: {r_i} {END}")
                 if i == 0:  # Generate first n_i arms/evaluators with TPE
                     tpe_optimizer = TpeOptimiser(n_resources=r_i, max_iter=n_i,
                                                  optimization_goal=self.optimization_goal)
@@ -55,7 +53,6 @@ class HybridHyperbandTPE(HyperbandOptimiser):
                     evaluators = [h['evaluator'] for h in tpe_optimizer.eval_history]
                     evaluations = [(h['evaluator'], h['optimization_goals']) for h in tpe_optimizer.eval_history]
 
-                    # print('*' * 30 + str(len(evaluators)))
                     print(f"{COL}\n{'=' * 73}\n>> Generated {n} evaluators and evaluated with TPE for {r_i} resources\n"
                           f"--- Starting halving ---{END}")
 
