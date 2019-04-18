@@ -26,14 +26,14 @@ class TpeOptimiser(Optimiser):
         # Wrap parameter space
         param_space = problem.get_hyperopt_space_from_hyperparams_to_opt()
 
-        # Run optimiser
+        # Run TPE
         trials = Trials()
         fmin(lambda arm_dict: self.tpe_objective_function(arm_dict, problem, self.n_resources), param_space,
              max_evals=self.max_iter, algo=partial(tpe.suggest, n_startup_jobs=10), trials=trials, verbose=verbosity)
 
         # Compute statistics
         for t in trials.trials:
-            used_arm = Arm(**t['misc']['vals'])
+            used_arm = Arm(**{hp_name: hp_vals[0] for hp_name, hp_vals in t['misc']['vals'].items()})
             self._update_evaluation_history(used_arm, **t['result'])
             self.checkpoints.append(t['result']['eval_time'] - self.time_zero)
 
@@ -57,5 +57,8 @@ class TpeOptimiser(Optimiser):
             'loss': getattr(opt_goals, self.optimization_goal),  # TPE will minimize with respect to the value of 'loss'
             'status': STATUS_OK,                                 # mandatory for Hyperopt
             **opt_goals.__dict__,
-            'eval_time': time.time()
+            'eval_time': time.time(),
+            # The below are needed when using some early stopping methods (eg. Hyperband)
+            'evaluator': evaluator,          # evaluator is needed to continue evaluation from where we paused
+            'optimization_goals': opt_goals  # optimization goals are needed to filter "bad" evaluators
         }

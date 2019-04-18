@@ -13,6 +13,8 @@ from util.io import print_evaluation
 
 from optimisers.hyperband_optimiser import HyperbandOptimiser
 
+ETA = 3
+MAX_ITER = 9
 
 LEARNING_RATE = Param('learning_rate', np.log(10 ** -6), np.log(10 ** 0), distrib='uniform', scale='log')
 WEIGHT_DECAY = Param('weight_decay', np.log(10 ** -6), np.log(10 ** -1), distrib='uniform', scale='log')
@@ -61,6 +63,6 @@ class HyperbandTestProblem(HyperparameterOptimizationProblem):
 if __name__ == "__main__":
     with tempfile.TemporaryDirectory() as tmp_dir_name:
         problem = HyperbandTestProblem(output_dir=tmp_dir_name)
-        optimizer = HyperbandOptimiser(eta=3, max_iter=27, optimization_goal="validation_error", min_or_max=min)
+        optimizer = HyperbandOptimiser(eta=ETA, max_iter=MAX_ITER, optimization_goal="validation_error", min_or_max=min)
         res = optimizer.run_optimization(problem, verbosity=True)
         print("TEST " + "PASSED" if optimizer.eval_history[0]['arm'] == res['arm'] else "FAILED")
