@@ -1,4 +1,4 @@
-from typing import Dict, Union, Callable, Optional
+from typing import Dict, Union, Callable
 
 from core.problem_def import HyperparameterOptimizationProblem
 from core.arm import Arm
@@ -11,7 +11,7 @@ class RandomOptimiser(Optimiser):
     An evaluation means: trying a combination of hyperparameters (an arm) and getting the validation, test errors
     """
 
-    def __init__(self, n_resources: Optional[int], max_iter: int = None, max_time: int = None,
+    def __init__(self, n_resources: int, max_iter: int = None, max_time: int = None,
                  optimization_goal: str = "test_error", min_or_max: Callable = min):
         """ Random search
         :param n_resources: number of resources per evaluation (of each arm)

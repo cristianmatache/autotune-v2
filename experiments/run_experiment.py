@@ -5,6 +5,7 @@ from os.path import join as join_path
 from core.optimiser import Optimiser
 from optimisers.random_optimizer import RandomOptimiser
 from optimisers.hyperband_optimiser import HyperbandOptimiser
+from optimisers.tpe_optimiser import TpeOptimiser
 
 from core.problem_def import HyperparameterOptimizationProblem
 from benchmarks.mnist_problem import MnistProblem
@@ -21,7 +22,7 @@ MAX_ITER = 27
 ETA = 3
 
 PROBLEM = "mnist"
-METHOD = "hyperband"
+METHOD = "tpe"
 OPTIMIZATION_GOAL = "validation_error"
 MIN_OR_MAX = "min"
 
@@ -33,7 +34,7 @@ def _get_args():
     parser.add_argument('-time', '--max-time', default=MAX_TIME, type=int, help='max time (stop if exceeded)')
     parser.add_argument('-iter', '--max-iter', default=MAX_ITER, type=int, help='max iterations (stop if exceeded')
     parser.add_argument('-p', '--problem', default=PROBLEM, type=str, help='problem (eg. cifar, mnist, svhn)')
-    parser.add_argument('-m', '--method', default=METHOD, type=str, help='method (eg. random, hyperband)')
+    parser.add_argument('-m', '--method', default=METHOD, type=str, help='method (eg. random, hyperband, tpe)')
     parser.add_argument('-g', '--opt-goal', default=OPTIMIZATION_GOAL, type=str, help="optimization goal")
     parser.add_argument('-opt', '--min-or-max', default=MIN_OR_MAX, type=str, help="min or max")
     parser.add_argument('-res', '--n-resources', default=N_RESOURCES, type=int, help='n_resources', required=False)
@@ -72,6 +73,9 @@ def get_optimiser() -> Optimiser:
     elif method == "hyperband":
         return HyperbandOptimiser(eta=args.eta, max_iter=args.max_iter, max_time=args.max_time,
                                   optimization_goal=args.opt_goal, min_or_max=min if args.min_or_max == 'min' else max)
+    elif method == "tpe":
+        return TpeOptimiser(n_resources=args.n_resources, max_iter=args.max_iter, max_time=args.max_time,
+                            optimization_goal=args.opt_goal, min_or_max=min if args.min_or_max == 'min' else max)
 
 
 if __name__ == "__main__":

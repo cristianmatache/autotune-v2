@@ -1,10 +1,14 @@
 from abc import abstractmethod
 from pprint import PrettyPrinter
 from typing import Dict, Tuple
+from hyperopt import hp
+from hyperopt.pyll import Apply
+import numpy as np
 
 from datasets.dataset_loader import DatasetLoader
 from benchmarks.torch_evaluator import Evaluator
 from core.params import Param
+from core.arm import Arm
 
 
 class HyperparameterOptimizationProblem:
@@ -18,7 +22,10 @@ class HyperparameterOptimizationProblem:
         :param hyperparams_to_opt: names of hyperparameters to be optimized, if () all params from domain are optimized
         """
         self.domain = hyperparams_domain
-        self.hyperparams_to_opt = hyperparams_to_opt if hyperparams_to_opt else list(self.domain.keys())
+        if hyperparams_to_opt:  # if any hyperparams_to_opt are given
+            self.hyperparams_to_opt = tuple(set(hyperparams_to_opt) & set(self.domain.keys()))
+        else:                   # if no hyperparams_to_opt are given, optimize all from domain
+            self.hyperparams_to_opt = tuple(self.domain.keys())
         print(f"\n> Hyperparameters to optimize:\n    {'' if hyperparams_to_opt else 'ALL:'} {self.hyperparams_to_opt}")
 
         self.dataset_loader = dataset_loader
@@ -30,12 +37,29 @@ class HyperparameterOptimizationProblem:
         PrettyPrinter(indent=4).pprint(self.domain)
 
     @abstractmethod
-    def get_evaluator(self) -> Evaluator:
+    def get_evaluator(self, arm: Arm = None) -> Evaluator:
         """ An evaluator must:
-        - generate random arm(s)
+        - generate random arm(s) if None is given
         - build the model based on this arm
         - train it
         - report the model's performance (eg. test_error)
         :return: evaluator
         """
         pass
+
+    def get_hyperopt_space_from_hyperparams_to_opt(self) -> Dict[str, Apply]:
+
+        def convert_to_hyperopt(param: Param) -> Apply:
+            if param.scale == "log":
+                assert param.logbase == np.e
+                if param.interval:
+                    return hp.qloguniform(param.name, param.min_val, param.max_val, param.interval)
+                else:
+                    return hp.loguniform(param.name, param.min_val, param.max_val)
+            else:
+                if param.interval:
+                    return hp.quniform(param.name, param.min_val, param.max_val, param.interval)
+                else:
+                    return hp.uniform(param.name, param.min_val, param.max_val)
+
+        return {hp_name: convert_to_hyperopt(self.domain[hp_name]) for hp_name in self.hyperparams_to_opt}
