@@ -28,10 +28,8 @@ class TpeOptimiser(Optimiser):
 
         # Run optimiser
         trials = Trials()
-        best = fmin(lambda arm_dict: self.tpe_objective_function(arm_dict, problem, self.n_resources), param_space,
-                    max_evals=self.max_iter, algo=partial(tpe.suggest, n_startup_jobs=10), trials=trials,
-                    verbose=verbosity)
-        # max_time=self.max_time, if self._needs_to_stop() kill fmin
+        fmin(lambda arm_dict: self.tpe_objective_function(arm_dict, problem, self.n_resources), param_space,
+             max_evals=self.max_iter, algo=partial(tpe.suggest, n_startup_jobs=10), trials=trials, verbose=verbosity)
 
         # Compute statistics
         for t in trials.trials:
