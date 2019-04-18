@@ -6,7 +6,7 @@ from core.optimiser import Optimiser
 from optimisers.random_optimizer import RandomOptimiser
 from optimisers.hyperband_optimiser import HyperbandOptimiser
 from optimisers.tpe_optimiser import TpeOptimiser
-from optimisers.hybrid_hyperband_tpe import HybridHyperbandTPE
+from optimisers.hybrid_hyperband_tpe_optimiser import HybridHyperbandTpeOptimiser
 
 from core.problem_def import HyperparameterOptimizationProblem
 from benchmarks.mnist_problem import MnistProblem
@@ -19,7 +19,7 @@ OUTPUT_DIR = "D:/datasets/output"
 
 N_RESOURCES = 3
 MAX_TIME = None
-MAX_ITER = 9
+MAX_ITER = 27
 ETA = 3
 
 PROBLEM = "mnist"
@@ -78,8 +78,9 @@ def get_optimiser() -> Optimiser:
         return TpeOptimiser(n_resources=args.n_resources, max_iter=args.max_iter, max_time=args.max_time,
                             optimization_goal=args.opt_goal, min_or_max=min if args.min_or_max == 'min' else max)
     elif method == "hybrid":
-        return HybridHyperbandTPE(eta=args.eta, max_iter=args.max_iter, max_time=args.max_time,
-                                  optimization_goal=args.opt_goal, min_or_max=min if args.min_or_max == 'min' else max)
+        return HybridHyperbandTpeOptimiser(eta=args.eta, max_iter=args.max_iter, max_time=args.max_time,
+                                           optimization_goal=args.opt_goal,
+                                           min_or_max=min if args.min_or_max == 'min' else max)
 
 
 if __name__ == "__main__":

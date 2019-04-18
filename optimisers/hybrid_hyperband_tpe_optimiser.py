@@ -12,7 +12,7 @@ COL = Fore.MAGENTA
 END = Style.RESET_ALL
 
 
-class HybridHyperbandTPE(HyperbandOptimiser):
+class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
 
     def __init__(self, eta: int, max_iter: int = None, max_time: int = None,
                  optimization_goal: str = "test_error", min_or_max: Callable = min):
