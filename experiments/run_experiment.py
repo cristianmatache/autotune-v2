@@ -94,7 +94,8 @@ if __name__ == "__main__":
 
     print(optimiser)
     optimum = optimiser.run_optimization(problem, verbosity=True)
-    print(f"Best hyperparams:\n{optimum['arm']}\nwith\n  - {OPTIMIZATION_GOAL}: {optimum[OPTIMIZATION_GOAL]}\n")
+    print(f"Best hyperparams:\n{optimum['arm']}\nwith:\n  - {OPTIMIZATION_GOAL}: {optimum[OPTIMIZATION_GOAL]}\n"
+          f"Total time:\n  - {optimiser.checkpoints[-1]} seconds")
 
     output_file_path = join_path(args.output_dir, "results.pkl")
     with open(output_file_path, 'wb') as f:
