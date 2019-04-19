@@ -25,9 +25,7 @@ class TpeOptimiser(Optimiser):
 
         # TPE Hyperopt supports minimization only, so if the problem is maximization, minimize -1 * optimization goal
         self.sign = -1 if min_or_max == max else 1
-
         self.n_resources = n_resources
-        self.name = "TPE"
 
     def run_optimization(self, problem: HyperparameterOptimizationProblem, verbosity: bool = False) \
             -> Dict[str, Union[Arm, float]]:

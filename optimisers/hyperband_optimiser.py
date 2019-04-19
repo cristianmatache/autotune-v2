@@ -21,7 +21,6 @@ class HyperbandOptimiser(Optimiser):
     def __init__(self, eta: int, max_iter: int = None, max_time: int = None,
                  optimization_goal: str = "test_error", min_or_max: Callable = min):
         super().__init__(max_iter, max_time, optimization_goal, min_or_max)
-        self.name = "Hyperband"
         if max_iter is None:
             raise ValueError("For Hyperband max_iter cannot be None")
         self.eta = eta

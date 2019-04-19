@@ -22,7 +22,6 @@ class RandomOptimiser(Optimiser):
         """
         super().__init__(max_iter, max_time, optimization_goal, min_or_max)
         self.n_resources = n_resources
-        self.name = "Random"
 
     def run_optimization(self, problem: HyperparameterOptimizationProblem, verbosity: bool = False) \
             -> Dict[str, Union[Arm, float]]:

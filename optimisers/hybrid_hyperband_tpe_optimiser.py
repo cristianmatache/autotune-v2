@@ -17,7 +17,6 @@ class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
     def __init__(self, eta: int, max_iter: int = None, max_time: int = None,
                  optimization_goal: str = "test_error", min_or_max: Callable = min):
         super().__init__(eta, max_iter, max_time, optimization_goal, min_or_max)
-        self.name = "Hybrid Hyperband-TPE"
         if min_or_max == max:
             raise ValueError("Hybrid Hyperband-TPE supports minimization only, if you need maximization please "
                              "use minimization on the negative optimization goal")
