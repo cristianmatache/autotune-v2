@@ -1,3 +1,5 @@
+sigopt
+hyperopt
 matplotlib
 colorama
 numpy==1.14.5
