@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from pprint import PrettyPrinter
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List, Union
 from hyperopt import hp
 from hyperopt.pyll import Apply
 import numpy as np
@@ -63,3 +63,19 @@ class HyperparameterOptimizationProblem:
                     return hp.uniform(param.name, param.min_val, param.max_val)
 
         return {hp_name: convert_to_hyperopt(self.domain[hp_name]) for hp_name in self.hyperparams_to_opt}
+
+    def get_sigopt_space_from_hyperparams_to_opt(self) -> List[Dict[str, Union[str, Dict[str, float]]]]:
+
+        def convert_to_sigopt(param: Param) -> Dict[str, Union[str, Dict[str, float]]]:
+            name = param.name
+            if param.scale == "log":
+                assert param.logbase == np.e
+                name = f"log_{name}"
+                if param.interval:
+                    name = "int_" + name
+            param_type = 'double'
+            if param.interval and param.scale != "log":
+                param_type = 'int'
+            return dict(name=name, type=param_type, bounds=dict(min=param.min_val, max=param.max_val))
+
+        return [convert_to_sigopt(self.domain[hp_name]) for hp_name in self.hyperparams_to_opt]

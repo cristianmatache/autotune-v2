@@ -7,6 +7,7 @@ from optimisers.random_optimizer import RandomOptimiser
 from optimisers.hyperband_optimiser import HyperbandOptimiser
 from optimisers.tpe_optimiser import TpeOptimiser
 from optimisers.hybrid_hyperband_tpe_optimiser import HybridHyperbandTpeOptimiser
+from optimisers.sigopt_optimiser import SigOptimiser
 
 from core.problem_def import HyperparameterOptimizationProblem
 from benchmarks.mnist_problem import MnistProblem
@@ -23,7 +24,7 @@ MAX_ITER = 4
 ETA = 3
 
 PROBLEM = "mnist"
-METHOD = "tpe"
+METHOD = "sigopt"
 OPTIMIZATION_GOAL = "validation_error"
 MIN_OR_MAX = "min"
 
@@ -81,6 +82,9 @@ def get_optimiser() -> Optimiser:
         return HybridHyperbandTpeOptimiser(eta=args.eta, max_iter=args.max_iter, max_time=args.max_time,
                                            optimization_goal=args.opt_goal,
                                            min_or_max=min if args.min_or_max == 'min' else max)
+    elif method == "sigopt":
+        return SigOptimiser(n_resources=args.n_resources, max_iter=args.max_iter, max_time=args.max_time,
+                            optimization_goal=args.opt_goal, min_or_max=min if args.min_or_max == 'min' else max)
 
 
 if __name__ == "__main__":
