@@ -19,11 +19,11 @@ OUTPUT_DIR = "D:/datasets/output"
 
 N_RESOURCES = 3
 MAX_TIME = None
-MAX_ITER = 27
+MAX_ITER = 4
 ETA = 3
 
 PROBLEM = "mnist"
-METHOD = "hybrid"
+METHOD = "tpe"
 OPTIMIZATION_GOAL = "validation_error"
 MIN_OR_MAX = "min"
 
@@ -90,8 +90,7 @@ if __name__ == "__main__":
 
     print(optimiser)
     optimum = optimiser.run_optimization(problem, verbosity=True)
-    print(f"Best hyperparams:\n{optimum['arm']}\nwith\n  - test error: {optimum['test_error']}\n"
-          f"  - validation error: {optimum['validation_error']}")
+    print(f"Best hyperparams:\n{optimum['arm']}\nwith\n  - {OPTIMIZATION_GOAL}: {optimum[OPTIMIZATION_GOAL]}\n")
 
     output_file_path = join_path(args.output_dir, "results.pkl")
     with open(output_file_path, 'wb') as f:
