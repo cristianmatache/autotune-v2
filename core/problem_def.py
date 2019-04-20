@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from pprint import PrettyPrinter
-from typing import Dict, Tuple, List, Union
+from typing import Dict, Tuple, List, Union, Optional
 from hyperopt import hp
 from hyperopt.pyll import Apply
 import numpy as np
@@ -13,8 +13,8 @@ from core.arm import Arm
 
 class HyperparameterOptimizationProblem:
 
-    def __init__(self, hyperparams_domain: Dict[str, Param], dataset_loader: DatasetLoader,
-                 hyperparams_to_opt: Tuple[str, ...] = ()):
+    def __init__(self, hyperparams_domain: Dict[str, Param], hyperparams_to_opt: Tuple[str, ...] = (),
+                 dataset_loader: Optional[DatasetLoader] = None, output_dir: Optional[str] = None):
         """
         :param hyperparams_domain: names of the hyperparameters of a model along with their domain, that is
                                    ranges, distributions etc. (self.domain)
@@ -29,6 +29,7 @@ class HyperparameterOptimizationProblem:
         print(f"\n> Hyperparameters to optimize:\n    {'' if hyperparams_to_opt else 'ALL:'} {self.hyperparams_to_opt}")
 
         self.dataset_loader = dataset_loader
+        self.output_dir = output_dir
 
     def print_domain(self) -> None:
         """ Pretty prints the domain of the problem
@@ -48,6 +49,9 @@ class HyperparameterOptimizationProblem:
         pass
 
     def get_hyperopt_space_from_hyperparams_to_opt(self) -> Dict[str, Apply]:
+        """ Converts the problem's domain to hyperopt format
+        :return: dict {hyperparameter_name: Apply (hyperparameter space from hyperopt)}
+        """
 
         def convert_to_hyperopt(param: Param) -> Apply:
             if param.scale == "log":
@@ -65,6 +69,10 @@ class HyperparameterOptimizationProblem:
         return {hp_name: convert_to_hyperopt(self.domain[hp_name]) for hp_name in self.hyperparams_to_opt}
 
     def get_sigopt_space_from_hyperparams_to_opt(self) -> List[Dict[str, Union[str, Dict[str, float]]]]:
+        """ Converts the problem's domain to sigopt format
+        :return: dict {'name': hyperparam name, 'type': eg. int, 'bounds': {'min': min bound, 'max': max bound} ...}
+                 hyperparameter space as required by sigopt
+        """
 
         def convert_to_sigopt(param: Param) -> Dict[str, Union[str, Dict[str, float]]]:
             name = param.name

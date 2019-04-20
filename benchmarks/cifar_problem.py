@@ -87,8 +87,7 @@ class CifarProblem(HyperparameterOptimizationProblem):
                  hyperparams_domain: Dict[str, Param] = HYPERPARAMS_DOMAIN,
                  hyperparams_to_opt: Tuple[str, ...] = HYPERPARAMETERS_TO_OPTIMIZE, in_channels: int = 3):
         dataset_loader = dataset_loader(data_dir)
-        super().__init__(hyperparams_domain, dataset_loader, hyperparams_to_opt)
-        self.output_dir = output_dir
+        super().__init__(hyperparams_domain, hyperparams_to_opt, dataset_loader, output_dir)
         self.in_channels = in_channels
 
     def get_evaluator(self, arm: Arm = None) -> CifarEvaluator:

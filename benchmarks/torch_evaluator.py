@@ -15,8 +15,20 @@ class TorchEvaluator(Evaluator):
 
     def __init__(self, model_builder: ModelBuilder, dataset_loader: ImageDatasetLoader,
                  criterion: Module = torch.nn.CrossEntropyLoss(), output_dir: str = ".", file_name: str = "model.pth"):
-        super().__init__(model_builder, criterion, output_dir, file_name)
+        """
+        :param model_builder: builder of a machine learning model based on an arm
+        :param dataset_loader: dataset loader
+        :param criterion: loss function
+        :param output_dir: directory where to save the arms and their evaluation progress so far (as checkpoints)
+        :param file_name: file (at output_dir/arm<i>/file_name) which stores the progress of the evaluation of an arm
+        """
+        super().__init__(model_builder, output_dir, file_name)
+        self.ml_model, self.optimizer = model_builder.construct_model()
+        self.criterion = criterion
         self.dataset_loader = dataset_loader
+
+        # save first checkpoint to file file_path
+        self._save_checkpoint(epoch=0, val_error=1, test_error=1)
 
     def _save_checkpoint(self, epoch: int, val_error: float, test_error: float) -> None:
         torch.save({

@@ -61,8 +61,7 @@ class MnistProblem(HyperparameterOptimizationProblem):
     def __init__(self, data_dir: str, output_dir: str,
                  hyperparams_domain: Dict[str, Param] = HYPERPARAMS_DOMAIN, hyperparams_to_opt: Tuple[str, ...] = ()):
         dataset_loader = MNISTLoader(data_dir)
-        super().__init__(hyperparams_domain, dataset_loader, hyperparams_to_opt)
-        self.output_dir = output_dir
+        super().__init__(hyperparams_domain, hyperparams_to_opt, dataset_loader, output_dir)
 
     def get_evaluator(self, arm: Arm = None) -> MnistEvaluator:
         if arm is None:  # if no arm is provided, generate a random arm

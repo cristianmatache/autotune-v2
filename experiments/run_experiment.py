@@ -3,6 +3,7 @@ import argparse
 from argparse import Namespace
 from os.path import join as join_path
 
+# Optimisers
 from core.optimiser import Optimiser
 from optimisers.random_optimizer import RandomOptimiser
 from optimisers.hyperband_optimiser import HyperbandOptimiser
@@ -10,22 +11,24 @@ from optimisers.tpe_optimiser import TpeOptimiser
 from optimisers.hybrid_hyperband_tpe_optimiser import HybridHyperbandTpeOptimiser
 from optimisers.sigopt_optimiser import SigOptimiser
 
+# Problems
 from core.problem_def import HyperparameterOptimizationProblem
 from benchmarks.mnist_problem import MnistProblem
 from benchmarks.cifar_problem import CifarProblem
 from benchmarks.svhn_problem import SvhnProblem
 from benchmarks.mrbi_problem import MrbiProblem
+from benchmarks.branin_problem import BraninProblem
 
 INPUT_DIR = "D:/datasets/"
 OUTPUT_DIR = "D:/datasets/output"
 
 N_RESOURCES = 3
 MAX_TIME = None
-MAX_ITER = 4
+MAX_ITER = 1
 ETA = 3
 
-PROBLEM = "mnist"
-METHOD = "sigopt"
+PROBLEM = "mrbi"
+METHOD = "random"
 OPTIMIZATION_GOAL = "validation_error"
 MIN_OR_MAX = "min"
 
@@ -57,13 +60,19 @@ def _get_args() -> Namespace:
 
 
 def get_problem(arguments: Namespace) -> HyperparameterOptimizationProblem:
-    problem_class = {
-        "cifar": CifarProblem,
-        "mnist": MnistProblem,
-        "svhn": SvhnProblem,
-        "mrbi": MrbiProblem
-    }[arguments.problem.lower()]
-    problem_instance = problem_class(arguments.input_dir, arguments.output_dir)
+    problem_name = arguments.problem.lower()
+    if problem_name == "cifar":
+        problem_instance = CifarProblem(arguments.input_dir, arguments.output_dir)
+    elif problem_name == "mnist":
+        problem_instance = MnistProblem(arguments.input_dir, arguments.output_dir)
+    elif problem_name == "svhn":
+        problem_instance = SvhnProblem(arguments.input_dir, arguments.output_dir)
+    elif problem_name == "mrbi":
+        problem_instance = MrbiProblem(arguments.input_dir, arguments.output_dir)
+    elif problem_name == "branin":
+        problem_instance = BraninProblem(arguments.output_dir)
+    else:
+        raise ValueError(f"Supplied problem {problem_name} does not exist")
     problem_instance.print_domain()
     return problem_instance
 
