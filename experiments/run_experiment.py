@@ -1,5 +1,6 @@
 import pickle
 import argparse
+from argparse import Namespace
 from os.path import join as join_path
 
 from core.optimiser import Optimiser
@@ -29,8 +30,8 @@ OPTIMIZATION_GOAL = "validation_error"
 MIN_OR_MAX = "min"
 
 
-def _get_args():
-    parser = argparse.ArgumentParser(description='PyTorch Training')
+def _get_args() -> Namespace:
+    parser = argparse.ArgumentParser(description='Running optimizations')
     parser.add_argument('-i', '--input-dir', default=INPUT_DIR, type=str, help='input dir')
     parser.add_argument('-o', '--output-dir', default=OUTPUT_DIR, type=str, help='output dir')
     parser.add_argument('-time', '--max-time', default=MAX_TIME, type=int, help='max time (stop if exceeded)')
@@ -55,14 +56,14 @@ def _get_args():
     return arguments
 
 
-def get_problem() -> HyperparameterOptimizationProblem:
+def get_problem(arguments: Namespace) -> HyperparameterOptimizationProblem:
     problem_class = {
         "cifar": CifarProblem,
         "mnist": MnistProblem,
         "svhn": SvhnProblem,
         "mrbi": MrbiProblem
-    }[args.problem.lower()]
-    problem_instance = problem_class(args.input_dir, args.output_dir)
+    }[arguments.problem.lower()]
+    problem_instance = problem_class(arguments.input_dir, arguments.output_dir)
     problem_instance.print_domain()
     return problem_instance
 
@@ -89,7 +90,7 @@ def get_optimiser() -> Optimiser:
 
 if __name__ == "__main__":
     args = _get_args()
-    problem = get_problem()
+    problem = get_problem(args)
     optimiser = get_optimiser()
 
     print(optimiser)
@@ -99,4 +100,4 @@ if __name__ == "__main__":
 
     output_file_path = join_path(args.output_dir, "results.pkl")
     with open(output_file_path, 'wb') as f:
-        pickle.dump([optimiser], f)
+        pickle.dump([optimum], f)
