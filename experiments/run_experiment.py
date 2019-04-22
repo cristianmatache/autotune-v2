@@ -13,11 +13,7 @@ from optimisers.sigopt_optimiser import SigOptimiser
 
 # Problems
 from core import HyperparameterOptimizationProblem
-from benchmarks.mnist_problem import MnistProblem
-from benchmarks.cifar_problem import CifarProblem
-from benchmarks.svhn_problem import SvhnProblem
-from benchmarks.mrbi_problem import MrbiProblem
-from benchmarks.branin_problem import BraninProblem
+from benchmarks import MnistProblem, CifarProblem, SvhnProblem, MrbiProblem, BraninProblem
 
 INPUT_DIR = "D:/datasets/"
 OUTPUT_DIR = "D:/datasets/output"

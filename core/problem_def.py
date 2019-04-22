@@ -6,7 +6,7 @@ from hyperopt.pyll import Apply
 import numpy as np
 
 from datasets.dataset_loader import DatasetLoader
-from benchmarks.torch_evaluator import Evaluator
+from core.evaluator import Evaluator
 from core.params import Param
 from core.arm import Arm
 
