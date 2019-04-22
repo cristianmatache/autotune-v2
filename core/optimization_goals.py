@@ -17,7 +17,7 @@ class OptimizationGoals:
         self.test_error = test_error
         self.__dict__.update(kwargs)
 
-    def goals_to_str(self, goals_to_print: Tuple[str] = ()) -> str:
+    def goals_to_str(self, goals_to_print: Tuple[str, ...] = ()) -> str:
         """ Formats  names and values for some/all attributes and formats them into a string
         :param goals_to_print: the attributes that will be formatted to a string, () or None to print all attributes
         :return: string with names and values for some/all attributes
