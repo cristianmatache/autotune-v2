@@ -20,7 +20,7 @@ def ensure_dir(path: str) -> str:
 
 class Evaluator:
 
-    """ Deals with things that happen repeatedly for every arm (draw of hyperparameter values):
+    """ Deals with things that happen repeatedly for an arm (draw of hyperparameter values):
     - train model
     - evaluate model with respect to the test/validation set(s)
     - report performance
@@ -62,7 +62,7 @@ class Evaluator:
 
     @abstractmethod
     def _test(self, *args: Any, **kwargs: Any) -> Tuple[float, ...]:
-        """ compare the outputs of the trained model versus a benchmark dataset (i.e. validation/test sets)
+        """ Compare the outputs of the trained model versus a benchmark dataset (i.e. validation/test sets)
         :return: test/validation error
         """
         pass
@@ -77,4 +77,7 @@ class Evaluator:
         pass
 
     def __str__(self) -> str:
+        """
+        :return: human readable representation of an (arm) evaluator
+        """
         return f"Evaluator of arm:\n{self.arm}"
