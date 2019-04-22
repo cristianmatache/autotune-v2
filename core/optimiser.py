@@ -10,6 +10,11 @@ from core.arm import Arm
 
 class Optimiser:
 
+    """
+    Base class for all optimisers, results of evaluations should be stored in self.eval_history.
+    eval_history is used to find the optimum arm.
+    """
+
     def __init__(self, max_iter: int = None, max_time: int = None,
                  optimization_goal: str = "test_error", min_or_max: Callable = min):
         """ Every optimiser should have a stopping condition
@@ -49,6 +54,15 @@ class Optimiser:
         pass
 
     def _init_optimizer_metrics(self) -> None:
+        """
+        Optimizer metrics are:
+        - time when the optimization started
+        - time elapsed since we started optimization
+        - number of iterations
+        - times at which each evaluation ended
+        Note that these metrics have a canonical update method _update_optimizer_metrics but can also be updated  in a
+        different way (for example in TPE)
+        """
         self.time_zero = time.time()  # start time of optimization
         self.cum_time = 0             # cumulative time = time of last evaluation/iteration - start time
         self.num_iterations = 0       #
@@ -69,6 +83,9 @@ class Optimiser:
         return _is_time_over() or _exceeded_iterations()
 
     def __str__(self) -> str:
+        """
+        :return: human readable formatting of an optimizer
+        """
         return f"\n> Starting optimisation\n" \
                f"  Stop when:\n" \
                f"    Max iterations          = {self.max_iter}\n" \
@@ -76,6 +93,10 @@ class Optimiser:
                f"  Optimizing ({self.min_or_max.__name__}) {self.optimization_goal}"
 
     def _print_evaluation(self, goal_value: float) -> None:
+        """ Prints statistics for each evaluation, if the current evaluation is the best (optimal) so far, this will be
+        printed in green, otherwise this will be printed in red. 
+        :param goal_value: value of the optimization goal for a certain evaluation
+        """
         num_spaces = 8
         best_test_error_so_far = self.min_or_max([x[self.optimization_goal] for x in self.eval_history])
         opt_goal_str = str(self.optimization_goal).replace('_', ' ')
