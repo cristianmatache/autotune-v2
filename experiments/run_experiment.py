@@ -24,11 +24,11 @@ OUTPUT_DIR = "D:/datasets/output"
 
 N_RESOURCES = 3
 MAX_TIME = None
-MAX_ITER = 1
+MAX_ITER = 5
 ETA = 3
 
-PROBLEM = "mrbi"
-METHOD = "random"
+PROBLEM = "branin"
+METHOD = "tpe"
 OPTIMIZATION_GOAL = "validation_error"
 MIN_OR_MAX = "min"
 
@@ -70,7 +70,7 @@ def get_problem(arguments: Namespace) -> HyperparameterOptimizationProblem:
     elif problem_name == "mrbi":
         problem_instance = MrbiProblem(arguments.input_dir, arguments.output_dir)
     elif problem_name == "branin":
-        problem_instance = BraninProblem(arguments.output_dir)
+        problem_instance = BraninProblem()
     else:
         raise ValueError(f"Supplied problem {problem_name} does not exist")
     problem_instance.print_domain()

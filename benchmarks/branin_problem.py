@@ -1,6 +1,6 @@
 from __future__ import division
 import numpy as np
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Tuple, Optional
 
 from core.problem_def import HyperparameterOptimizationProblem
 from core.evaluator import Evaluator
@@ -25,6 +25,8 @@ class BraninBuilder(ModelBuilder[Any, Any]):
         super().__init__(arm)
 
     def construct_model(self) -> None:
+        """ Branin is a known function (so it has no machine learning model associated with it)
+        """
         pass
 
 
@@ -32,6 +34,11 @@ class BraninEvaluator(Evaluator):
 
     @print_evaluation(verbose=True, goals_to_print=())
     def evaluate(self, n_resources: int) -> OptimizationGoals:
+        """ Given an arm (draw of hyperparameter values),
+        :param n_resources: this parameter is not used in this function but all optimisers require this parameter
+        :return: the function value for the current arm can be found in OptimizationGoals.fval, Note that test_error and
+        validation_error attributes are mandatory for OptimizationGoals objects but Branin has no machine learning model
+        """
         a = 1
         b = 5.1 / (4 * np.pi ** 2)
         c = 5 / np.pi
@@ -60,14 +67,23 @@ class BraninProblem(HyperparameterOptimizationProblem):
 
     """
     Canonical optimisation test problem
-    @see https://www.sfu.ca/~ssurjano/branin.html
+    See https://www.sfu.ca/~ssurjano/branin.html
     """
 
-    def __init__(self, output_dir: str, hyperparams_domain: Dict[str, Param] = HYPERPARAMS_DOMAIN,
+    def __init__(self, hyperparams_domain: Dict[str, Param] = HYPERPARAMS_DOMAIN,
                  hyperparams_to_opt: Tuple[str, ...] = ()):
-        super().__init__(hyperparams_domain, hyperparams_to_opt, output_dir=output_dir)
+        """
+        :param hyperparams_domain: names of the hyperparameters of a model along with their domain, that is
+                                   ranges, distributions etc. (self.domain)
+        :param hyperparams_to_opt: names of hyperparameters to be optimized, if () all params from domain are optimized
+        """
+        super().__init__(hyperparams_domain, hyperparams_to_opt)
 
-    def get_evaluator(self, arm: Arm = None) -> BraninEvaluator:
+    def get_evaluator(self, arm: Optional[Arm] = None) -> BraninEvaluator:
+        """
+        :param arm: a draw of hyperparameters and their values
+        :return: problem evaluator for an arm (given or random if not given)
+        """
         if arm is None:  # if no arm is provided, generate a random arm
             arm = Arm()
             arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)
