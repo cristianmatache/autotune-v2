@@ -1,11 +1,23 @@
 from abc import abstractmethod
 import numpy as np
-from typing import Dict, Union, Callable
+from typing import Callable, List, NamedTuple
 import time
 from colorama import Fore, Style
 
 from core.problem_def import HyperparameterOptimizationProblem
-from core.arm import Arm
+from core.optimization_goals import OptimizationGoals
+from core.evaluator import Evaluator
+
+
+class Evaluation(NamedTuple):
+
+    """
+    The result of one evaluation:
+        i.e. evaluating an evaluator based on an arm
+    """
+
+    evaluator: Evaluator  # Note that the evaluator contains the arm it evaluated
+    optimization_goals: OptimizationGoals
 
 
 class Optimiser:
@@ -24,28 +36,26 @@ class Optimiser:
         :param min_or_max: min/max (built in functions) - whether to minimize or to maximize the optimization_goal
         """
         # stop conditions
-        self.max_time = np.inf if max_time is None else max_time
-        self.max_iter = np.inf if max_iter is None else max_iter
         if (max_iter is None) and (max_time is None):
             raise ValueError("max_iter and max_time cannot be None simultaneously")
-        self.eval_history = []
+        self.max_time = np.inf if max_time is None else max_time
+        self.max_iter = np.inf if max_iter is None else max_iter
+
         self.optimization_goal = optimization_goal
         if min_or_max not in [min, max]:
             raise ValueError("optimization must be a built in function: min or max")
         self.min_or_max = min_or_max
 
-    def _update_evaluation_history(self, arm: Arm, validation_error: float, test_error: float, **kwargs: float) -> None:
-        latest_evaluation = {
-            'arm': arm,                            # combinations of hyperparameters (arms) tried so far
-            'validation_error': validation_error,  # validation errors so far
-            'test_error': test_error               # test errors so far
-        }
-        latest_evaluation.update(kwargs)
-        self.eval_history.append(latest_evaluation)
+        self.eval_history: List[Evaluation] = []
+
+    def _update_evaluation_history(self, evaluator: Evaluator, opt_goals: OptimizationGoals) -> None:
+        self.eval_history.append(Evaluation(evaluator, opt_goals))
+
+    def _get_best_evaluation(self) -> Evaluation:
+        return self.min_or_max(self.eval_history, key=lambda e: getattr(e.optimization_goals, self.optimization_goal))
 
     @abstractmethod
-    def run_optimization(self, problem: HyperparameterOptimizationProblem, verbosity: bool) \
-            -> Dict[str, Union[Arm, float]]:
+    def run_optimization(self, problem: HyperparameterOptimizationProblem, verbosity: bool) -> Evaluation:
         """
         :param problem: optimization problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
         :param verbosity: whether to print the results of every single evaluation/iteration
@@ -92,18 +102,20 @@ class Optimiser:
                f"    Max time                = {self.max_time} seconds\n" \
                f"  Optimizing ({self.min_or_max.__name__}) {self.optimization_goal}"
 
-    def _print_evaluation(self, goal_value: float) -> None:
+    def _print_evaluation(self, opt_goal_value: float) -> None:
         """ Prints statistics for each evaluation, if the current evaluation is the best (optimal) so far, this will be
         printed in green, otherwise this will be printed in red.
-        :param goal_value: value of the optimization goal for a certain evaluation
+        :param opt_goal_value: value of the optimization goal for a certain evaluation
         """
         num_spaces = 8
-        best_test_error_so_far = self.min_or_max([x[self.optimization_goal] for x in self.eval_history])
+        best_so_far = self.min_or_max(
+            [getattr(evaluation.optimization_goals, self.optimization_goal) for evaluation in self.eval_history]
+        )
         opt_goal_str = str(self.optimization_goal).replace('_', ' ')
 
-        print(f"{Fore.GREEN if goal_value == best_test_error_so_far else Fore.RED}"
+        print(f"{Fore.GREEN if opt_goal_value == best_so_far else Fore.RED}"
               f"\n> SUMMARY: iteration number: {self.num_iterations},{num_spaces * ' '}"
               f"time elapsed: {self.cum_time:.2f}s,{num_spaces * ' '}"
-              f"current {opt_goal_str}: {goal_value:.5f},{num_spaces * ' '}"
-              f" best {opt_goal_str} so far: {best_test_error_so_far:.5f}"
+              f"current {opt_goal_str}: {opt_goal_value:.5f},{num_spaces * ' '}"
+              f" best {opt_goal_str} so far: {best_so_far:.5f}"
               f"{Style.RESET_ALL}")

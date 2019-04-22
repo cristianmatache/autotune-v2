@@ -1,9 +1,9 @@
 import numpy as np
 from sigopt import Connection
 from sigopt.objects import Assignments
-from typing import Callable, Dict, Union, Tuple
+from typing import Callable, Tuple
 
-from core.optimiser import Optimiser
+from core.optimiser import Optimiser, Evaluation
 from core.problem_def import HyperparameterOptimizationProblem
 from core.arm import Arm
 from core.optimization_goals import OptimizationGoals
@@ -22,8 +22,7 @@ class SigOptimiser(Optimiser):
         self.sign = -1 if min_or_max == max else 1
         self.n_resources = n_resources
 
-    def run_optimization(self, problem: HyperparameterOptimizationProblem, verbosity: bool) \
-            -> Dict[str, Union[Arm, float]]:
+    def run_optimization(self, problem: HyperparameterOptimizationProblem, verbosity: bool) -> Evaluation:
         self._init_optimizer_metrics()
 
         # Wrap parameter space
@@ -47,7 +46,7 @@ class SigOptimiser(Optimiser):
             evaluator, opt_goals = self.sigopt_objective_function(problem, arm_dict)
 
             # Update history
-            self._update_evaluation_history(evaluator.arm, **opt_goals.__dict__)
+            self._update_evaluation_history(evaluator, opt_goals)
 
             # Add observation to SigOpt history
             conn.experiments(experiment.id).observations().create(
@@ -61,7 +60,7 @@ class SigOptimiser(Optimiser):
             if verbosity:
                 self._print_evaluation(getattr(opt_goals, self.optimization_goal))
 
-        return self.min_or_max(self.eval_history, key=lambda x: x[self.optimization_goal])
+        return self._get_best_evaluation()
 
     def sigopt_objective_function(self, problem: HyperparameterOptimizationProblem, arm_dict: Assignments) \
             -> Tuple[Evaluator, OptimizationGoals]:

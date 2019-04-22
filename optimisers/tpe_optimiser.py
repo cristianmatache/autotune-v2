@@ -3,7 +3,7 @@ from functools import partial
 from hyperopt import fmin, tpe, Trials, STATUS_OK
 from typing import Callable, Dict, Union
 
-from core.optimiser import Optimiser
+from core.optimiser import Optimiser, Evaluation
 from core.arm import Arm
 from core.problem_def import HyperparameterOptimizationProblem
 from core.evaluator import Evaluator
@@ -27,8 +27,7 @@ class TpeOptimiser(Optimiser):
         self.sign = -1 if min_or_max == max else 1
         self.n_resources = n_resources
 
-    def run_optimization(self, problem: HyperparameterOptimizationProblem, verbosity: bool = False) \
-            -> Dict[str, Union[Arm, float]]:
+    def run_optimization(self, problem: HyperparameterOptimizationProblem, verbosity: bool = False) -> Evaluation:
         self._init_optimizer_metrics()
 
         # Wrap parameter space
@@ -41,11 +40,10 @@ class TpeOptimiser(Optimiser):
 
         # Compute statistics
         for t in trials.trials:
-            used_arm = Arm(**{hp_name: hp_vals[0] for hp_name, hp_vals in t['misc']['vals'].items()})
-            self._update_evaluation_history(used_arm, **t['result'])
+            self._update_evaluation_history(t["result"]["evaluator"], t["result"]["optimization_goals"])
             self.checkpoints.append(t['result']['eval_time'] - self.time_zero)
 
-        return self.min_or_max(self.eval_history, key=lambda x: x[self.optimization_goal])
+        return self._get_best_evaluation()
 
     def tpe_objective_function(self, arm_dict: Dict[str, float], problem: HyperparameterOptimizationProblem)\
             -> Dict[str, Union[float, Evaluator, OptimizationGoals]]:
@@ -65,9 +63,7 @@ class TpeOptimiser(Optimiser):
             # TPE will minimize with respect to the value of 'loss'
             'loss': self.sign * getattr(opt_goals, self.optimization_goal),
             'status': STATUS_OK,             # mandatory for Hyperopt
-            **opt_goals.__dict__,            # extending with dict (optimization goal name -> optimization goal value)
             'eval_time': time.time(),        # timestamp when evaluation is finished
-            # The below are needed when using some early stopping methods (eg. Hyperband)
-            'evaluator': evaluator,          # evaluator is needed to continue evaluation from where we paused
-            'optimization_goals': opt_goals  # optimization goals are needed to filter "bad" evaluators
+            'evaluator': evaluator,
+            'optimization_goals': opt_goals
         }

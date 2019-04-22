@@ -24,12 +24,12 @@ OUTPUT_DIR = "D:/datasets/output"
 
 N_RESOURCES = 3
 MAX_TIME = None
-MAX_ITER = 5
+MAX_ITER = 27
 ETA = 3
 
 PROBLEM = "branin"
-METHOD = "tpe"
-OPTIMIZATION_GOAL = "validation_error"
+METHOD = "hybrid"
+OPTIMIZATION_GOAL = "fval"  # "validation_error"
 MIN_OR_MAX = "min"
 
 
@@ -70,7 +70,7 @@ def get_problem(arguments: Namespace) -> HyperparameterOptimizationProblem:
     elif problem_name == "mrbi":
         problem_instance = MrbiProblem(arguments.input_dir, arguments.output_dir)
     elif problem_name == "branin":
-        problem_instance = BraninProblem()
+        problem_instance = BraninProblem(arguments.output_dir)
     else:
         raise ValueError(f"Supplied problem {problem_name} does not exist")
     problem_instance.print_domain()
@@ -103,10 +103,12 @@ if __name__ == "__main__":
     optimiser = get_optimiser()
 
     print(optimiser)
-    optimum = optimiser.run_optimization(problem, verbosity=True)
-    print(f"Best hyperparams:\n{optimum['arm']}\nwith:\n  - {OPTIMIZATION_GOAL}: {optimum[OPTIMIZATION_GOAL]}\n"
+    optimum_evaluation = optimiser.run_optimization(problem, verbosity=True)
+    print(f"Best hyperparams:\n{optimum_evaluation.evaluator.arm}\n"
+          f"with:\n"
+          f"  - {OPTIMIZATION_GOAL}: {getattr(optimum_evaluation.optimization_goals, OPTIMIZATION_GOAL)}\n"
           f"Total time:\n  - {optimiser.checkpoints[-1]} seconds")
 
     output_file_path = join_path(args.output_dir, "results.pkl")
     with open(output_file_path, 'wb') as f:
-        pickle.dump([optimum], f)
+        pickle.dump([optimum_evaluation], f)
