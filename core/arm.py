@@ -13,11 +13,16 @@ class Arm:
     from this class and to set the hyperparameters as None attributes (Eg. CNNArm, LogisticRegressionArm)
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: float):
+        """ If a custom arm is needed, the hyperparameter values can be set from a dictionary. For example, for all
+        informed optimization methods creating Arm this way is required. If one needs random values for each hyperparam,
+        please use draw_hp_val.
+        :param kwargs: {"hyperparameter_name": hyperparameter value}
+        """
         self.__dict__.update(kwargs)
 
     def set_default_values(self, *, domain: Dict[str, Param], hyperparams_to_opt: Tuple[str, ...]) -> None:
-        """ sets the hyperparameters that appear in the domain but we don't want to optimize to their default values
+        """ Sets the hyperparameters that appear in the domain but we don't want to optimize to their default values
         if they are not already set
         :param domain: domain of hyperparameters with names, ranges, distributions etc
                        Eg. {'momentum': Param(...), 'learning_rate': Param(...)}
@@ -32,7 +37,7 @@ class Arm:
                 setattr(self, hp_name, hp_val)
 
     def draw_hp_val(self, *, domain: Dict[str, Param], hyperparams_to_opt: Tuple[str, ...]) -> None:
-        """ draws random values for the hyperparameters that we want to optimize
+        """ Draws random values for the hyperparameters that we want to optimize
         :param domain: domain of hyperparameters with names, ranges, distributions etc
                        Eg. {'momentum': Param(...), 'learning_rate': Param(...)}
         :param hyperparams_to_opt: hyperparameters to optimize
