@@ -8,16 +8,16 @@ from core import Optimiser, Evaluation, Arm, HyperparameterOptimizationProblem, 
 
 class TpeOptimiser(Optimiser):
 
-    def __init__(self, n_resources: int, max_iter: int = None, max_time: int = None,
-                 optimization_goal: str = "test_error", min_or_max: Callable = min):
+    def __init__(self, n_resources: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
+                 optimization_func: Callable[[OptimizationGoals], float] = Optimiser.default_optimization_func):
         """ TPE Bayesian optimization
         :param n_resources: number of resources per evaluation (of each arm)
         :param max_iter: max iteration (considered infinity if None)
         :param max_time: max time a user is willing to wait for (considered infinity if None)
-        :param optimization_goal: what part of the OptimizationGoals the Optimiser will minimize/maximize eg. test_error
+        :param optimization_func: what part of the OptimizationGoals the Optimiser will minimize/maximize eg. test_error
         :param min_or_max: min/max (built in functions) - whether to minimize or to maximize the optimization_goal
         """
-        super().__init__(max_iter, max_time, optimization_goal, min_or_max)
+        super().__init__(max_iter, max_time, min_or_max, optimization_func)
 
         # TPE Hyperopt supports minimization only, so if the problem is maximization, minimize -1 * optimization goal
         self.sign = -1 if min_or_max == max else 1
@@ -57,7 +57,7 @@ class TpeOptimiser(Optimiser):
         opt_goals = evaluator.evaluate(self.n_resources)
         return {
             # TPE will minimize with respect to the value of 'loss'
-            'loss': self.sign * getattr(opt_goals, self.optimization_goal),
+            'loss': self.sign * self.optimization_func(opt_goals),
             'status': STATUS_OK,             # mandatory for Hyperopt
             'eval_time': time.time(),        # timestamp when evaluation is finished
             'evaluator': evaluator,

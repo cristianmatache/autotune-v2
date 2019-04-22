@@ -7,4 +7,3 @@ from core.evaluator import Evaluator
 from core.optimization_goals import OptimizationGoals
 from core.evaluation import Evaluation
 from core.optimiser import Optimiser
-

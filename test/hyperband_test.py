@@ -3,7 +3,7 @@ import numpy as np
 from typing import Tuple, Any
 
 
-from core import Param, Arm, HyperparameterOptimizationProblem, OptimizationGoals, Evaluator, Domain
+from core import Param, Arm, HyperparameterOptimizationProblem, OptimizationGoals, Evaluator, Domain, Optimiser
 from benchmarks.torch_model_builders import LogisticRegressionBuilder
 from util.io import print_evaluation
 
@@ -57,6 +57,7 @@ class HyperbandTestProblem(HyperparameterOptimizationProblem):
 if __name__ == "__main__":
     with tempfile.TemporaryDirectory() as tmp_dir_name:
         problem = HyperbandTestProblem(output_dir=tmp_dir_name)
-        optimizer = HyperbandOptimiser(eta=ETA, max_iter=MAX_ITER, optimization_goal="validation_error", min_or_max=min)
+        optimizer = HyperbandOptimiser(eta=ETA, max_iter=MAX_ITER, min_or_max=min,
+                                       optimization_func=Optimiser.default_optimization_func)
         res = optimizer.run_optimization(problem, verbosity=True)
         print("TEST " + "PASSED" if optimizer.eval_history[0].evaluator.arm == res.evaluator.arm else "FAILED")

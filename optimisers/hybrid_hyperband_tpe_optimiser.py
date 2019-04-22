@@ -2,7 +2,7 @@ from math import log, ceil
 from typing import Callable
 from colorama import Style, Fore
 
-from core import HyperparameterOptimizationProblem, Evaluation
+from core import HyperparameterOptimizationProblem, Evaluation, OptimizationGoals, Optimiser
 
 from optimisers.hyperband_optimiser import HyperbandOptimiser
 from optimisers.tpe_optimiser import TpeOptimiser
@@ -13,9 +13,9 @@ END = Style.RESET_ALL
 
 class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
 
-    def __init__(self, eta: int, max_iter: int = None, max_time: int = None,
-                 optimization_goal: str = "test_error", min_or_max: Callable = min):
-        super().__init__(eta, max_iter, max_time, optimization_goal, min_or_max)
+    def __init__(self, eta: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
+                 optimization_func: Callable[[OptimizationGoals], float] = Optimiser.default_optimization_func):
+        super().__init__(eta, max_iter, max_time, min_or_max, optimization_func)
         if min_or_max == max:
             raise ValueError("Hybrid Hyperband-TPE supports minimization only, if you need maximization please "
                              "use minimization on the negative optimization goal")
@@ -36,7 +36,7 @@ class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
             n = int(ceil(int(B/R/(s+1))*eta**s))  # initial number of evaluators/configurations/arms
             r = R*eta**(-s)                       # initial resources allocated to each evaluator/arm
 
-            # Successive halving with rate eta - based on values of self.optimization_goal of each evaluation
+            # Successive halving with rate eta - based on values of self.optimization_func(opt goals of each evaluation)
             evaluators = []
             for i in range(s+1):
                 n_i = n*eta**(-i)  # evaluate n_i evaluators/configurations/arms
@@ -44,7 +44,7 @@ class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
 
                 if i == 0:  # Generate first n_i arms/evaluators with TPE
                     tpe_optimizer = TpeOptimiser(n_resources=r_i, max_iter=n_i,
-                                                 optimization_goal=self.optimization_goal)
+                                                 optimization_func=self.optimization_func)
                     tpe_optimizer.run_optimization(problem, verbosity=True)
 
                     # evaluators = [h.evaluator for h in tpe_optimizer.eval_history]
@@ -66,6 +66,6 @@ class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
 
                 self._update_optimizer_metrics()
                 if verbosity:
-                    self._print_evaluation(getattr(best_evaluation_in_round.optimization_goals, self.optimization_goal))
+                    self._print_evaluation(self.optimization_func(best_evaluation_in_round.optimization_goals))
 
         return self._get_best_evaluation()

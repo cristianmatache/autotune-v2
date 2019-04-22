@@ -17,12 +17,17 @@ class Optimiser:
     eval_history is used to find the optimum arm.
     """
 
-    def __init__(self, max_iter: int = None, max_time: int = None,
-                 optimization_goal: str = "test_error", min_or_max: Callable = min):
+    @staticmethod
+    def default_optimization_func(opt_goals: OptimizationGoals) -> float:
+        """validation_error (Default optimization_func)"""
+        return opt_goals.validation_error
+
+    def __init__(self, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
+                 optimization_func: Callable[[OptimizationGoals], float] = default_optimization_func):
         """ Every optimiser should have a stopping condition
         :param max_iter: max iteration (considered infinity if None)
         :param max_time: max time a user is willing to wait for (considered infinity if None)
-        :param optimization_goal: what part of the OptimizationGoals the Optimiser will minimize/maximize eg. test_error
+        :param optimization_func: what part of the OptimizationGoals the Optimiser will minimize/maximize eg. test_error
         :param min_or_max: min/max (built in functions) - whether to minimize or to maximize the optimization_goal
         """
         # stop conditions
@@ -31,9 +36,9 @@ class Optimiser:
         self.max_time = np.inf if max_time is None else max_time
         self.max_iter = np.inf if max_iter is None else max_iter
 
-        self.optimization_goal = optimization_goal
+        self.optimization_func = optimization_func
         if min_or_max not in [min, max]:
-            raise ValueError("optimization must be a built in function: min or max")
+            raise ValueError(f"optimization must be a built in function: min or max, instead {min_or_max} was supplied")
         self.min_or_max = min_or_max
 
         self.eval_history: List[Evaluation] = []
@@ -42,7 +47,7 @@ class Optimiser:
         self.eval_history.append(Evaluation(evaluator, opt_goals))
 
     def _get_best_evaluation(self) -> Evaluation:
-        return self.min_or_max(self.eval_history, key=lambda e: getattr(e.optimization_goals, self.optimization_goal))
+        return self.min_or_max(self.eval_history, key=lambda e: self.optimization_func(e.optimization_goals))
 
     @abstractmethod
     def run_optimization(self, problem: HyperparameterOptimizationProblem, verbosity: bool) -> Evaluation:
@@ -90,7 +95,8 @@ class Optimiser:
                f"  Stop when:\n" \
                f"    Max iterations          = {self.max_iter}\n" \
                f"    Max time                = {self.max_time} seconds\n" \
-               f"  Optimizing ({self.min_or_max.__name__}) {self.optimization_goal}"
+               f"  Optimizing ({self.min_or_max.__name__}) {self.optimization_func.__name__}" \
+               f" {self.optimization_func.__doc__}"
 
     def _print_evaluation(self, opt_goal_value: float) -> None:
         """ Prints statistics for each evaluation, if the current evaluation is the best (optimal) so far, this will be
@@ -99,13 +105,12 @@ class Optimiser:
         """
         num_spaces = 8
         best_so_far = self.min_or_max(
-            [getattr(evaluation.optimization_goals, self.optimization_goal) for evaluation in self.eval_history]
+            [self.optimization_func(evaluation.optimization_goals) for evaluation in self.eval_history]
         )
-        opt_goal_str = str(self.optimization_goal).replace('_', ' ')
 
         print(f"{Fore.GREEN if opt_goal_value == best_so_far else Fore.RED}"
               f"\n> SUMMARY: iteration number: {self.num_iterations},{num_spaces * ' '}"
               f"time elapsed: {self.cum_time:.2f}s,{num_spaces * ' '}"
-              f"current {opt_goal_str}: {opt_goal_value:.5f},{num_spaces * ' '}"
-              f" best {opt_goal_str} so far: {best_so_far:.5f}"
+              f"current {self.optimization_func.__doc__}: {opt_goal_value:.5f},{num_spaces * ' '}"
+              f" best {self.optimization_func.__doc__} so far: {best_so_far:.5f}"
               f"{Style.RESET_ALL}")

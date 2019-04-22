@@ -2,7 +2,7 @@ from math import log, ceil
 from typing import Callable, List
 from colorama import Style, Fore
 
-from core.optimiser import Optimiser, Evaluation, Evaluator, HyperparameterOptimizationProblem
+from core.optimiser import Optimiser, Evaluation, Evaluator, HyperparameterOptimizationProblem, OptimizationGoals
 
 COL = Fore.MAGENTA
 
@@ -14,9 +14,9 @@ class HyperbandOptimiser(Optimiser):
     1 Resources = 1 epoch
     """
 
-    def __init__(self, eta: int, max_iter: int = None, max_time: int = None,
-                 optimization_goal: str = "test_error", min_or_max: Callable = min):
-        super().__init__(max_iter, max_time, optimization_goal, min_or_max)
+    def __init__(self, eta: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
+                 optimization_func: Callable[[OptimizationGoals], float] = Optimiser.default_optimization_func):
+        super().__init__(max_iter, max_time, min_or_max, optimization_func)
         if max_iter is None:
             raise ValueError("For Hyperband max_iter cannot be None")
         self.eta = eta
@@ -28,7 +28,7 @@ class HyperbandOptimiser(Optimiser):
         :param evaluation: an ordered pair (evaluator, result of evaluator's evaluate() method)
         :return: the value of the optimization goal (Eg. evaluator.evaluate().val_error if we minimize validation error)
         """
-        return getattr(evaluation.optimization_goals, self.optimization_goal)
+        return self.optimization_func(evaluation.optimization_goals)
 
     def _get_best_n_evaluators(self, n: int, evaluations: List[Evaluation]) -> List[Evaluator]:
         """ Supposing we want to optimize (min) in terms of validation error (i.e. self.optimization_goal = "val_error")
@@ -63,7 +63,7 @@ class HyperbandOptimiser(Optimiser):
             evaluators = [problem.get_evaluator() for _ in range(n)]
             print(f"{COL}\n{'=' * 73}\n>> Generated {n} evaluators each with a random arm {Style.RESET_ALL}")
 
-            # Successive halving with rate eta - based on values of self.optimization_goal of each evaluation
+            # Successive halving with rate eta - based on values of self.optimization_func(opt goals of each evaluation)
             for i in range(s+1):
                 n_i = n*eta**(-i)  # evaluate n_i evaluators/configurations/arms
                 r_i = r*eta**i     # each with r_i resources
@@ -78,7 +78,7 @@ class HyperbandOptimiser(Optimiser):
 
                 self._update_optimizer_metrics()
                 if verbosity:
-                    self._print_evaluation(getattr(best_evaluation_in_round.optimization_goals, self.optimization_goal))
+                    self._print_evaluation(self.optimization_func(best_evaluation_in_round.optimization_goals))
 
         return self._get_best_evaluation()
 
@@ -86,4 +86,4 @@ class HyperbandOptimiser(Optimiser):
         return f"\n> Starting Hyperband optimisation\n" \
                f"    Max iterations (R)      = {self.max_iter}\n" \
                f"    Halving rate (eta)      = {self.eta}\n" \
-               f"  Optimizing ({self.min_or_max.__name__}) {self.optimization_goal}"
+               f"  Optimizing ({self.min_or_max.__name__}) {self.optimization_func.__doc__}"

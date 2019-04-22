@@ -10,9 +10,9 @@ SIGOPT_API_KEY = "RAGFJSAISOJGFQOXCAVIVQRNNGOQNYGDEYISHTETQZCNWJNA"
 
 class SigOptimiser(Optimiser):
 
-    def __init__(self, n_resources: int, max_iter: int = None, max_time: int = None,
-                 optimization_goal: str = "validation_error", min_or_max: Callable = min):
-        super().__init__(max_iter, max_time, optimization_goal, min_or_max)
+    def __init__(self, n_resources: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
+                 optimization_func: Callable[[OptimizationGoals], float] = Optimiser.default_optimization_func):
+        super().__init__(max_iter, max_time, min_or_max, optimization_func)
 
         # SigOpt supports maximization only, so if the problem is minimization, maximize -1 * optimization goal
         self.sign = -1 if min_or_max == max else 1
@@ -47,14 +47,14 @@ class SigOptimiser(Optimiser):
             # Add observation to SigOpt history
             conn.experiments(experiment.id).observations().create(
                 suggestion=suggestion.id,
-                value=self.sign * getattr(opt_goals, self.optimization_goal)  # sign is needed because SigOpt maximizes
+                value=self.sign * self.optimization_func(opt_goals)  # sign is needed because SigOpt maximizes
             )
 
             # Update current evaluation time and function evaluations
             self._update_optimizer_metrics()
 
             if verbosity:
-                self._print_evaluation(getattr(opt_goals, self.optimization_goal))
+                self._print_evaluation(self.optimization_func(opt_goals))
 
         return self._get_best_evaluation()
 
