@@ -5,11 +5,7 @@ from os.path import join as join_path
 
 # Optimisers
 from core import Optimiser
-from optimisers.random_optimizer import RandomOptimiser
-from optimisers.hyperband_optimiser import HyperbandOptimiser
-from optimisers.tpe_optimiser import TpeOptimiser
-from optimisers.hybrid_hyperband_tpe_optimiser import HybridHyperbandTpeOptimiser
-from optimisers.sigopt_optimiser import SigOptimiser
+from optimisers import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, TpeOptimiser
 
 # Problems
 from core import HyperparameterOptimizationProblem
