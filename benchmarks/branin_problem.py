@@ -70,14 +70,15 @@ class BraninProblem(HyperparameterOptimizationProblem):
     See https://www.sfu.ca/~ssurjano/branin.html
     """
 
-    def __init__(self, hyperparams_domain: Dict[str, Param] = HYPERPARAMS_DOMAIN,
+    def __init__(self, output_dir: str, hyperparams_domain: Dict[str, Param] = HYPERPARAMS_DOMAIN,
                  hyperparams_to_opt: Tuple[str, ...] = ()):
         """
+        :param output_dir: directory where to save the arms and their evaluation progress so far (as checkpoints)
         :param hyperparams_domain: names of the hyperparameters of a model along with their domain, that is
                                    ranges, distributions etc. (self.domain)
         :param hyperparams_to_opt: names of hyperparameters to be optimized, if () all params from domain are optimized
         """
-        super().__init__(hyperparams_domain, hyperparams_to_opt)
+        super().__init__(hyperparams_domain, hyperparams_to_opt, output_dir=output_dir)
 
     def get_evaluator(self, arm: Optional[Arm] = None) -> BraninEvaluator:
         """
@@ -88,4 +89,4 @@ class BraninProblem(HyperparameterOptimizationProblem):
             arm = Arm()
             arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)
         model_builder = BraninBuilder(arm)
-        return BraninEvaluator(model_builder)
+        return BraninEvaluator(model_builder, self.output_dir)
