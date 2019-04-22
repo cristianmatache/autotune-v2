@@ -13,6 +13,8 @@ from core.arm import Arm
 
 class HyperparameterOptimizationProblem:
 
+    __slots__ = ("domain", "hyperparams_to_opt", "dataset_loader", "output_dir")
+
     def __init__(self, hyperparams_domain: Dict[str, Param], hyperparams_to_opt: Tuple[str, ...] = (),
                  dataset_loader: Optional[DatasetLoader] = None, output_dir: Optional[str] = None):
         """

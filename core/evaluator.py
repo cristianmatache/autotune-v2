@@ -27,6 +27,8 @@ class Evaluator:
     by saving and restoring checkpoints
     """
 
+    __slots__ = ("model_builder", "output_dir", "file_name", "directory", "file_path", "arm", "n_resources")
+
     def __init__(self, model_builder: ModelBuilder, output_dir: str = ".", file_name: str = "model.pth"):
         """
         :param model_builder: builder of a machine learning model based on an arm

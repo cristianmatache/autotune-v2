@@ -1,9 +1,10 @@
 from typing import Dict, Tuple
+from types import SimpleNamespace
 
 from core.params import Param
 
 
-class Arm:
+class Arm(SimpleNamespace):
 
     """ Records hyperparameters and random/default values for each
     Example:
@@ -19,7 +20,7 @@ class Arm:
         please use draw_hp_val.
         :param kwargs: {"hyperparameter_name": hyperparameter value}
         """
-        self.__dict__.update(kwargs)
+        super().__init__(**kwargs)
 
     def set_default_values(self, *, domain: Dict[str, Param], hyperparams_to_opt: Tuple[str, ...]) -> None:
         """ Sets the hyperparameters that appear in the domain but we don't want to optimize to their default values

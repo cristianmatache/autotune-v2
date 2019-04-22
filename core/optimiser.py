@@ -94,7 +94,7 @@ class Optimiser:
 
     def _print_evaluation(self, goal_value: float) -> None:
         """ Prints statistics for each evaluation, if the current evaluation is the best (optimal) so far, this will be
-        printed in green, otherwise this will be printed in red. 
+        printed in green, otherwise this will be printed in red.
         :param goal_value: value of the optimization goal for a certain evaluation
         """
         num_spaces = 8
