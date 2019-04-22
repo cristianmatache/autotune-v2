@@ -2,8 +2,7 @@ from math import log, ceil
 from typing import Callable
 from colorama import Style, Fore
 
-from core.problem_def import HyperparameterOptimizationProblem
-from core.optimiser import Evaluation
+from core import HyperparameterOptimizationProblem, Evaluation
 
 from optimisers.hyperband_optimiser import HyperbandOptimiser
 from optimisers.tpe_optimiser import TpeOptimiser

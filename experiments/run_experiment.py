@@ -4,7 +4,7 @@ from argparse import Namespace
 from os.path import join as join_path
 
 # Optimisers
-from core.optimiser import Optimiser
+from core import Optimiser
 from optimisers.random_optimizer import RandomOptimiser
 from optimisers.hyperband_optimiser import HyperbandOptimiser
 from optimisers.tpe_optimiser import TpeOptimiser
@@ -12,7 +12,7 @@ from optimisers.hybrid_hyperband_tpe_optimiser import HybridHyperbandTpeOptimise
 from optimisers.sigopt_optimiser import SigOptimiser
 
 # Problems
-from core.problem_def import HyperparameterOptimizationProblem
+from core import HyperparameterOptimizationProblem
 from benchmarks.mnist_problem import MnistProblem
 from benchmarks.cifar_problem import CifarProblem
 from benchmarks.svhn_problem import SvhnProblem

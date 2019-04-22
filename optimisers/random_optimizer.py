@@ -1,7 +1,6 @@
 from typing import Callable
 
-from core.problem_def import HyperparameterOptimizationProblem
-from core.optimiser import Optimiser, Evaluation
+from core import HyperparameterOptimizationProblem, Optimiser, Evaluation
 
 
 class RandomOptimiser(Optimiser):

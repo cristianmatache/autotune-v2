@@ -2,9 +2,7 @@ from math import log, ceil
 from typing import Callable, List
 from colorama import Style, Fore
 
-from core.optimiser import Optimiser, Evaluation
-from core.evaluator import Evaluator
-from core.problem_def import HyperparameterOptimizationProblem
+from core.optimiser import Optimiser, Evaluation, Evaluator, HyperparameterOptimizationProblem
 
 COL = Fore.MAGENTA
 

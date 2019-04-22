@@ -3,7 +3,7 @@ import argparse
 from os.path import join as join_path
 
 from experiments.run_experiment import get_problem
-from core.arm import Arm
+from core import Arm
 
 INPUT_DIR = "D:/datasets/"
 OUTPUT_DIR = "D:/datasets/output"

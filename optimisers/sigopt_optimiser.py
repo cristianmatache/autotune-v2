@@ -3,11 +3,7 @@ from sigopt import Connection
 from sigopt.objects import Assignments
 from typing import Callable, Tuple
 
-from core.optimiser import Optimiser, Evaluation
-from core.problem_def import HyperparameterOptimizationProblem
-from core.arm import Arm
-from core.optimization_goals import OptimizationGoals
-from core.evaluator import Evaluator
+from core import Optimiser, Evaluation, HyperparameterOptimizationProblem, Arm, OptimizationGoals, Evaluator
 
 SIGOPT_API_KEY = "RAGFJSAISOJGFQOXCAVIVQRNNGOQNYGDEYISHTETQZCNWJNA"
 

@@ -3,11 +3,7 @@ from functools import partial
 from hyperopt import fmin, tpe, Trials, STATUS_OK
 from typing import Callable, Dict, Union
 
-from core.optimiser import Optimiser, Evaluation
-from core.arm import Arm
-from core.problem_def import HyperparameterOptimizationProblem
-from core.evaluator import Evaluator
-from core.optimization_goals import OptimizationGoals
+from core import Optimiser, Evaluation, Arm, HyperparameterOptimizationProblem, Evaluator, OptimizationGoals
 
 
 class TpeOptimiser(Optimiser):

@@ -1,23 +1,13 @@
 from abc import abstractmethod
 import numpy as np
-from typing import Callable, List, NamedTuple
+from typing import Callable, List
 import time
 from colorama import Fore, Style
 
 from core.problem_def import HyperparameterOptimizationProblem
 from core.optimization_goals import OptimizationGoals
 from core.evaluator import Evaluator
-
-
-class Evaluation(NamedTuple):
-
-    """
-    The result of one evaluation:
-        i.e. evaluating an evaluator based on an arm
-    """
-
-    evaluator: Evaluator  # Note that the evaluator contains the arm it evaluated
-    optimization_goals: OptimizationGoals
+from core.evaluation import Evaluation
 
 
 class Optimiser:

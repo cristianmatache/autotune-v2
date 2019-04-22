@@ -1,10 +1,9 @@
 import numpy as np
 from typing import Tuple, Dict
 
-from core.params import Param
-from core.arm import Arm
-from core.problem_def import HyperparameterOptimizationProblem
-from core.optimization_goals import OptimizationGoals
+from core import HyperparameterOptimizationProblem, Arm, OptimizationGoals
+from core.params import *
+
 from datasets.image_dataset_loaders import MNISTLoader
 from benchmarks.torch_evaluator import TorchEvaluator
 from benchmarks.torch_model_builders import LogisticRegressionBuilder

@@ -4,8 +4,8 @@ from torch.optim import Optimizer, SGD
 from typing import Tuple, Type, Callable
 from abc import abstractmethod
 
-from core.arm import Arm
-from core.model_builder import ModelBuilder
+from core import Arm, ModelBuilder
+
 from benchmarks.ml_models.cudaconvnet2 import CudaConvNet2
 from benchmarks.ml_models.logistic_regression import LogisticRegression
 

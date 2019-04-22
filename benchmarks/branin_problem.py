@@ -2,12 +2,8 @@ from __future__ import division
 import numpy as np
 from typing import Any, Dict, Tuple, Optional
 
-from core.problem_def import HyperparameterOptimizationProblem
-from core.evaluator import Evaluator
-from core.arm import Arm
+from core import HyperparameterOptimizationProblem, Evaluator, Arm, OptimizationGoals, ModelBuilder
 from core.params import *
-from core.optimization_goals import OptimizationGoals
-from core.model_builder import ModelBuilder
 from util.io import print_evaluation
 
 HYPERPARAMS_DOMAIN = {
