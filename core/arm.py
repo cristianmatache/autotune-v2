@@ -26,7 +26,7 @@ class Arm(SimpleNamespace):
         """ Sets the hyperparameters that appear in the domain but we don't want to optimize to their default values
         if they are not already set
         :param domain: domain of hyperparameters with names, ranges, distributions etc
-                       Eg. {'momentum': Param(...), 'learning_rate': Param(...)}
+                       Eg. Domain(momentum=Param(...), learning_rate=Param(...))
         :param hyperparams_to_opt: hyperparameters to optimize
         """
         for hp_name in domain.hyperparams_names():
@@ -40,7 +40,7 @@ class Arm(SimpleNamespace):
     def draw_hp_val(self, *, domain: Domain, hyperparams_to_opt: Tuple[str, ...]) -> None:
         """ Draws random values for the hyperparameters that we want to optimize
         :param domain: domain of hyperparameters with names, ranges, distributions etc
-                       Eg. {'momentum': Param(...), 'learning_rate': Param(...)}
+                       Eg. Domain(momentum=Param(...), learning_rate=Param(...))
         :param hyperparams_to_opt: hyperparameters to optimize
         """
         self.set_default_values(domain=domain, hyperparams_to_opt=hyperparams_to_opt)

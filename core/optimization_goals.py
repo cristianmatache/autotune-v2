@@ -8,7 +8,9 @@ from util.frozen_class import frozen_class
 class OptimizationGoals(SimpleNamespace):
 
     """
-    Metrics in terms of which we can perform optimization, that is, the optimisers will minimize one of its attributes
+    Metrics in terms of which we can perform optimization (individually or by aggregation). That is, the optimizers will
+    minimize/maximize one of their attributes or even aggregations (Eg. weighted sum) of attributes, as indicated by
+    an optimization function (optimization_func).
     """
 
     def __init__(self, validation_error: float, test_error: float, **kwargs: float):

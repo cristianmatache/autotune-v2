@@ -13,8 +13,8 @@ from core.evaluation import Evaluation
 class Optimiser:
 
     """
-    Base class for all optimisers, results of evaluations should be stored in self.eval_history.
-    eval_history is used to find the optimum arm.
+    Base class for all optimisers, results of evaluations should be stored in self.eval_history which is used to
+    find the optimum arm in terms of min/max self.optimization_func(evaluation) for each evaluation in self.eval_history
     """
 
     @staticmethod
@@ -24,11 +24,12 @@ class Optimiser:
 
     def __init__(self, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
                  optimization_func: Callable[[OptimizationGoals], float] = default_optimization_func):
-        """ Every optimiser should have a stopping condition
-        :param max_iter: max iteration (considered infinity if None)
-        :param max_time: max time a user is willing to wait for (considered infinity if None)
-        :param optimization_func: what part of the OptimizationGoals the Optimiser will minimize/maximize eg. test_error
+        """
+        :param max_iter: max iteration (considered infinity if None) - stopping condition
+        :param max_time: max time a user is willing to wait for (considered infinity if None) - stopping condition
         :param min_or_max: min/max (built in functions) - whether to minimize or to maximize the optimization_goal
+        :param optimization_func: function in terms of which to perform optimization (can aggregate several optimization
+                                  goals or can just return the value of one optimization goal)
         """
         # stop conditions
         if (max_iter is None) and (max_time is None):
@@ -36,10 +37,10 @@ class Optimiser:
         self.max_time = np.inf if max_time is None else max_time
         self.max_iter = np.inf if max_iter is None else max_iter
 
-        self.optimization_func = optimization_func
         if min_or_max not in [min, max]:
             raise ValueError(f"optimization must be a built in function: min or max, instead {min_or_max} was supplied")
         self.min_or_max = min_or_max
+        self.optimization_func = optimization_func
 
         self.eval_history: List[Evaluation] = []
 
@@ -54,7 +55,7 @@ class Optimiser:
         """
         :param problem: optimization problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
         :param verbosity: whether to print the results of every single evaluation/iteration
-        :return: {'arm': Arm (best arm), 'test_error': float, 'validation_error': float}
+        :return: Evaluation of best arm (evaluator, optimization_goals)
         """
         pass
 
@@ -98,19 +99,19 @@ class Optimiser:
                f"  Optimizing ({self.min_or_max.__name__}) {self.optimization_func.__name__}" \
                f" {self.optimization_func.__doc__}"
 
-    def _print_evaluation(self, opt_goal_value: float) -> None:
+    def _print_evaluation(self, opt_func_value: float) -> None:
         """ Prints statistics for each evaluation, if the current evaluation is the best (optimal) so far, this will be
         printed in green, otherwise this will be printed in red.
-        :param opt_goal_value: value of the optimization goal for a certain evaluation
+        :param opt_func_value: value of the optimization_func for a certain evaluation
         """
         num_spaces = 8
         best_so_far = self.min_or_max(
             [self.optimization_func(evaluation.optimization_goals) for evaluation in self.eval_history]
         )
 
-        print(f"{Fore.GREEN if opt_goal_value == best_so_far else Fore.RED}"
+        print(f"{Fore.GREEN if opt_func_value == best_so_far else Fore.RED}"
               f"\n> SUMMARY: iteration number: {self.num_iterations},{num_spaces * ' '}"
               f"time elapsed: {self.cum_time:.2f}s,{num_spaces * ' '}"
-              f"current {self.optimization_func.__doc__}: {opt_goal_value:.5f},{num_spaces * ' '}"
+              f"current {self.optimization_func.__doc__}: {opt_func_value:.5f},{num_spaces * ' '}"
               f" best {self.optimization_func.__doc__} so far: {best_so_far:.5f}"
               f"{Style.RESET_ALL}")

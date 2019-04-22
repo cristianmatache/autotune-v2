@@ -21,8 +21,10 @@ class HyperparameterOptimizationProblem:
         """
         :param hyperparams_domain: names of the hyperparameters of a model along with their domain, that is
                                    ranges, distributions etc. (self.domain)
-        :param dataset_loader: loads a dataset
-        :param hyperparams_to_opt: names of hyperparameters to be optimized, if () all params from domain are optimized
+        :param hyperparams_to_opt: names of hyperparameters to be optimized
+                                   if set to () all params from domain are optimized
+        :param dataset_loader: loads a dataset (e.g. CIFARLoader)
+        :param output_dir: directory where to save the arms and their evaluation progress so far (as checkpoints)
         """
         self.domain = hyperparams_domain
         if hyperparams_to_opt:  # if any hyperparams_to_opt are given

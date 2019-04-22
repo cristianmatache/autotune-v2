@@ -11,7 +11,8 @@ PARAM_TYPE = Union[Param, PairParam, CategoricalParam]
 class Domain(SimpleNamespace):
 
     """
-    Dictionary wrapper to store the domain of hyperparameters
+    Dictionary wrapper to store the domain of hyperparameters. For example:
+    self.momentum = Param('momentum', 0.3, 0.999, distrib='uniform', scale='linear')
     """
 
     def __init__(self, **kwargs: PARAM_TYPE):
@@ -22,7 +23,13 @@ class Domain(SimpleNamespace):
         super().__init__(**kwargs)
 
     def __getitem__(self, item: str) -> PARAM_TYPE:
+        """ Allow dictionary-like access to attributes. That is:
+        instead of getattr(domain, item), one can use domain[item]
+        """
         return getattr(self, item)
 
     def hyperparams_names(self) -> KeysView[str]:
+        """
+        :return: generator over all hyperparameter names from the domain
+        """
         return self.__dict__.keys()

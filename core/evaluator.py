@@ -9,7 +9,7 @@ from core.optimization_goals import OptimizationGoals
 
 
 def ensure_dir(path: str) -> str:
-    """ if the directory at given path doesn't exist, it will create it
+    """ If the directory at given path doesn't exist, it will create it
     :param path: path to directory
     :return: path to directory
     """
@@ -38,7 +38,6 @@ class Evaluator:
         self.output_dir = output_dir
         subdirectories = next(os.walk(output_dir))[1]
         last_arm_number = len(subdirectories)
-
         self.directory = ensure_dir(join_path(output_dir, f"arm{last_arm_number + 1}"))
         self.file_path = join_path(self.directory, file_name)
 
@@ -51,7 +50,7 @@ class Evaluator:
             - train model (available through self._train)
             - evaluate model with respect to the test/validation set(s) (available through self._test)
             - report performance
-        :return: optimization goals - metrics in terms of which we can perform optimization
+        :return: optimization goals - metrics in terms of which we perform optimization
                  Eg. validation error, test error
         """
         pass
