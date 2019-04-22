@@ -1,7 +1,7 @@
 import numpy as np
-from typing import Tuple, Dict, Type
+from typing import Tuple, Type
 
-from core import HyperparameterOptimizationProblem, Arm, OptimizationGoals
+from core import HyperparameterOptimizationProblem, Arm, OptimizationGoals, Domain
 from core.params import *
 
 from datasets.image_dataset_loaders import CIFARLoader, ImageDatasetLoader
@@ -19,17 +19,16 @@ LR_STEP = Param('lr_step', 1, 5, distrib='uniform', init_val=1, scale='linear', 
 GAMMA = Param('gamma', np.log(10 ** -3), np.log(10 ** -1), distrib='uniform', init_val=0.1, scale='log')
 WEIGHT_DECAY = Param('weight_decay', np.log(10 ** -6), np.log(10 ** -1), init_val=0.004, distrib='uniform', scale='log')
 MOMENTUM = Param('momentum', 0.3, 0.999, init_val=0.9, distrib='uniform', scale='linear')
-HYPERPARAMS_DOMAIN = {
-    'learning_rate': LEARNING_RATE,
-    'n_units_1': N_UNITS_1,
-    'n_units_2': N_UNITS_2,
-    'n_units_3': N_UNITS_3,
-    'batch_size': BATCH_SIZE,
-    'lr_step': LR_STEP,
-    'gamma': GAMMA,
-    'weight_decay': WEIGHT_DECAY,
-    'momentum': MOMENTUM,
-}
+HYPERPARAMS_DOMAIN = Domain(
+    learning_rate=LEARNING_RATE,
+    n_units_1=N_UNITS_1,
+    n_units_2=N_UNITS_2,
+    n_units_3=N_UNITS_3,
+    batch_size=BATCH_SIZE,
+    lr_step=LR_STEP,
+    gamma=GAMMA,
+    weight_decay=WEIGHT_DECAY,
+    momentum=MOMENTUM)
 
 HYPERPARAMETERS_TO_OPTIMIZE = ('learning_rate', 'n_units_1', 'n_units_2', 'n_units_3', 'batch_size')
 
@@ -83,7 +82,7 @@ class CifarEvaluator(TorchEvaluator):
 class CifarProblem(HyperparameterOptimizationProblem):
 
     def __init__(self, data_dir: str, output_dir: str, dataset_loader: Type[ImageDatasetLoader] = CIFARLoader,
-                 hyperparams_domain: Dict[str, Param] = HYPERPARAMS_DOMAIN,
+                 hyperparams_domain: Domain = HYPERPARAMS_DOMAIN,
                  hyperparams_to_opt: Tuple[str, ...] = HYPERPARAMETERS_TO_OPTIMIZE, in_channels: int = 3):
         dataset_loader = dataset_loader(data_dir)
         super().__init__(hyperparams_domain, hyperparams_to_opt, dataset_loader, output_dir)

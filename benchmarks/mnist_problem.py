@@ -1,7 +1,7 @@
 import numpy as np
-from typing import Tuple, Dict
+from typing import Tuple
 
-from core import HyperparameterOptimizationProblem, Arm, OptimizationGoals
+from core import HyperparameterOptimizationProblem, Arm, OptimizationGoals, Domain
 from core.params import *
 
 from datasets.image_dataset_loaders import MNISTLoader
@@ -14,12 +14,11 @@ LEARNING_RATE = Param('learning_rate', np.log(10 ** -6), np.log(10 ** 0), distri
 WEIGHT_DECAY = Param('weight_decay', np.log(10 ** -6), np.log(10 ** -1), distrib='uniform', scale='log')
 MOMENTUM = Param('momentum', 0.3, 0.999, distrib='uniform', scale='linear')
 BATCH_SIZE = Param('batch_size', 20, 2000, distrib='uniform', scale='linear', interval=1)
-HYPERPARAMS_DOMAIN = {
-    'learning_rate': LEARNING_RATE,
-    'weight_decay': WEIGHT_DECAY,
-    'momentum': MOMENTUM,
-    'batch_size': BATCH_SIZE
-}
+HYPERPARAMS_DOMAIN = Domain(
+    learning_rate=LEARNING_RATE,
+    weight_decay=WEIGHT_DECAY,
+    momentum=MOMENTUM,
+    batch_size=BATCH_SIZE)
 
 
 class MnistEvaluator(TorchEvaluator):
@@ -58,7 +57,7 @@ class MnistEvaluator(TorchEvaluator):
 class MnistProblem(HyperparameterOptimizationProblem):
 
     def __init__(self, data_dir: str, output_dir: str,
-                 hyperparams_domain: Dict[str, Param] = HYPERPARAMS_DOMAIN, hyperparams_to_opt: Tuple[str, ...] = ()):
+                 hyperparams_domain: Domain = HYPERPARAMS_DOMAIN, hyperparams_to_opt: Tuple[str, ...] = ()):
         dataset_loader = MNISTLoader(data_dir)
         super().__init__(hyperparams_domain, hyperparams_to_opt, dataset_loader, output_dir)
 

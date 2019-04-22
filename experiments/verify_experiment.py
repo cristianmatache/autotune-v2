@@ -45,7 +45,7 @@ if __name__ == "__main__":
     args = _get_args()
     problem = get_problem(args)
 
-    if sorted(problem.domain.keys()) != sorted(ARM_DICT.keys()):
+    if sorted(problem.domain.hyperparams_names()) != sorted(ARM_DICT.keys()):
         raise ValueError(f"ARM_DICT keys (hyperparameter names) do not match keys in {type(problem).__name__} domain")
 
     evaluator = problem.get_evaluator(Arm(**ARM_DICT))

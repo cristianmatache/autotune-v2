@@ -16,12 +16,12 @@ OUTPUT_DIR = "D:/datasets/output"
 
 N_RESOURCES = 3
 MAX_TIME = None
-MAX_ITER = 27
+MAX_ITER = 2
 ETA = 3
 
-PROBLEM = "branin"
-METHOD = "hybrid"
-OPTIMIZATION_GOAL = "fval"  # "validation_error"
+PROBLEM = "mnist"
+METHOD = "hyperband"
+OPTIMIZATION_GOAL = "validation_error"
 MIN_OR_MAX = "min"
 
 

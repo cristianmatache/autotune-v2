@@ -1,7 +1,10 @@
 from typing import Tuple
 from types import SimpleNamespace
 
+from util.frozen_class import frozen_class
 
+
+@frozen_class
 class OptimizationGoals(SimpleNamespace):
 
     """

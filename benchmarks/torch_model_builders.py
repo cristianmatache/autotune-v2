@@ -50,6 +50,8 @@ def update_model_for_gpu(construct_model_function: CONSTRUCT_MODEL_FUNCTION_TYPE
 
 class CNNBuilder(TorchModelBuilder):
 
+    __slots__ = ("in_channels",)
+
     def __init__(self, arm: Arm, in_channels: int = 3):
         super().__init__(arm=arm, ml_model=CudaConvNet2)
         self.in_channels = in_channels

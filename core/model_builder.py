@@ -15,6 +15,8 @@ class ModelBuilder(Generic[ML_MODEL_TYPE, OPTIMIZER_TYPE]):
     from the given hyperparameters
     """
 
+    __slots__ = ("arm", "ml_model")
+
     def __init__(self, arm: Arm, ml_model: Type[ML_MODEL_TYPE] = None):
         """
         :param arm: hyperparameters and their values

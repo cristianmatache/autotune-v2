@@ -1,7 +1,7 @@
-from typing import Dict, Tuple
+from typing import Tuple
 from types import SimpleNamespace
 
-from core.params import Param
+from core.hyperparams_domain import Domain
 
 
 class Arm(SimpleNamespace):
@@ -22,14 +22,14 @@ class Arm(SimpleNamespace):
         """
         super().__init__(**kwargs)
 
-    def set_default_values(self, *, domain: Dict[str, Param], hyperparams_to_opt: Tuple[str, ...]) -> None:
+    def set_default_values(self, *, domain: Domain, hyperparams_to_opt: Tuple[str, ...]) -> None:
         """ Sets the hyperparameters that appear in the domain but we don't want to optimize to their default values
         if they are not already set
         :param domain: domain of hyperparameters with names, ranges, distributions etc
                        Eg. {'momentum': Param(...), 'learning_rate': Param(...)}
         :param hyperparams_to_opt: hyperparameters to optimize
         """
-        for hp_name in domain.keys():
+        for hp_name in domain.hyperparams_names():
             if not hasattr(self, hp_name) and hp_name not in hyperparams_to_opt:
                 # if we do not need to optimize hp_name, set Arm value to its default (if not already set)
                 hp_val = domain[hp_name].init_val
@@ -37,14 +37,14 @@ class Arm(SimpleNamespace):
                     raise ValueError(f"No default value for param {hp_name} was supplied")
                 setattr(self, hp_name, hp_val)
 
-    def draw_hp_val(self, *, domain: Dict[str, Param], hyperparams_to_opt: Tuple[str, ...]) -> None:
+    def draw_hp_val(self, *, domain: Domain, hyperparams_to_opt: Tuple[str, ...]) -> None:
         """ Draws random values for the hyperparameters that we want to optimize
         :param domain: domain of hyperparameters with names, ranges, distributions etc
                        Eg. {'momentum': Param(...), 'learning_rate': Param(...)}
         :param hyperparams_to_opt: hyperparameters to optimize
         """
         self.set_default_values(domain=domain, hyperparams_to_opt=hyperparams_to_opt)
-        for hp_name in domain.keys():
+        for hp_name in domain.hyperparams_names():
             if hp_name in hyperparams_to_opt:  # draw random value if we need to optimize the current hyperparameter
                 hp_val = domain[hp_name].get_param_range(1, stochastic=True)[0]
                 setattr(self, hp_name, hp_val)

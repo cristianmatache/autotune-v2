@@ -1,15 +1,14 @@
 from __future__ import division
 import numpy as np
-from typing import Any, Dict, Tuple, Optional
+from typing import Any, Tuple, Optional
 
-from core import HyperparameterOptimizationProblem, Evaluator, Arm, OptimizationGoals, ModelBuilder
+from core import HyperparameterOptimizationProblem, Evaluator, Arm, OptimizationGoals, ModelBuilder, Domain
 from core.params import *
 from util.io import print_evaluation
 
-HYPERPARAMS_DOMAIN = {
-    'x': Param('x', -5, 10, distrib='uniform', scale='linear'),
-    'y': Param('y', 1, 15, distrib='uniform', scale='linear')
-}
+HYPERPARAMS_DOMAIN = Domain(
+    x=Param('x', -5, 10, distrib='uniform', scale='linear'),
+    y=Param('y', 1, 15, distrib='uniform', scale='linear'))
 
 
 class BraninBuilder(ModelBuilder[Any, Any]):
@@ -66,7 +65,7 @@ class BraninProblem(HyperparameterOptimizationProblem):
     See https://www.sfu.ca/~ssurjano/branin.html
     """
 
-    def __init__(self, output_dir: str, hyperparams_domain: Dict[str, Param] = HYPERPARAMS_DOMAIN,
+    def __init__(self, output_dir: str, hyperparams_domain: Domain = HYPERPARAMS_DOMAIN,
                  hyperparams_to_opt: Tuple[str, ...] = ()):
         """
         :param output_dir: directory where to save the arms and their evaluation progress so far (as checkpoints)

@@ -9,13 +9,14 @@ from datasets.dataset_loader import DatasetLoader
 from core.evaluator import Evaluator
 from core.params import Param
 from core.arm import Arm
+from core.hyperparams_domain import Domain
 
 
 class HyperparameterOptimizationProblem:
 
     __slots__ = ("domain", "hyperparams_to_opt", "dataset_loader", "output_dir")
 
-    def __init__(self, hyperparams_domain: Dict[str, Param], hyperparams_to_opt: Tuple[str, ...] = (),
+    def __init__(self, hyperparams_domain: Domain, hyperparams_to_opt: Tuple[str, ...] = (),
                  dataset_loader: Optional[DatasetLoader] = None, output_dir: Optional[str] = None):
         """
         :param hyperparams_domain: names of the hyperparameters of a model along with their domain, that is
@@ -25,9 +26,9 @@ class HyperparameterOptimizationProblem:
         """
         self.domain = hyperparams_domain
         if hyperparams_to_opt:  # if any hyperparams_to_opt are given
-            self.hyperparams_to_opt = tuple(set(hyperparams_to_opt) & set(self.domain.keys()))
+            self.hyperparams_to_opt = tuple(set(hyperparams_to_opt) & set(self.domain.hyperparams_names()))
         else:                   # if no hyperparams_to_opt are given, optimize all from domain
-            self.hyperparams_to_opt = tuple(self.domain.keys())
+            self.hyperparams_to_opt = tuple(self.domain.hyperparams_names())
         print(f"\n> Hyperparameters to optimize:\n    {'' if hyperparams_to_opt else 'ALL:'} {self.hyperparams_to_opt}")
 
         self.dataset_loader = dataset_loader
@@ -37,7 +38,7 @@ class HyperparameterOptimizationProblem:
         """ Pretty prints the domain of the problem
         """
         print(f"\n> Problem {type(self).__name__} hyperparameters domain:")
-        PrettyPrinter(indent=4).pprint(self.domain)
+        PrettyPrinter(indent=4).pprint(self.domain.__dict__)
 
     @abstractmethod
     def get_evaluator(self, arm: Arm = None) -> Evaluator:
