@@ -15,8 +15,8 @@ CONSTRUCT_MODEL_FUNCTION_TYPE = Callable[[ModelBuilder], Tuple[Module, Optimizer
 class TorchModelBuilder(ModelBuilder[Module, Optimizer]):
 
     """
-    Given an arm (draw of hyperparameters), a machine learning model and an optimizer
-    constructs the model from the given hyperparameters
+    Given an arm (draw of hyperparameters) and a machine learning model
+    constructs the model from the given hyperparameters (arm)
     """
 
     def __init__(self, arm: Arm, ml_model: Type[Module]):
