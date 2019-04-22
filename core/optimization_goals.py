@@ -1,7 +1,8 @@
 from typing import Tuple
+from types import SimpleNamespace
 
 
-class OptimizationGoals:
+class OptimizationGoals(SimpleNamespace):
 
     """
     Metrics in terms of which we can perform optimization, that is, the optimisers will minimize one of its attributes
@@ -13,9 +14,7 @@ class OptimizationGoals:
         :param test_error: error on test set
         :param kwargs: other metrics in terms of which we can perform optimization
         """
-        self.validation_error = validation_error
-        self.test_error = test_error
-        self.__dict__.update(kwargs)
+        super().__init__(validation_error=validation_error, test_error=test_error, **kwargs)
 
     def goals_to_str(self, goals_to_print: Tuple[str, ...] = ()) -> str:
         """ Formats  names and values for some/all attributes and formats them into a string
