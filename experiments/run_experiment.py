@@ -25,18 +25,18 @@ METHOD = "hybrid"
 MIN_OR_MAX = "min"
 
 
-def optimization_func(opt_goals: OptimisationGoals) -> float:
+def optimisation_func(opt_goals: OptimisationGoals) -> float:
     """validation_error"""
     return opt_goals.validation_error
 
 
-def optimization_func_branin(opt_goals: OptimisationGoals) -> float:
+def optimisation_func_branin(opt_goals: OptimisationGoals) -> float:
     """2*fval"""
     return 2 * opt_goals.fval
 
 
 if PROBLEM == "branin":
-    optimization_func = optimization_func_branin
+    optimization_func = optimisation_func_branin
 
 
 def _get_args() -> Namespace:
@@ -58,7 +58,7 @@ def _get_args() -> Namespace:
     Problem:          {arguments.problem.upper()}
     Method:           {arguments.method.upper()}
 
-    Func {arguments.min_or_max.upper()}imizes:   {optimization_func.__doc__}
+    Func {arguments.min_or_max.upper()}imizes:   {optimisation_func.__doc__}
     """)
     return arguments
 
@@ -87,19 +87,19 @@ def get_optimiser() -> Optimiser:
 
     if method == "random":
         return RandomOptimiser(n_resources=args.n_resources, max_iter=args.max_iter, max_time=args.max_time,
-                               min_or_max=min_or_max, optimisation_func=optimization_func)
+                               min_or_max=min_or_max, optimisation_func=optimisation_func)
     elif method == "hyperband":
         return HyperbandOptimiser(eta=args.eta, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
-                                  optimisation_func=optimization_func)
+                                  optimisation_func=optimisation_func)
     elif method == "tpe":
         return TpeOptimiser(n_resources=args.n_resources, max_iter=args.max_iter, max_time=args.max_time,
-                            min_or_max=min_or_max, optimisation_func=optimization_func)
+                            min_or_max=min_or_max, optimisation_func=optimisation_func)
     elif method == "hybrid":
         return HybridHyperbandTpeOptimiser(eta=args.eta, max_iter=args.max_iter, max_time=args.max_time,
-                                           min_or_max=min_or_max, optimisation_func=optimization_func)
+                                           min_or_max=min_or_max, optimisation_func=optimisation_func)
     elif method == "sigopt":
         return SigOptimiser(n_resources=args.n_resources, max_iter=args.max_iter, max_time=args.max_time,
-                            min_or_max=min_or_max, optimisation_func=optimization_func)
+                            min_or_max=min_or_max, optimisation_func=optimisation_func)
     else:
         raise ValueError(f"Supplied problem {method} does not exist")
 
@@ -113,7 +113,7 @@ if __name__ == "__main__":
     optimum_evaluation = optimiser.run_optimisation(problem, verbosity=True)
     print(f"Best hyperparams:\n{optimum_evaluation.evaluator.arm}\n"
           f"with:\n"
-          f"  - {optimization_func.__doc__}: {optimization_func(optimum_evaluation.optimisation_goals)}\n"
+          f"  - {optimisation_func.__doc__}: {optimisation_func(optimum_evaluation.optimisation_goals)}\n"
           f"Total time:\n  - {optimiser.checkpoints[-1]} seconds")
 
     output_file_path = join_path(args.output_dir, "results.pkl")

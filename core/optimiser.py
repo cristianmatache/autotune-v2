@@ -19,7 +19,7 @@ class Optimiser:
 
     @staticmethod
     def default_optimisation_func(opt_goals: OptimisationGoals) -> float:
-        """validation_error (Default optimization_func)"""
+        """validation_error (Default optimisation_func)"""
         return opt_goals.validation_error
 
     def __init__(self, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
@@ -102,7 +102,7 @@ class Optimiser:
     def _print_evaluation(self, opt_func_value: float) -> None:
         """ Prints statistics for each evaluation, if the current evaluation is the best (optimal) so far, this will be
         printed in green, otherwise this will be printed in red.
-        :param opt_func_value: value of the optimization_func for a certain evaluation
+        :param opt_func_value: value of the optimisation_func for a certain evaluation
         """
         num_spaces = 8
         best_so_far = self.min_or_max(

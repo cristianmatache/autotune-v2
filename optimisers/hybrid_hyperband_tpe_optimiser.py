@@ -80,6 +80,6 @@ class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
 
                 self._update_optimiser_metrics()
                 if verbosity:
-                    self._print_evaluation(self.optimisation_func(best_evaluation_in_round.optimization_goals))
+                    self._print_evaluation(self.optimisation_func(best_evaluation_in_round.optimisation_goals))
 
         return self._get_best_evaluation()
