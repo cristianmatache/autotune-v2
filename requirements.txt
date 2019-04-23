@@ -1,5 +1,5 @@
-sigopt
-hyperopt
+sigopt==4.0.0
+hyperopt==0.1.2
 matplotlib
 colorama
 numpy==1.14.5
