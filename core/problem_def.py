@@ -12,7 +12,7 @@ from core.arm import Arm
 from core.hyperparams_domain import Domain
 
 
-class HyperparameterOptimizationProblem:
+class HyperparameterOptimisationProblem:
 
     __slots__ = ("domain", "hyperparams_to_opt", "dataset_loader", "output_dir")
 

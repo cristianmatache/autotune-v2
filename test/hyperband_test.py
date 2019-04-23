@@ -3,7 +3,7 @@ import numpy as np
 from typing import Tuple, Any
 
 
-from core import Param, Arm, HyperparameterOptimizationProblem, OptimisationGoals, Evaluator, Domain, Optimiser
+from core import Param, Arm, HyperparameterOptimisationProblem, OptimisationGoals, Evaluator, Domain, Optimiser
 from benchmarks.torch_model_builders import LogisticRegressionBuilder
 from util.io import print_evaluation
 
@@ -39,7 +39,7 @@ class HyperbandTestEvaluator(Evaluator):
         pass
 
 
-class HyperbandTestProblem(HyperparameterOptimizationProblem):
+class HyperbandTestProblem(HyperparameterOptimisationProblem):
 
     def __init__(self, output_dir: str,
                  hyperparams_domain: Domain = HYPERPARAMS_DOMAIN, hyperparams_to_opt: Tuple[str, ...] = ()):

@@ -4,7 +4,7 @@ from typing import Callable, List
 import time
 from colorama import Fore, Style
 
-from core.problem_def import HyperparameterOptimizationProblem
+from core.problem_def import HyperparameterOptimisationProblem
 from core.optimisation_goals import OptimisationGoals
 from core.evaluator import Evaluator
 from core.evaluation import Evaluation
@@ -51,7 +51,7 @@ class Optimiser:
         return self.min_or_max(self.eval_history, key=lambda e: self.optimization_func(e.optimization_goals))
 
     @abstractmethod
-    def run_optimization(self, problem: HyperparameterOptimizationProblem, verbosity: bool) -> Evaluation:
+    def run_optimization(self, problem: HyperparameterOptimisationProblem, verbosity: bool) -> Evaluation:
         """
         :param problem: optimization problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
         :param verbosity: whether to print the results of every single evaluation/iteration

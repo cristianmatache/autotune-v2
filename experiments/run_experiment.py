@@ -8,7 +8,7 @@ from core import Optimiser
 from optimisers import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, TpeOptimiser
 
 # Problems
-from core import HyperparameterOptimizationProblem, OptimisationGoals
+from core import HyperparameterOptimisationProblem, OptimisationGoals
 from benchmarks import MnistProblem, CifarProblem, SvhnProblem, MrbiProblem, BraninProblem
 
 
@@ -63,7 +63,7 @@ def _get_args() -> Namespace:
     return arguments
 
 
-def get_problem(arguments: Namespace) -> HyperparameterOptimizationProblem:
+def get_problem(arguments: Namespace) -> HyperparameterOptimisationProblem:
     problem_name = arguments.problem.lower()
     if problem_name == "cifar":
         problem_instance = CifarProblem(arguments.input_dir, arguments.output_dir)

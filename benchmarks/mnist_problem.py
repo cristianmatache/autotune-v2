@@ -1,7 +1,7 @@
 import numpy as np
 from typing import Tuple
 
-from core import HyperparameterOptimizationProblem, Arm, OptimisationGoals, Domain
+from core import HyperparameterOptimisationProblem, Arm, OptimisationGoals, Domain
 from core.params import *
 
 from datasets.image_dataset_loaders import MNISTLoader
@@ -62,7 +62,7 @@ class MnistEvaluator(TorchEvaluator):
                                  val_total=val_total, test_correct=test_correct, test_total=test_total)
 
 
-class MnistProblem(HyperparameterOptimizationProblem):
+class MnistProblem(HyperparameterOptimisationProblem):
 
     """
     Classification on MNIST dataset with logistic regression

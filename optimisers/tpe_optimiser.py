@@ -3,7 +3,7 @@ from functools import partial
 from hyperopt import fmin, tpe, Trials, STATUS_OK
 from typing import Callable, Dict, Union
 
-from core import Optimiser, Evaluation, Arm, HyperparameterOptimizationProblem, Evaluator, OptimisationGoals
+from core import Optimiser, Evaluation, Arm, HyperparameterOptimisationProblem, Evaluator, OptimisationGoals
 
 
 class TpeOptimiser(Optimiser):
@@ -27,7 +27,7 @@ class TpeOptimiser(Optimiser):
         self.sign = -1 if min_or_max == max else 1
         self.n_resources = n_resources
 
-    def run_optimization(self, problem: HyperparameterOptimizationProblem, verbosity: bool = False) -> Evaluation:
+    def run_optimization(self, problem: HyperparameterOptimisationProblem, verbosity: bool = False) -> Evaluation:
         """
         :param problem: optimization problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
         :param verbosity: whether to print the results of every single evaluation/iteration
@@ -50,7 +50,7 @@ class TpeOptimiser(Optimiser):
 
         return self._get_best_evaluation()
 
-    def _tpe_objective_function(self, arm_dict: Dict[str, float], problem: HyperparameterOptimizationProblem)\
+    def _tpe_objective_function(self, arm_dict: Dict[str, float], problem: HyperparameterOptimisationProblem)\
             -> Dict[str, Union[float, Evaluator, OptimisationGoals]]:
         """
         :param arm_dict: values for each hyperparameters to optimized populated by hyperopt TPE

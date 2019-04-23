@@ -1,6 +1,6 @@
 from typing import Callable
 
-from core import HyperparameterOptimizationProblem, Optimiser, Evaluation, OptimisationGoals
+from core import HyperparameterOptimisationProblem, Optimiser, Evaluation, OptimisationGoals
 
 
 class RandomOptimiser(Optimiser):
@@ -23,7 +23,7 @@ class RandomOptimiser(Optimiser):
         super().__init__(max_iter, max_time, min_or_max, optimization_func)
         self.n_resources = n_resources
 
-    def run_optimization(self, problem: HyperparameterOptimizationProblem, verbosity: bool = False) -> Evaluation:
+    def run_optimization(self, problem: HyperparameterOptimisationProblem, verbosity: bool = False) -> Evaluation:
         """
         :param problem: optimization problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
         :param verbosity: whether to print the results of every single evaluation/iteration

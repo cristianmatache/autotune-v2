@@ -1,7 +1,7 @@
 import numpy as np
 from typing import Tuple, Type, Optional
 
-from core import HyperparameterOptimizationProblem, Arm, OptimisationGoals, Domain
+from core import HyperparameterOptimisationProblem, Arm, OptimisationGoals, Domain
 from core.params import *
 
 from datasets.image_dataset_loaders import CIFARLoader, ImageDatasetLoader
@@ -87,7 +87,7 @@ class CifarEvaluator(TorchEvaluator):
                                  val_total=val_total, test_correct=test_correct, test_total=test_total)
 
 
-class CifarProblem(HyperparameterOptimizationProblem):
+class CifarProblem(HyperparameterOptimisationProblem):
 
     """
     Classification on CIFAR-10 dataset with a CNN

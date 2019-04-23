@@ -2,7 +2,7 @@ from __future__ import division
 import numpy as np
 from typing import Any, Tuple, Optional
 
-from core import HyperparameterOptimizationProblem, Evaluator, Arm, OptimisationGoals, ModelBuilder, Domain
+from core import HyperparameterOptimisationProblem, Evaluator, Arm, OptimisationGoals, ModelBuilder, Domain
 from core.params import *
 from util.io import print_evaluation
 
@@ -58,7 +58,7 @@ class BraninEvaluator(Evaluator):
         pass
 
 
-class BraninProblem(HyperparameterOptimizationProblem):
+class BraninProblem(HyperparameterOptimisationProblem):
 
     """
     Canonical optimisation test problem

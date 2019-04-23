@@ -2,7 +2,7 @@ from math import log, ceil
 from typing import Callable
 from colorama import Style, Fore
 
-from core import HyperparameterOptimizationProblem, Evaluation, OptimisationGoals, Optimiser
+from core import HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, Optimiser
 
 from optimisers.hyperband_optimiser import HyperbandOptimiser
 from optimisers.tpe_optimiser import TpeOptimiser
@@ -29,7 +29,7 @@ class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
         """
         super().__init__(eta, max_iter, max_time, min_or_max, optimization_func)
 
-    def run_optimization(self, problem: HyperparameterOptimizationProblem, verbosity: bool = False) -> Evaluation:
+    def run_optimization(self, problem: HyperparameterOptimisationProblem, verbosity: bool = False) -> Evaluation:
         """
         :param problem: optimization problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
         :param verbosity: whether to print the results of every single evaluation/iteration
