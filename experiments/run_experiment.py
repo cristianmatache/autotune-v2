@@ -87,19 +87,19 @@ def get_optimiser() -> Optimiser:
 
     if method == "random":
         return RandomOptimiser(n_resources=args.n_resources, max_iter=args.max_iter, max_time=args.max_time,
-                               min_or_max=min_or_max, optimization_func=optimization_func)
+                               min_or_max=min_or_max, optimisation_func=optimization_func)
     elif method == "hyperband":
         return HyperbandOptimiser(eta=args.eta, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
-                                  optimization_func=optimization_func)
+                                  optimisation_func=optimization_func)
     elif method == "tpe":
         return TpeOptimiser(n_resources=args.n_resources, max_iter=args.max_iter, max_time=args.max_time,
-                            min_or_max=min_or_max, optimization_func=optimization_func)
+                            min_or_max=min_or_max, optimisation_func=optimization_func)
     elif method == "hybrid":
         return HybridHyperbandTpeOptimiser(eta=args.eta, max_iter=args.max_iter, max_time=args.max_time,
-                                           min_or_max=min_or_max, optimization_func=optimization_func)
+                                           min_or_max=min_or_max, optimisation_func=optimization_func)
     elif method == "sigopt":
         return SigOptimiser(n_resources=args.n_resources, max_iter=args.max_iter, max_time=args.max_time,
-                            min_or_max=min_or_max, optimization_func=optimization_func)
+                            min_or_max=min_or_max, optimisation_func=optimization_func)
     else:
         raise ValueError(f"Supplied problem {method} does not exist")
 

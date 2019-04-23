@@ -58,6 +58,6 @@ if __name__ == "__main__":
     with tempfile.TemporaryDirectory() as tmp_dir_name:
         problem = HyperbandTestProblem(output_dir=tmp_dir_name)
         optimizer = HyperbandOptimiser(eta=ETA, max_iter=MAX_ITER, min_or_max=min,
-                                       optimization_func=Optimiser.default_optimization_func)
+                                       optimisation_func=Optimiser.default_optimisation_func)
         res = optimizer.run_optimisation(problem, verbosity=True)
         print("TEST " + "PASSED" if optimizer.eval_history[0].evaluator.arm == res.evaluator.arm else "FAILED")

@@ -18,16 +18,16 @@ class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
     """
 
     def __init__(self, eta: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
-                 optimization_func: Callable[[OptimisationGoals], float] = Optimiser.default_optimization_func):
+                 optimisation_func: Callable[[OptimisationGoals], float] = Optimiser.default_optimisation_func):
         """
         :param eta: halving rate
         :param max_iter: max iteration (considered infinity if None) - stopping condition
         :param max_time: max time a user is willing to wait for (considered infinity if None) - stopping cond. NOT USED
         :param min_or_max: min/max (built in functions) - whether to minimize or to maximize the optimization_goal
-        :param optimization_func: function in terms of which to perform optimization (can aggregate several optimization
+        :param optimisation_func: function in terms of which to perform optimization (can aggregate several optimization
                                   goals or can just return the value of one optimization goal)
         """
-        super().__init__(eta, max_iter, max_time, min_or_max, optimization_func)
+        super().__init__(eta, max_iter, max_time, min_or_max, optimisation_func)
 
     def run_optimisation(self, problem: HyperparameterOptimisationProblem, verbosity: bool = False) -> Evaluation:
         """
@@ -50,7 +50,7 @@ class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
             n = int(ceil(int(B/R/(s+1))*eta**s))  # initial number of evaluators/configurations/arms
             r = R*eta**(-s)                       # initial resources allocated to each evaluator/arm
 
-            # Successive halving with rate eta - based on values of self.optimization_func(opt goals of each evaluation)
+            # Successive halving with rate eta - based on values of self.optimisation_func(opt goals of each evaluation)
             evaluators = []
             for i in range(s+1):
                 n_i = n*eta**(-i)  # evaluate n_i evaluators/configurations/arms
@@ -58,7 +58,7 @@ class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
 
                 if i == 0:  # Generate first n_i arms/evaluators with TPE
                     tpe_optimizer = TpeOptimiser(n_resources=r_i, max_iter=n_i,
-                                                 optimization_func=self.optimization_func)
+                                                 optimisation_func=self.optimisation_func)
                     tpe_optimizer.run_optimisation(problem, verbosity=True)
 
                     # evaluators = [h.evaluator for h in tpe_optimizer.eval_history]
@@ -80,6 +80,6 @@ class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
 
                 self._update_optimizer_metrics()
                 if verbosity:
-                    self._print_evaluation(self.optimization_func(best_evaluation_in_round.optimization_goals))
+                    self._print_evaluation(self.optimisation_func(best_evaluation_in_round.optimization_goals))
 
         return self._get_best_evaluation()

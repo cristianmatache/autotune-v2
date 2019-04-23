@@ -12,16 +12,16 @@ class TpeOptimiser(Optimiser):
     """
 
     def __init__(self, n_resources: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
-                 optimization_func: Callable[[OptimisationGoals], float] = Optimiser.default_optimization_func):
+                 optimisation_func: Callable[[OptimisationGoals], float] = Optimiser.default_optimisation_func):
         """
         :param n_resources: number of resources per evaluation (of each arm)
         :param max_iter: max iteration (considered infinity if None) - stopping condition
         :param max_time: max time a user is willing to wait for (considered infinity if None) - stopping cond. NOT USED
         :param min_or_max: min/max (built in functions) - whether to minimize or to maximize the optimization_goal
-        :param optimization_func: function in terms of which to perform optimization (can aggregate several optimization
+        :param optimisation_func: function in terms of which to perform optimization (can aggregate several optimization
                                   goals or can just return the value of one optimization goal)
         """
-        super().__init__(max_iter, max_time, min_or_max, optimization_func)
+        super().__init__(max_iter, max_time, min_or_max, optimisation_func)
 
         # TPE Hyperopt supports minimization only, so if the problem is maximization, minimize -1 * optimization goal
         self.sign = -1 if min_or_max == max else 1
@@ -66,7 +66,7 @@ class TpeOptimiser(Optimiser):
         opt_goals = evaluator.evaluate(self.n_resources)
         return {
             # TPE will minimize with respect to the value of 'loss'
-            'loss': self.sign * self.optimization_func(opt_goals),
+            'loss': self.sign * self.optimisation_func(opt_goals),
             'status': STATUS_OK,             # mandatory for Hyperopt
             'eval_time': time.time(),        # timestamp when evaluation is finished
             'evaluator': evaluator,
