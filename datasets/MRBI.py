@@ -41,8 +41,8 @@ class MRBI(Dataset):
         # doing this so that it is consistent with all other datasets
         # to return a PIL Image
         img = np.transpose(img, (1, 2, 0))
-        img.reshape(28,28)
-        img = Image.fromarray(img.reshape(28,28), 'L')
+        img.reshape(28, 28)
+        img = Image.fromarray(img.reshape(28, 28), 'L')
 
         if self.transform is not None:
             img = self.transform(img)
