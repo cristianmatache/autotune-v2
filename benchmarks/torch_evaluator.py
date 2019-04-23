@@ -89,7 +89,7 @@ class TorchEvaluator(Evaluator):
     def _test(self, is_validation: bool) -> Tuple[float, ...]:
         """
         :param is_validation: whether the function is applied on the validation set or on the test set
-        :return: values that will be used in OptimizationGoals (eg. test/validation error, number of true positives)
+        :return: values that will be used in OptimisationGoals (eg. test/validation error, number of true positives)
         """
         loader = self.dataset_loader.val_loader if is_validation else self.dataset_loader.test_loader
 

@@ -31,8 +31,8 @@ class BraninEvaluator(Evaluator):
     def evaluate(self, n_resources: int) -> OptimisationGoals:
         """ Given an arm (draw of hyperparameter values), evaluate the Branin function on it
         :param n_resources: this parameter is not used in this function but all optimisers require this parameter
-        :return: the function value for the current arm can be found in OptimizationGoals.fval, Note that test_error and
-        validation_error attributes are mandatory for OptimizationGoals objects but Branin has no machine learning model
+        :return: the function value for the current arm can be found in OptimisationGoals.fval, Note that test_error and
+        validation_error attributes are mandatory for OptimisationGoals objects but Branin has no machine learning model
         """
         a = 1
         b = 5.1 / (4 * np.pi ** 2)

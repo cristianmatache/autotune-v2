@@ -12,10 +12,10 @@ def print_evaluation(verbose: bool = False, goals_to_print: Tuple[str] = ()) \
         -> Callable[[EVALUATE_METHOD_TYPE], EVALUATE_METHOD_TYPE]:
     """ If verbose:
     Before evaluation - prints the arm that will be evaluated
-    After  evaluation - prints the OptimizationGoals (the results) for example, that includes validation_error in
+    After  evaluation - prints the OptimisationGoals (the results) for example, that includes validation_error in
                         several cases
     :param verbose: whether to print
-    :param goals_to_print: optimization goals to print (printing all attributes -names and values- of OptimizationGoals
+    :param goals_to_print: optimization goals to print (printing all attributes -names and values- of OptimisationGoals
                            can be too verbose). Set to () if you want to see all optimization goals/
     :return: decorated Evaluator.evaluate method
     """
