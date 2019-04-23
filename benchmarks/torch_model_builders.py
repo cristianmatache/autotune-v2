@@ -16,7 +16,7 @@ class TorchModelBuilder(ModelBuilder[Module, Optimizer]):
 
     """
     Given an arm (draw of hyperparameters) and a machine learning model
-    constructs the model from the given hyperparameters (arm)
+    constructs a pytorch model from the given hyperparameters (arm)
     """
 
     def __init__(self, arm: Arm, ml_model: Type[Module]):
@@ -34,9 +34,9 @@ class TorchModelBuilder(ModelBuilder[Module, Optimizer]):
         pass
 
 
-def update_model_for_gpu(construct_model_function: CONSTRUCT_MODEL_FUNCTION_TYPE) \
+def _update_model_for_gpu(construct_model_function: CONSTRUCT_MODEL_FUNCTION_TYPE) \
         -> CONSTRUCT_MODEL_FUNCTION_TYPE:
-    """ decorator to update the model under construction to work with GPUs
+    """ decorator to update the model under construction and allow it to work with GPUs
     """
     def wrapper(self: ModelBuilder) -> Tuple[Module, Optimizer]:
         model, optimizer = construct_model_function(self)
@@ -50,13 +50,20 @@ def update_model_for_gpu(construct_model_function: CONSTRUCT_MODEL_FUNCTION_TYPE
 
 class CNNBuilder(TorchModelBuilder):
 
+    """ Torch CNN model
+    """
+
     __slots__ = ("in_channels",)
 
     def __init__(self, arm: Arm, in_channels: int = 3):
+        """
+        :param arm: hyperparameters and their values
+        :param in_channels: number of input channels in ml_model CudaConvNet2
+        """
         super().__init__(arm=arm, ml_model=CudaConvNet2)
         self.in_channels = in_channels
 
-    @update_model_for_gpu
+    @_update_model_for_gpu
     def construct_model(self) -> Tuple[Module, Optimizer]:
         """ Construct model and optimizer based on hyperparameters
         :return: instances of each (model, optimizer) using the hyperparameters as specified by the arm
@@ -72,9 +79,12 @@ class CNNBuilder(TorchModelBuilder):
 class LogisticRegressionBuilder(TorchModelBuilder):
 
     def __init__(self, arm: Arm):
+        """
+        :param arm: hyperparameters and their values
+        """
         super().__init__(arm=arm, ml_model=LogisticRegression)
 
-    @update_model_for_gpu
+    @_update_model_for_gpu
     def construct_model(self) -> Tuple[Module, Optimizer]:
         """ Construct model and optimizer based on hyperparameters
         :return: instances of each (model, optimizer) using the hyperparameters as specified by the arm

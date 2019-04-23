@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Tuple, Type
+from typing import Tuple, Type, Optional
 
 from core import HyperparameterOptimizationProblem, Arm, OptimizationGoals, Domain
 from core.params import *
@@ -35,19 +35,27 @@ HYPERPARAMETERS_TO_OPTIMIZE = ('learning_rate', 'n_units_1', 'n_units_2', 'n_uni
 
 class CifarEvaluator(TorchEvaluator):
 
-    def adjust_learning_rate(self, epoch: int, base_lr: float, gamma: float, step_size: int) -> None:
-        """Sets the learning rate to the initial LR decayed by gamma every step_size epochs"""
+    def _adjust_learning_rate(self, epoch: int, base_lr: float, gamma: float, step_size: int) -> None:
+        """ Sets the learning rate to the initial LR decayed by gamma every step_size epochs. """
         lr = base_lr * (gamma ** (epoch // step_size))
         for param_group in self.optimizer.param_groups:
             param_group['lr'] = lr
 
     @print_evaluation(verbose=True, goals_to_print=("validation_error", "test_error"))
     def evaluate(self, n_resources: int) -> OptimizationGoals:
+        """ Aggregate the steps:
+            - train model (available through self._train)
+            - evaluate model with respect to the test/validation set(s) (available through self._test)
+            - report performance
+        :param n_resources: number of resources allocated for training (used by Hyperband methods)
+        :return: optimization goals - metrics in terms of which we can perform optimization
+                 Eg. validation error, test error
+        """
         self.n_resources += n_resources
         arm = self.arm
 
         # Load model and optimiser from file to resume training
-        start_epoch = self.resume_from_checkpoint()
+        start_epoch = self._resume_from_checkpoint()
 
         # Rest of the tunable hyperparameters
         batch_size = int(arm.batch_size)
@@ -64,7 +72,7 @@ class CifarEvaluator(TorchEvaluator):
 
         for epoch in range(start_epoch, start_epoch + max_epochs):
             # Adjust learning rate by decay schedule
-            self.adjust_learning_rate(epoch, base_lr, gamma, step_size)
+            self._adjust_learning_rate(epoch, base_lr, gamma, step_size)
             # Train the net for one epoch
             self._train(epoch, min(n_batches, batches_per_epoch), batch_size=batch_size)
             # Decrement n_batches remaining
@@ -81,14 +89,31 @@ class CifarEvaluator(TorchEvaluator):
 
 class CifarProblem(HyperparameterOptimizationProblem):
 
+    """
+    Classification on CIFAR-10 dataset with a CNN
+    """
+
     def __init__(self, data_dir: str, output_dir: str, dataset_loader: Type[ImageDatasetLoader] = CIFARLoader,
                  hyperparams_domain: Domain = HYPERPARAMS_DOMAIN,
                  hyperparams_to_opt: Tuple[str, ...] = HYPERPARAMETERS_TO_OPTIMIZE, in_channels: int = 3):
+        """
+        :param data_dir: directory where the dataset is stored (or will be downloaded to if not already)
+        :param output_dir: directory where to save the arms and their evaluation progress so far (as checkpoints)
+        :param dataset_loader: dataset loader class. Note it is not instantiated (e.g. CIFARLoader)
+        :param hyperparams_domain: names of the hyperparameters of a model along with their domain, that is
+                                   ranges, distributions etc. (self.domain)
+        :param hyperparams_to_opt: names of hyperparameters to be optimized, if () all params from domain are optimized
+        :param in_channels: in_channels of CNNBuilder (for CudaConvNet2)
+        """
         dataset_loader = dataset_loader(data_dir)
         super().__init__(hyperparams_domain, hyperparams_to_opt, dataset_loader, output_dir)
         self.in_channels = in_channels
 
-    def get_evaluator(self, arm: Arm = None) -> CifarEvaluator:
+    def get_evaluator(self, arm: Optional[Arm] = None) -> CifarEvaluator:
+        """
+        :param arm: a combination of hyperparameters and their values
+        :return: problem evaluator for an arm (given or random if not given)
+        """
         if arm is None:  # if no arm is provided, generate a random arm
             arm = Arm()
             arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)

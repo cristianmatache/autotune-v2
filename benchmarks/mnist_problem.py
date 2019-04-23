@@ -25,11 +25,19 @@ class MnistEvaluator(TorchEvaluator):
 
     @print_evaluation(verbose=True, goals_to_print=("test_correct", "validation_error"))
     def evaluate(self, n_resources: int) -> OptimizationGoals:
+        """ Aggregate the steps:
+            - train model (available through self._train)
+            - evaluate model with respect to the test/validation set(s) (available through self._test)
+            - report performance
+        :param n_resources: number of resources allocated for training (used by Hyperband methods)
+        :return: optimization goals - metrics in terms of which we can perform optimization
+                 Eg. validation error, test error
+        """
         self.n_resources += n_resources
         arm = self.arm
 
         # Load model and optimiser from file to resume training
-        start_epoch = self.resume_from_checkpoint()
+        start_epoch = self._resume_from_checkpoint()
 
         # Rest of the tunable hyperparameters
         batch_size = int(arm.batch_size)
@@ -56,12 +64,27 @@ class MnistEvaluator(TorchEvaluator):
 
 class MnistProblem(HyperparameterOptimizationProblem):
 
+    """
+    Classification on MNIST dataset with logistic regression
+    """
+
     def __init__(self, data_dir: str, output_dir: str,
                  hyperparams_domain: Domain = HYPERPARAMS_DOMAIN, hyperparams_to_opt: Tuple[str, ...] = ()):
+        """
+        :param data_dir: directory where the dataset is stored (or will be downloaded to if not already)
+        :param output_dir: directory where to save the arms and their evaluation progress so far (as checkpoints)
+        :param hyperparams_domain: names of the hyperparameters of a model along with their domain, that is
+                                   ranges, distributions etc. (self.domain)
+        :param hyperparams_to_opt: names of hyperparameters to be optimized, if () all params from domain are optimized
+        """
         dataset_loader = MNISTLoader(data_dir)
         super().__init__(hyperparams_domain, hyperparams_to_opt, dataset_loader, output_dir)
 
     def get_evaluator(self, arm: Arm = None) -> MnistEvaluator:
+        """
+        :param arm: a combination of hyperparameters and their values
+        :return: problem evaluator for an arm (given or random if not given)
+        """
         if arm is None:  # if no arm is provided, generate a random arm
             arm = Arm()
             arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)

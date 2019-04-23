@@ -15,12 +15,12 @@ class BraninBuilder(ModelBuilder[Any, Any]):
 
     def __init__(self, arm: Arm):
         """
-        :param arm: hyperparameters and their values
+        :param arm: a combination of hyperparameters and their values
         """
         super().__init__(arm)
 
     def construct_model(self) -> None:
-        """ Branin is a known function (so it has no machine learning model associated with it)
+        """ Branin is a known function (so it has no machine learning model associated to it)
         """
         pass
 
@@ -29,7 +29,7 @@ class BraninEvaluator(Evaluator):
 
     @print_evaluation(verbose=True, goals_to_print=())
     def evaluate(self, n_resources: int) -> OptimizationGoals:
-        """ Given an arm (draw of hyperparameter values),
+        """ Given an arm (draw of hyperparameter values), evaluate the Branin function on it
         :param n_resources: this parameter is not used in this function but all optimisers require this parameter
         :return: the function value for the current arm can be found in OptimizationGoals.fval, Note that test_error and
         validation_error attributes are mandatory for OptimizationGoals objects but Branin has no machine learning model
@@ -77,7 +77,7 @@ class BraninProblem(HyperparameterOptimizationProblem):
 
     def get_evaluator(self, arm: Optional[Arm] = None) -> BraninEvaluator:
         """
-        :param arm: a draw of hyperparameters and their values
+        :param arm: a combination of hyperparameters and their values
         :return: problem evaluator for an arm (given or random if not given)
         """
         if arm is None:  # if no arm is provided, generate a random arm

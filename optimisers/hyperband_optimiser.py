@@ -16,35 +16,40 @@ class HyperbandOptimiser(Optimiser):
 
     def __init__(self, eta: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
                  optimization_func: Callable[[OptimizationGoals], float] = Optimiser.default_optimization_func):
+        """
+        :param eta: halving rate
+        :param max_iter: max iteration (considered infinity if None) - stopping condition
+        :param max_time: max time a user is willing to wait for (considered infinity if None) - stopping cond. NOT USED
+        :param min_or_max: min/max (built in functions) - whether to minimize or to maximize the optimization_goal
+        :param optimization_func: function in terms of which to perform optimization (can aggregate several optimization
+                                  goals or can just return the value of one optimization goal)
+        """
         super().__init__(max_iter, max_time, min_or_max, optimization_func)
         if max_iter is None:
             raise ValueError("For Hyperband max_iter cannot be None")
         self.eta = eta
 
-    def _get_opt_goal_val(self, evaluation: Evaluation) -> float:
-        """ Given an evaluator and the result(s) of its evaluate() method retrieves the value of the optimization goal.
-        For example: if we are optimizing in terms of validation error (i.e. self.optimization_goal = "val_error")
-        this function will return the validation error that corresponds to evaluator.evaluate().val_error.
-        :param evaluation: an ordered pair (evaluator, result of evaluator's evaluate() method)
-        :return: the value of the optimization goal (Eg. evaluator.evaluate().val_error if we minimize validation error)
-        """
+    def _get_optimization_func_val(self, evaluation: Evaluation) -> float:
         return self.optimization_func(evaluation.optimization_goals)
 
     def _get_best_n_evaluators(self, n: int, evaluations: List[Evaluation]) -> List[Evaluator]:
-        """ Supposing we want to optimize (min) in terms of validation error (i.e. self.optimization_goal = "val_error")
-        Given a list of evaluators and their results [(evaluator, optimization_goals)] this function returns the
-        list of the evaluators that yielded the smallest n optimization_goals.val_error(s).
-        Note that for minimization we sort in ascending order while for maximization we sort in descending order.
+        """ Note that for minimization we sort in ascending order while for maximization we sort in descending order by
+        the value of the optimization_func applied on evaluations
         :param n: number of top "best evaluators" to retrieve
         :param evaluations: A list of ordered pairs (evaluator, result of evaluator's evaluate() method)
         :return: best n evaluators (those evaluators that gave the best n values on self.optimization_goal)
         """
         is_descending = self.min_or_max == max
-        sorted_evaluations_by_res = sorted(evaluations, key=self._get_opt_goal_val, reverse=is_descending)
+        sorted_evaluations_by_res = sorted(evaluations, key=self._get_optimization_func_val, reverse=is_descending)
         sorted_evaluators = [evaluation.evaluator for evaluation in sorted_evaluations_by_res]
         return sorted_evaluators[:n]
 
     def run_optimization(self, problem: HyperparameterOptimizationProblem, verbosity: bool = False) -> Evaluation:
+        """
+        :param problem: optimization problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
+        :param verbosity: whether to print the results of every single evaluation/iteration
+        :return: Evaluation of best arm (evaluator, optimization_goals)
+        """
         self._init_optimizer_metrics()
 
         R = self.max_iter  # maximum amount of resource that can be allocated to a single hyperparameter configuration
@@ -73,7 +78,7 @@ class HyperbandOptimiser(Optimiser):
                 # Halving: keep best 1/eta of them, which will be allocated more resources/iterations
                 evaluators = self._get_best_n_evaluators(n=int(n_i/eta), evaluations=evaluations)
 
-                best_evaluation_in_round = self.min_or_max(evaluations, key=self._get_opt_goal_val)
+                best_evaluation_in_round = self.min_or_max(evaluations, key=self._get_optimization_func_val)
                 self._update_evaluation_history(*best_evaluation_in_round)
 
                 self._update_optimizer_metrics()

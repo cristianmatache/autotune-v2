@@ -46,7 +46,7 @@ class Evaluator:
 
     @abstractmethod
     def evaluate(self, *args: Any, **kwargs: Any) -> OptimizationGoals:
-        """ Aggregate the steps:
+        """ Aggregates the steps:
             - train model (available through self._train)
             - evaluate model with respect to the test/validation set(s) (available through self._test)
             - report performance

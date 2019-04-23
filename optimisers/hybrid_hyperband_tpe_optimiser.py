@@ -13,14 +13,28 @@ END = Style.RESET_ALL
 
 class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
 
+    """
+    Hybrid method Hyperband-TPE adapted from https://arxiv.org/pdf/1801.01596.pdf
+    """
+
     def __init__(self, eta: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
                  optimization_func: Callable[[OptimizationGoals], float] = Optimiser.default_optimization_func):
+        """
+        :param eta: halving rate
+        :param max_iter: max iteration (considered infinity if None) - stopping condition
+        :param max_time: max time a user is willing to wait for (considered infinity if None) - stopping cond. NOT USED
+        :param min_or_max: min/max (built in functions) - whether to minimize or to maximize the optimization_goal
+        :param optimization_func: function in terms of which to perform optimization (can aggregate several optimization
+                                  goals or can just return the value of one optimization goal)
+        """
         super().__init__(eta, max_iter, max_time, min_or_max, optimization_func)
-        if min_or_max == max:
-            raise ValueError("Hybrid Hyperband-TPE supports minimization only, if you need maximization please "
-                             "use minimization on the negative optimization goal")
 
     def run_optimization(self, problem: HyperparameterOptimizationProblem, verbosity: bool = False) -> Evaluation:
+        """
+        :param problem: optimization problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
+        :param verbosity: whether to print the results of every single evaluation/iteration
+        :return: Evaluation of best arm (evaluator, optimization_goals)
+        """
         self._init_optimizer_metrics()
 
         R = self.max_iter  # maximum amount of resource that can be allocated to a single hyperparameter configuration
@@ -61,7 +75,7 @@ class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
                 # Halving: keep best 1/eta of them, which will be allocated more resources/iterations
                 evaluators = self._get_best_n_evaluators(n=int(n_i/eta), evaluations=evaluations)
 
-                best_evaluation_in_round = self.min_or_max(evaluations, key=self._get_opt_goal_val)
+                best_evaluation_in_round = self.min_or_max(evaluations, key=self._get_optimization_func_val)
                 self._update_evaluation_history(*best_evaluation_in_round)
 
                 self._update_optimizer_metrics()

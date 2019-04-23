@@ -43,12 +43,13 @@ class HyperparameterOptimizationProblem:
         PrettyPrinter(indent=4).pprint(self.domain.__dict__)
 
     @abstractmethod
-    def get_evaluator(self, arm: Arm = None) -> Evaluator:
+    def get_evaluator(self, arm: Optional[Arm] = None) -> Evaluator:
         """ An evaluator must:
         - generate random arm(s) if None is given
         - build the model based on this arm
         - train it
         - report the model's performance (eg. test_error)
+        :param arm: arm which the evaluator will build a model upon and evaluate
         :return: evaluator
         """
         pass

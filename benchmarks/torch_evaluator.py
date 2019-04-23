@@ -13,6 +13,10 @@ from datasets.image_dataset_loaders import ImageDatasetLoader
 
 class TorchEvaluator(Evaluator):
 
+    """
+    Framework for evaluators based on pytorch models
+    """
+
     def __init__(self, model_builder: ModelBuilder, dataset_loader: ImageDatasetLoader,
                  criterion: Module = torch.nn.CrossEntropyLoss(), output_dir: str = ".", file_name: str = "model.pth"):
         """
@@ -39,8 +43,10 @@ class TorchEvaluator(Evaluator):
             'test_error': test_error,
         }, self.file_path)
 
-    def resume_from_checkpoint(self) -> int:
-        # Load model and optimiser from file to resume training
+    def _resume_from_checkpoint(self) -> int:
+        """ Load model and optimiser from file to resume training
+        :return: start epoch
+        """
         checkpoint = torch.load(self.file_path)
         start_epoch = checkpoint['epoch']
         self.ml_model = checkpoint['model']
@@ -48,6 +54,12 @@ class TorchEvaluator(Evaluator):
         return start_epoch
 
     def _train(self, epoch: int, max_batches: int, batch_size: int = 100) -> float:
+        """ Train for one epoch
+        :param epoch: epoch number
+        :param max_batches: maximum number of batches
+        :param batch_size: size of batch (in terms of number of examples)
+        :return: train loss/error
+        """
         loader = self.dataset_loader.train_loader(batch_size=batch_size)
 
         print('\nEpoch: %d' % epoch)
@@ -76,6 +88,10 @@ class TorchEvaluator(Evaluator):
         return train_loss
 
     def _test(self, is_validation: bool) -> Tuple[float, ...]:
+        """
+        :param is_validation: whether the function is applied on the validation set or on the test set
+        :return: values that will be used in OptimizationGoals (eg. test/validation error, number of true positives)
+        """
         loader = self.dataset_loader.val_loader if is_validation else self.dataset_loader.test_loader
 
         self.ml_model.eval()
@@ -98,4 +114,12 @@ class TorchEvaluator(Evaluator):
 
     @abstractmethod
     def evaluate(self, n_resources: int) -> OptimizationGoals:
+        """ Aggregate the steps:
+            - train model (available through self._train)
+            - evaluate model with respect to the test/validation set(s) (available through self._test)
+            - report performance
+        :param n_resources: number of resources allocated for training (used by Hyperband methods)
+        :return: optimization goals - metrics in terms of which we can perform optimization
+                 Eg. validation error, test error
+        """
         pass
