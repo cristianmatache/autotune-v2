@@ -29,7 +29,7 @@ class HyperbandOptimiser(Optimiser):
             raise ValueError("For Hyperband max_iter cannot be None")
         self.eta = eta
 
-    def _get_optimization_func_val(self, evaluation: Evaluation) -> float:
+    def _get_optimisation_func_val(self, evaluation: Evaluation) -> float:
         return self.optimisation_func(evaluation.optimisation_goals)
 
     def _get_best_n_evaluators(self, n: int, evaluations: List[Evaluation]) -> List[Evaluator]:
@@ -40,7 +40,7 @@ class HyperbandOptimiser(Optimiser):
         :return: best n evaluators (those evaluators that gave the best n values on self.optimization_goal)
         """
         is_descending = self.min_or_max == max
-        sorted_evaluations_by_res = sorted(evaluations, key=self._get_optimization_func_val, reverse=is_descending)
+        sorted_evaluations_by_res = sorted(evaluations, key=self._get_optimisation_func_val, reverse=is_descending)
         sorted_evaluators = [evaluation.evaluator for evaluation in sorted_evaluations_by_res]
         return sorted_evaluators[:n]
 
@@ -78,7 +78,7 @@ class HyperbandOptimiser(Optimiser):
                 # Halving: keep best 1/eta of them, which will be allocated more resources/iterations
                 evaluators = self._get_best_n_evaluators(n=int(n_i/eta), evaluations=evaluations)
 
-                best_evaluation_in_round = self.min_or_max(evaluations, key=self._get_optimization_func_val)
+                best_evaluation_in_round = self.min_or_max(evaluations, key=self._get_optimisation_func_val)
                 self._update_evaluation_history(*best_evaluation_in_round)
 
                 self._update_optimiser_metrics()

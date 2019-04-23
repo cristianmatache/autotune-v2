@@ -75,7 +75,7 @@ class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
                 # Halving: keep best 1/eta of them, which will be allocated more resources/iterations
                 evaluators = self._get_best_n_evaluators(n=int(n_i/eta), evaluations=evaluations)
 
-                best_evaluation_in_round = self.min_or_max(evaluations, key=self._get_optimization_func_val)
+                best_evaluation_in_round = self.min_or_max(evaluations, key=self._get_optimisation_func_val)
                 self._update_evaluation_history(*best_evaluation_in_round)
 
                 self._update_optimiser_metrics()
