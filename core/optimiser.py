@@ -48,7 +48,7 @@ class Optimiser:
         self.eval_history.append(Evaluation(evaluator, opt_goals))
 
     def _get_best_evaluation(self) -> Evaluation:
-        return self.min_or_max(self.eval_history, key=lambda e: self.optimisation_func(e.optimization_goals))
+        return self.min_or_max(self.eval_history, key=lambda e: self.optimisation_func(e.optimisation_goals))
 
     @abstractmethod
     def run_optimisation(self, problem: HyperparameterOptimisationProblem, verbosity: bool) -> Evaluation:
