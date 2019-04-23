@@ -29,7 +29,7 @@ class RandomOptimiser(Optimiser):
         :param verbosity: whether to print the results of every single evaluation/iteration
         :return: Evaluation of best arm (evaluator, optimization_goals)
         """
-        self._init_optimizer_metrics()
+        self._init_optimiser_metrics()
 
         while not self._needs_to_stop():
             # Draw random sample
@@ -39,7 +39,7 @@ class RandomOptimiser(Optimiser):
             # Update evaluation history: arms tried so far, validation and test errors so far
             self._update_evaluation_history(evaluator, opt_goals)
             # Update evaluation metrics: time so far, number of evaluations so far, checkpoint times so far
-            self._update_optimizer_metrics()
+            self._update_optimiser_metrics()
 
             if verbosity:
                 self._print_evaluation(self.optimisation_func(opt_goals))

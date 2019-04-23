@@ -59,14 +59,14 @@ class Optimiser:
         """
         pass
 
-    def _init_optimizer_metrics(self) -> None:
+    def _init_optimiser_metrics(self) -> None:
         """
         Optimizer metrics are:
         - time when the optimization started
         - time elapsed since we started optimization
         - number of iterations
         - times at which each evaluation ended
-        Note that these metrics have a canonical update method _update_optimizer_metrics but can also be updated  in a
+        Note that these metrics have a canonical update method _update_optimiser_metrics but can also be updated in a
         different way (for example in TPE)
         """
         self.time_zero = time.time()  # start time of optimization
@@ -74,7 +74,7 @@ class Optimiser:
         self.num_iterations = 0       #
         self.checkpoints = []         # list of cum_times of successful evaluations/iterations so far
 
-    def _update_optimizer_metrics(self) -> None:
+    def _update_optimiser_metrics(self) -> None:
         self.cum_time = time.time() - self.time_zero
         self.num_iterations += 1
         self.checkpoints.append(self.cum_time)

@@ -36,7 +36,7 @@ class SigOptimiser(Optimiser):
         :param verbosity: whether to print the results of every single evaluation/iteration
         :return: Evaluation of best arm (evaluator, optimization_goals)
         """
-        self._init_optimizer_metrics()
+        self._init_optimiser_metrics()
 
         # Wrap parameter space
         space = problem.get_sigopt_space_from_hyperparams_to_opt()
@@ -68,7 +68,7 @@ class SigOptimiser(Optimiser):
             )
 
             # Update current evaluation time and function evaluations
-            self._update_optimizer_metrics()
+            self._update_optimiser_metrics()
 
             if verbosity:
                 self._print_evaluation(self.optimisation_func(opt_goals))

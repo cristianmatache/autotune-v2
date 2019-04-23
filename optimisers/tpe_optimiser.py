@@ -33,7 +33,7 @@ class TpeOptimiser(Optimiser):
         :param verbosity: whether to print the results of every single evaluation/iteration
         :return: Evaluation of best arm (evaluator, optimization_goals)
         """
-        self._init_optimizer_metrics()
+        self._init_optimiser_metrics()
 
         # Wrap parameter space
         param_space = problem.get_hyperopt_space_from_hyperparams_to_opt()

@@ -50,7 +50,7 @@ class HyperbandOptimiser(Optimiser):
         :param verbosity: whether to print the results of every single evaluation/iteration
         :return: Evaluation of best arm (evaluator, optimization_goals)
         """
-        self._init_optimizer_metrics()
+        self._init_optimiser_metrics()
 
         R = self.max_iter  # maximum amount of resource that can be allocated to a single hyperparameter configuration
         eta = self.eta     # halving rate
@@ -81,7 +81,7 @@ class HyperbandOptimiser(Optimiser):
                 best_evaluation_in_round = self.min_or_max(evaluations, key=self._get_optimization_func_val)
                 self._update_evaluation_history(*best_evaluation_in_round)
 
-                self._update_optimizer_metrics()
+                self._update_optimiser_metrics()
                 if verbosity:
                     self._print_evaluation(self.optimisation_func(best_evaluation_in_round.optimization_goals))
 
