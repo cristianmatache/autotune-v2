@@ -106,7 +106,7 @@ class Optimiser:
         """
         num_spaces = 8
         best_so_far = self.min_or_max(
-            [self.optimisation_func(evaluation.optimization_goals) for evaluation in self.eval_history]
+            [self.optimisation_func(evaluation.optimisation_goals) for evaluation in self.eval_history]
         )
 
         print(f"{Fore.GREEN if opt_func_value == best_so_far else Fore.RED}"

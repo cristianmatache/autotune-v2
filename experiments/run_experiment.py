@@ -113,7 +113,7 @@ if __name__ == "__main__":
     optimum_evaluation = optimiser.run_optimisation(problem, verbosity=True)
     print(f"Best hyperparams:\n{optimum_evaluation.evaluator.arm}\n"
           f"with:\n"
-          f"  - {optimization_func.__doc__}: {optimization_func(optimum_evaluation.optimization_goals)}\n"
+          f"  - {optimization_func.__doc__}: {optimization_func(optimum_evaluation.optimisation_goals)}\n"
           f"Total time:\n  - {optimiser.checkpoints[-1]} seconds")
 
     output_file_path = join_path(args.output_dir, "results.pkl")

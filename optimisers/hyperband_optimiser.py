@@ -30,7 +30,7 @@ class HyperbandOptimiser(Optimiser):
         self.eta = eta
 
     def _get_optimization_func_val(self, evaluation: Evaluation) -> float:
-        return self.optimisation_func(evaluation.optimization_goals)
+        return self.optimisation_func(evaluation.optimisation_goals)
 
     def _get_best_n_evaluators(self, n: int, evaluations: List[Evaluation]) -> List[Evaluator]:
         """ Note that for minimization we sort in ascending order while for maximization we sort in descending order by

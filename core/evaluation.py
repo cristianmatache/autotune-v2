@@ -12,4 +12,4 @@ class Evaluation(NamedTuple):
     """
 
     evaluator: Evaluator  # Note that the evaluator contains the arm it evaluated
-    optimization_goals: OptimisationGoals
+    optimisation_goals: OptimisationGoals

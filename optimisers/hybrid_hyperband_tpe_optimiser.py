@@ -62,7 +62,7 @@ class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
                     tpe_optimizer.run_optimisation(problem, verbosity=True)
 
                     # evaluators = [h.evaluator for h in tpe_optimizer.eval_history]
-                    evaluations = [Evaluation(h.evaluator, h.optimization_goals) for h in tpe_optimizer.eval_history]
+                    evaluations = [Evaluation(h.evaluator, h.optimisation_goals) for h in tpe_optimizer.eval_history]
 
                     print(f"{COL}\n{'=' * 73}\n>> Generated {n} evaluators and evaluated with TPE for {r_i} resources\n"
                           f"--- Starting halving ---{END}")
