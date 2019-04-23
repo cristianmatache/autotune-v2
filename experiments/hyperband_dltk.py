@@ -30,7 +30,7 @@ problem.print_domain()
 
 # Run hyperband
 hyperband_opt = HyperbandOptimiser()
-hyperband_opt.run_optimization(problem, max_iter=n_resources, verbosity=True)
+hyperband_opt.run_optimisation(problem, max_iter=n_resources, verbosity=True)
 
 print("Optimal arm: "
       "parameters = {}"

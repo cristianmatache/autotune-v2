@@ -29,7 +29,7 @@ class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
         """
         super().__init__(eta, max_iter, max_time, min_or_max, optimization_func)
 
-    def run_optimization(self, problem: HyperparameterOptimisationProblem, verbosity: bool = False) -> Evaluation:
+    def run_optimisation(self, problem: HyperparameterOptimisationProblem, verbosity: bool = False) -> Evaluation:
         """
         :param problem: optimization problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
         :param verbosity: whether to print the results of every single evaluation/iteration
@@ -59,7 +59,7 @@ class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
                 if i == 0:  # Generate first n_i arms/evaluators with TPE
                     tpe_optimizer = TpeOptimiser(n_resources=r_i, max_iter=n_i,
                                                  optimization_func=self.optimization_func)
-                    tpe_optimizer.run_optimization(problem, verbosity=True)
+                    tpe_optimizer.run_optimisation(problem, verbosity=True)
 
                     # evaluators = [h.evaluator for h in tpe_optimizer.eval_history]
                     evaluations = [Evaluation(h.evaluator, h.optimization_goals) for h in tpe_optimizer.eval_history]

@@ -44,7 +44,7 @@ class HyperbandOptimiser(Optimiser):
         sorted_evaluators = [evaluation.evaluator for evaluation in sorted_evaluations_by_res]
         return sorted_evaluators[:n]
 
-    def run_optimization(self, problem: HyperparameterOptimisationProblem, verbosity: bool = False) -> Evaluation:
+    def run_optimisation(self, problem: HyperparameterOptimisationProblem, verbosity: bool = False) -> Evaluation:
         """
         :param problem: optimization problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
         :param verbosity: whether to print the results of every single evaluation/iteration

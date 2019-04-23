@@ -30,7 +30,7 @@ class SigOptimiser(Optimiser):
         self.sign = -1 if min_or_max == max else 1
         self.n_resources = n_resources
 
-    def run_optimization(self, problem: HyperparameterOptimisationProblem, verbosity: bool) -> Evaluation:
+    def run_optimisation(self, problem: HyperparameterOptimisationProblem, verbosity: bool) -> Evaluation:
         """
         :param problem: optimization problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
         :param verbosity: whether to print the results of every single evaluation/iteration

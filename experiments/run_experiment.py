@@ -110,7 +110,7 @@ if __name__ == "__main__":
     optimiser = get_optimiser()
 
     print(optimiser)
-    optimum_evaluation = optimiser.run_optimization(problem, verbosity=True)
+    optimum_evaluation = optimiser.run_optimisation(problem, verbosity=True)
     print(f"Best hyperparams:\n{optimum_evaluation.evaluator.arm}\n"
           f"with:\n"
           f"  - {optimization_func.__doc__}: {optimization_func(optimum_evaluation.optimization_goals)}\n"
