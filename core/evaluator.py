@@ -5,7 +5,7 @@ from typing import Any, Tuple
 
 
 from core.model_builder import ModelBuilder
-from core.optimization_goals import OptimizationGoals
+from core.optimisation_goals import OptimizationGoals
 
 
 def ensure_dir(path: str) -> str:

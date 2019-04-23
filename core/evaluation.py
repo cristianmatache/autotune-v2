@@ -1,7 +1,7 @@
 from typing import NamedTuple
 
 from core.evaluator import Evaluator
-from core.optimization_goals import OptimizationGoals
+from core.optimisation_goals import OptimizationGoals
 
 
 class Evaluation(NamedTuple):

@@ -5,7 +5,7 @@ import time
 from colorama import Fore, Style
 
 from core.problem_def import HyperparameterOptimizationProblem
-from core.optimization_goals import OptimizationGoals
+from core.optimisation_goals import OptimizationGoals
 from core.evaluator import Evaluator
 from core.evaluation import Evaluation
 
