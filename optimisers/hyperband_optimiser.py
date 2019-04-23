@@ -2,7 +2,7 @@ from math import log, ceil
 from typing import Callable, List
 from colorama import Style, Fore
 
-from core.optimiser import Optimiser, Evaluation, Evaluator, HyperparameterOptimizationProblem, OptimizationGoals
+from core.optimiser import Optimiser, Evaluation, Evaluator, HyperparameterOptimizationProblem, OptimisationGoals
 
 COL = Fore.MAGENTA
 
@@ -15,7 +15,7 @@ class HyperbandOptimiser(Optimiser):
     """
 
     def __init__(self, eta: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
-                 optimization_func: Callable[[OptimizationGoals], float] = Optimiser.default_optimization_func):
+                 optimization_func: Callable[[OptimisationGoals], float] = Optimiser.default_optimization_func):
         """
         :param eta: halving rate
         :param max_iter: max iteration (considered infinity if None) - stopping condition

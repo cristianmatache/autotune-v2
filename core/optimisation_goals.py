@@ -5,7 +5,7 @@ from util.frozen_class import frozen_class
 
 
 @frozen_class
-class OptimizationGoals(SimpleNamespace):
+class OptimisationGoals(SimpleNamespace):
 
     """
     Metrics in terms of which we can perform optimization (individually or by aggregation). That is, the optimizers will

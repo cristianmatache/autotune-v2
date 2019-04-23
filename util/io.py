@@ -1,11 +1,11 @@
 from typing import Callable, Tuple
 from colorama import Fore, Style
 
-from core import OptimizationGoals, Evaluator
+from core import OptimisationGoals, Evaluator
 from util.progress_bar import progress_bar
 
 
-EVALUATE_METHOD_TYPE = Callable[[Evaluator, int], OptimizationGoals]
+EVALUATE_METHOD_TYPE = Callable[[Evaluator, int], OptimisationGoals]
 
 
 def print_evaluation(verbose: bool = False, goals_to_print: Tuple[str] = ()) \
@@ -20,7 +20,7 @@ def print_evaluation(verbose: bool = False, goals_to_print: Tuple[str] = ()) \
     :return: decorated Evaluator.evaluate method
     """
     def decorator(evaluate_method: EVALUATE_METHOD_TYPE) -> EVALUATE_METHOD_TYPE:
-        def wrapper(self: Evaluator, n_resources: int) -> OptimizationGoals:
+        def wrapper(self: Evaluator, n_resources: int) -> OptimisationGoals:
             if verbose:
                 print(f"\n\n\n{Fore.CYAN}{'-' * 20} Evaluating model on arm {'-' * 20}\n{self.arm}{Style.RESET_ALL}")
             opt_goal = evaluate_method(self, n_resources)

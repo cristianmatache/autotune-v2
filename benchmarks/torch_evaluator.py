@@ -5,7 +5,7 @@ from torch.autograd import Variable
 from torch import cuda
 from typing import Tuple
 
-from core import Evaluator, OptimizationGoals
+from core import Evaluator, OptimisationGoals
 from benchmarks.torch_model_builders import ModelBuilder
 from datasets.image_dataset_loaders import ImageDatasetLoader
 
@@ -112,7 +112,7 @@ class TorchEvaluator(Evaluator):
         return 1 - correct / total, correct, total
 
     @abstractmethod
-    def evaluate(self, n_resources: int) -> OptimizationGoals:
+    def evaluate(self, n_resources: int) -> OptimisationGoals:
         """ Aggregate the steps:
             - train model (available through self._train)
             - evaluate model with respect to the test/validation set(s) (available through self._test)

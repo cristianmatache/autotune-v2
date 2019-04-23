@@ -2,7 +2,7 @@ from __future__ import division
 import numpy as np
 from typing import Any, Tuple, Optional
 
-from core import HyperparameterOptimizationProblem, Evaluator, Arm, OptimizationGoals, ModelBuilder, Domain
+from core import HyperparameterOptimizationProblem, Evaluator, Arm, OptimisationGoals, ModelBuilder, Domain
 from core.params import *
 from util.io import print_evaluation
 
@@ -28,7 +28,7 @@ class BraninBuilder(ModelBuilder[Any, Any]):
 class BraninEvaluator(Evaluator):
 
     @print_evaluation(verbose=True, goals_to_print=())
-    def evaluate(self, n_resources: int) -> OptimizationGoals:
+    def evaluate(self, n_resources: int) -> OptimisationGoals:
         """ Given an arm (draw of hyperparameter values), evaluate the Branin function on it
         :param n_resources: this parameter is not used in this function but all optimisers require this parameter
         :return: the function value for the current arm can be found in OptimizationGoals.fval, Note that test_error and
@@ -46,7 +46,7 @@ class BraninEvaluator(Evaluator):
         x2 = arm.y
 
         f = a * (x2 - b * x1 ** 2 + c * x1 - r) ** 2 + s * (1 - t) * np.cos(x1) + s
-        return OptimizationGoals(fval=f, test_error=-1, validation_error=-1)
+        return OptimisationGoals(fval=f, test_error=-1, validation_error=-1)
 
     def _train(self, *args: Any, **kwargs: Any) -> None:
         pass

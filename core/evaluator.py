@@ -5,7 +5,7 @@ from typing import Any, Tuple
 
 
 from core.model_builder import ModelBuilder
-from core.optimisation_goals import OptimizationGoals
+from core.optimisation_goals import OptimisationGoals
 
 
 def ensure_dir(path: str) -> str:
@@ -45,7 +45,7 @@ class Evaluator:
         self.n_resources = 0
 
     @abstractmethod
-    def evaluate(self, *args: Any, **kwargs: Any) -> OptimizationGoals:
+    def evaluate(self, *args: Any, **kwargs: Any) -> OptimisationGoals:
         """ Aggregates the steps:
             - train model (available through self._train)
             - evaluate model with respect to the test/validation set(s) (available through self._test)

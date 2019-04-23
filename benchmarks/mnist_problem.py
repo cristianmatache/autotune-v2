@@ -1,7 +1,7 @@
 import numpy as np
 from typing import Tuple
 
-from core import HyperparameterOptimizationProblem, Arm, OptimizationGoals, Domain
+from core import HyperparameterOptimizationProblem, Arm, OptimisationGoals, Domain
 from core.params import *
 
 from datasets.image_dataset_loaders import MNISTLoader
@@ -24,7 +24,7 @@ HYPERPARAMS_DOMAIN = Domain(
 class MnistEvaluator(TorchEvaluator):
 
     @print_evaluation(verbose=True, goals_to_print=("test_correct", "validation_error"))
-    def evaluate(self, n_resources: int) -> OptimizationGoals:
+    def evaluate(self, n_resources: int) -> OptimisationGoals:
         """ Aggregate the steps:
             - train model (available through self._train)
             - evaluate model with respect to the test/validation set(s) (available through self._test)
@@ -58,7 +58,7 @@ class MnistEvaluator(TorchEvaluator):
         test_error, test_correct, test_total = self._test(is_validation=False)
 
         self._save_checkpoint(start_epoch + max_epochs, val_error, test_error)
-        return OptimizationGoals(validation_error=val_error, test_error=test_error, val_correct=val_correct,
+        return OptimisationGoals(validation_error=val_error, test_error=test_error, val_correct=val_correct,
                                  val_total=val_total, test_correct=test_correct, test_total=test_total)
 
 

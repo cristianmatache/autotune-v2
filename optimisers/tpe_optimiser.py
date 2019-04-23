@@ -3,7 +3,7 @@ from functools import partial
 from hyperopt import fmin, tpe, Trials, STATUS_OK
 from typing import Callable, Dict, Union
 
-from core import Optimiser, Evaluation, Arm, HyperparameterOptimizationProblem, Evaluator, OptimizationGoals
+from core import Optimiser, Evaluation, Arm, HyperparameterOptimizationProblem, Evaluator, OptimisationGoals
 
 
 class TpeOptimiser(Optimiser):
@@ -12,7 +12,7 @@ class TpeOptimiser(Optimiser):
     """
 
     def __init__(self, n_resources: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
-                 optimization_func: Callable[[OptimizationGoals], float] = Optimiser.default_optimization_func):
+                 optimization_func: Callable[[OptimisationGoals], float] = Optimiser.default_optimization_func):
         """
         :param n_resources: number of resources per evaluation (of each arm)
         :param max_iter: max iteration (considered infinity if None) - stopping condition
@@ -51,7 +51,7 @@ class TpeOptimiser(Optimiser):
         return self._get_best_evaluation()
 
     def _tpe_objective_function(self, arm_dict: Dict[str, float], problem: HyperparameterOptimizationProblem)\
-            -> Dict[str, Union[float, Evaluator, OptimizationGoals]]:
+            -> Dict[str, Union[float, Evaluator, OptimisationGoals]]:
         """
         :param arm_dict: values for each hyperparameters to optimized populated by hyperopt TPE
         :param problem: eg. MnistProblem (provides an evaluator)

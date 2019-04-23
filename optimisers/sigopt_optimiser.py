@@ -3,7 +3,7 @@ from sigopt import Connection
 from sigopt.objects import Assignments
 from typing import Callable, Tuple
 
-from core import Optimiser, Evaluation, HyperparameterOptimizationProblem, Arm, OptimizationGoals, Evaluator
+from core import Optimiser, Evaluation, HyperparameterOptimizationProblem, Arm, OptimisationGoals, Evaluator
 
 SIGOPT_API_KEY = "RAGFJSAISOJGFQOXCAVIVQRNNGOQNYGDEYISHTETQZCNWJNA"
 
@@ -15,7 +15,7 @@ class SigOptimiser(Optimiser):
     """
 
     def __init__(self, n_resources: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
-                 optimization_func: Callable[[OptimizationGoals], float] = Optimiser.default_optimization_func):
+                 optimization_func: Callable[[OptimisationGoals], float] = Optimiser.default_optimization_func):
         """
         :param n_resources: number of resources per evaluation (of each arm)
         :param max_iter: max iteration (considered infinity if None) - stopping condition
@@ -76,7 +76,7 @@ class SigOptimiser(Optimiser):
         return self._get_best_evaluation()
 
     def _sigopt_objective_function(self, problem: HyperparameterOptimizationProblem, arm_dict: Assignments) \
-            -> Tuple[Evaluator, OptimizationGoals]:
+            -> Tuple[Evaluator, OptimisationGoals]:
         """
         :param problem: eg. MnistProblem (provides an evaluator)
         :param arm_dict: values for each hyperparameters to optimized populated by SigOpt suggestions

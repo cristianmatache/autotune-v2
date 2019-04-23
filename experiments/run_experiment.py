@@ -8,7 +8,7 @@ from core import Optimiser
 from optimisers import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, TpeOptimiser
 
 # Problems
-from core import HyperparameterOptimizationProblem, OptimizationGoals
+from core import HyperparameterOptimizationProblem, OptimisationGoals
 from benchmarks import MnistProblem, CifarProblem, SvhnProblem, MrbiProblem, BraninProblem
 
 
@@ -25,12 +25,12 @@ METHOD = "hybrid"
 MIN_OR_MAX = "min"
 
 
-def optimization_func(opt_goals: OptimizationGoals) -> float:
+def optimization_func(opt_goals: OptimisationGoals) -> float:
     """validation_error"""
     return opt_goals.validation_error
 
 
-def optimization_func_branin(opt_goals: OptimizationGoals) -> float:
+def optimization_func_branin(opt_goals: OptimisationGoals) -> float:
     """2*fval"""
     return 2 * opt_goals.fval
 

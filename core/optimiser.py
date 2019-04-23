@@ -5,7 +5,7 @@ import time
 from colorama import Fore, Style
 
 from core.problem_def import HyperparameterOptimizationProblem
-from core.optimisation_goals import OptimizationGoals
+from core.optimisation_goals import OptimisationGoals
 from core.evaluator import Evaluator
 from core.evaluation import Evaluation
 
@@ -18,12 +18,12 @@ class Optimiser:
     """
 
     @staticmethod
-    def default_optimization_func(opt_goals: OptimizationGoals) -> float:
+    def default_optimization_func(opt_goals: OptimisationGoals) -> float:
         """validation_error (Default optimization_func)"""
         return opt_goals.validation_error
 
     def __init__(self, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
-                 optimization_func: Callable[[OptimizationGoals], float] = default_optimization_func):
+                 optimization_func: Callable[[OptimisationGoals], float] = default_optimization_func):
         """
         :param max_iter: max iteration (considered infinity if None) - stopping condition
         :param max_time: max time a user is willing to wait for (considered infinity if None) - stopping condition
@@ -44,7 +44,7 @@ class Optimiser:
 
         self.eval_history: List[Evaluation] = []
 
-    def _update_evaluation_history(self, evaluator: Evaluator, opt_goals: OptimizationGoals) -> None:
+    def _update_evaluation_history(self, evaluator: Evaluator, opt_goals: OptimisationGoals) -> None:
         self.eval_history.append(Evaluation(evaluator, opt_goals))
 
     def _get_best_evaluation(self) -> Evaluation:

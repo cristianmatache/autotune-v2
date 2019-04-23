@@ -2,7 +2,7 @@ from math import log, ceil
 from typing import Callable
 from colorama import Style, Fore
 
-from core import HyperparameterOptimizationProblem, Evaluation, OptimizationGoals, Optimiser
+from core import HyperparameterOptimizationProblem, Evaluation, OptimisationGoals, Optimiser
 
 from optimisers.hyperband_optimiser import HyperbandOptimiser
 from optimisers.tpe_optimiser import TpeOptimiser
@@ -18,7 +18,7 @@ class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
     """
 
     def __init__(self, eta: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
-                 optimization_func: Callable[[OptimizationGoals], float] = Optimiser.default_optimization_func):
+                 optimization_func: Callable[[OptimisationGoals], float] = Optimiser.default_optimization_func):
         """
         :param eta: halving rate
         :param max_iter: max iteration (considered infinity if None) - stopping condition
