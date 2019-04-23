@@ -38,7 +38,7 @@ class CifarEvaluator(TorchEvaluator):
     def _adjust_learning_rate(self, epoch: int, base_lr: float, gamma: float, step_size: int) -> None:
         """ Sets the learning rate to the initial LR decayed by gamma every step_size epochs. """
         lr = base_lr * (gamma ** (epoch // step_size))
-        for param_group in self.optimizer.param_groups:
+        for param_group in self.optimiser.param_groups:
             param_group['lr'] = lr
 
     @print_evaluation(verbose=True, goals_to_print=("validation_error", "test_error"))
@@ -48,7 +48,7 @@ class CifarEvaluator(TorchEvaluator):
             - evaluate model with respect to the test/validation set(s) (available through self._test)
             - report performance
         :param n_resources: number of resources allocated for training (used by Hyperband methods)
-        :return: optimization goals - metrics in terms of which we can perform optimization
+        :return: optimisation goals - metrics in terms of which we can perform optimisation
                  Eg. validation error, test error
         """
         self.n_resources += n_resources
@@ -102,7 +102,7 @@ class CifarProblem(HyperparameterOptimisationProblem):
         :param dataset_loader: dataset loader class. Note it is not instantiated (e.g. CIFARLoader)
         :param hyperparams_domain: names of the hyperparameters of a model along with their domain, that is
                                    ranges, distributions etc. (self.domain)
-        :param hyperparams_to_opt: names of hyperparameters to be optimized, if () all params from domain are optimized
+        :param hyperparams_to_opt: names of hyperparameters to be optimised, if () all params from domain are optimised
         :param in_channels: in_channels of CNNBuilder (for CudaConvNet2)
         """
         dataset_loader = dataset_loader(data_dir)

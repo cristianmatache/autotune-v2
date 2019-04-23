@@ -15,8 +15,8 @@ def print_evaluation(verbose: bool = False, goals_to_print: Tuple[str] = ()) \
     After  evaluation - prints the OptimisationGoals (the results) for example, that includes validation_error in
                         several cases
     :param verbose: whether to print
-    :param goals_to_print: optimization goals to print (printing all attributes -names and values- of OptimisationGoals
-                           can be too verbose). Set to () if you want to see all optimization goals/
+    :param goals_to_print: optimisation goals to print (printing all attributes -names and values- of OptimisationGoals
+                           can be too verbose). Set to () if you want to see all optimisation goals/
     :return: decorated Evaluator.evaluate method
     """
     def decorator(evaluate_method: EVALUATE_METHOD_TYPE) -> EVALUATE_METHOD_TYPE:

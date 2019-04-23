@@ -23,17 +23,17 @@ class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
         :param eta: halving rate
         :param max_iter: max iteration (considered infinity if None) - stopping condition
         :param max_time: max time a user is willing to wait for (considered infinity if None) - stopping cond. NOT USED
-        :param min_or_max: min/max (built in functions) - whether to minimize or to maximize the optimization_goal
-        :param optimisation_func: function in terms of which to perform optimization (can aggregate several optimization
-                                  goals or can just return the value of one optimization goal)
+        :param min_or_max: min/max (built in functions) - whether to minimize or to maximize the optimisation_goal
+        :param optimisation_func: function in terms of which to perform optimisation (can aggregate several optimisation
+                                  goals or can just return the value of one optimisation goal)
         """
         super().__init__(eta, max_iter, max_time, min_or_max, optimisation_func)
 
     def run_optimisation(self, problem: HyperparameterOptimisationProblem, verbosity: bool = False) -> Evaluation:
         """
-        :param problem: optimization problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
+        :param problem: optimisation problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
         :param verbosity: whether to print the results of every single evaluation/iteration
-        :return: Evaluation of best arm (evaluator, optimization_goals)
+        :return: Evaluation of best arm (evaluator, optimisation_goals)
         """
         self._init_optimiser_metrics()
 

@@ -30,7 +30,7 @@ class MnistEvaluator(TorchEvaluator):
             - evaluate model with respect to the test/validation set(s) (available through self._test)
             - report performance
         :param n_resources: number of resources allocated for training (used by Hyperband methods)
-        :return: optimization goals - metrics in terms of which we can perform optimization
+        :return: optimisation goals - metrics in terms of which we can perform optimisation
                  Eg. validation error, test error
         """
         self.n_resources += n_resources
@@ -75,7 +75,7 @@ class MnistProblem(HyperparameterOptimisationProblem):
         :param output_dir: directory where to save the arms and their evaluation progress so far (as checkpoints)
         :param hyperparams_domain: names of the hyperparameters of a model along with their domain, that is
                                    ranges, distributions etc. (self.domain)
-        :param hyperparams_to_opt: names of hyperparameters to be optimized, if () all params from domain are optimized
+        :param hyperparams_to_opt: names of hyperparameters to be optimised, if () all params from domain are optimised
         """
         dataset_loader = MNISTLoader(data_dir)
         super().__init__(hyperparams_domain, hyperparams_to_opt, dataset_loader, output_dir)

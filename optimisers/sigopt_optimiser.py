@@ -20,21 +20,21 @@ class SigOptimiser(Optimiser):
         :param n_resources: number of resources per evaluation (of each arm)
         :param max_iter: max iteration (considered infinity if None) - stopping condition
         :param max_time: max time a user is willing to wait for (considered infinity if None) - stopping condition
-        :param min_or_max: min/max (built in functions) - whether to minimize or to maximize the optimization_goal
-        :param optimisation_func: function in terms of which to perform optimization (can aggregate several optimization
-                                  goals or can just return the value of one optimization goal)
+        :param min_or_max: min/max (built in functions) - whether to minimize or to maximize the optimisation_goal
+        :param optimisation_func: function in terms of which to perform optimisation (can aggregate several optimisation
+                                  goals or can just return the value of one optimisation goal)
         """
         super().__init__(max_iter, max_time, min_or_max, optimisation_func)
 
-        # SigOpt supports maximization only, so if the problem is minimization, maximize -1 * optimization goal
+        # SigOpt supports maximization only, so if the problem is minimization, maximize -1 * optimisation goal
         self.sign = -1 if min_or_max == max else 1
         self.n_resources = n_resources
 
     def run_optimisation(self, problem: HyperparameterOptimisationProblem, verbosity: bool) -> Evaluation:
         """
-        :param problem: optimization problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
+        :param problem: optimisation problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
         :param verbosity: whether to print the results of every single evaluation/iteration
-        :return: Evaluation of best arm (evaluator, optimization_goals)
+        :return: Evaluation of best arm (evaluator, optimisation_goals)
         """
         self._init_optimiser_metrics()
 
@@ -79,8 +79,8 @@ class SigOptimiser(Optimiser):
             -> Tuple[Evaluator, OptimisationGoals]:
         """
         :param problem: eg. MnistProblem (provides an evaluator)
-        :param arm_dict: values for each hyperparameters to optimized populated by SigOpt suggestions
-        :return: (evaluator, optimization goals)
+        :param arm_dict: values for each hyperparameters to optimised populated by SigOpt suggestions
+        :return: (evaluator, optimisation goals)
         """
         def apply_logarithms() -> Assignments:
             for p_name in list(arm_dict.keys()):  # TODO: ask Jonathan about this without list, I got an error
@@ -91,8 +91,8 @@ class SigOptimiser(Optimiser):
             return arm_dict
 
         arm_dict = apply_logarithms()  # Apply transformations to log params
-        arm = Arm(**arm_dict)          # create Arm from arm_dict for hyperparams that we want to optimize
-        # hyperparameters that do not need to be optimized should be added to the Arm with their default values
+        arm = Arm(**arm_dict)          # create Arm from arm_dict for hyperparams that we want to optimise
+        # hyperparameters that do not need to be optimised should be added to the Arm with their default values
         arm.set_default_values(domain=problem.domain, hyperparams_to_opt=problem.hyperparams_to_opt)
 
         evaluator = problem.get_evaluator(arm=arm)

@@ -203,7 +203,7 @@ class DLTKProblem(CifarProblem):
 
     def construct_model(self, arm):
         """
-        Construct model and optimizer based on hyperparameters
+        Construct model and optimiser based on hyperparameters
         :param arm:
         :return:
         """

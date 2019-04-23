@@ -29,7 +29,7 @@ class TorchModelBuilder(ModelBuilder[Module, Optimizer]):
     @abstractmethod
     def construct_model(self) -> Tuple[Module, Optimizer]:
         """ Constructs the model from the actual hyperparameter values (arm)
-        :return: instances of (module, optimizer)
+        :return: instances of (module, optimiser)
         """
         pass
 
@@ -39,12 +39,12 @@ def _update_model_for_gpu(construct_model_function: CONSTRUCT_MODEL_FUNCTION_TYP
     """ decorator to update the model under construction and allow it to work with GPUs
     """
     def wrapper(self: ModelBuilder) -> Tuple[Module, Optimizer]:
-        model, optimizer = construct_model_function(self)
+        model, optimiser = construct_model_function(self)
         if cuda.is_available():
             model.cuda()
             model = DataParallel(model, device_ids=range(cuda.device_count()))
             backends.cudnn.benchmark = True
-        return model, optimizer
+        return model, optimiser
     return wrapper
 
 
@@ -65,15 +65,15 @@ class CNNBuilder(TorchModelBuilder):
 
     @_update_model_for_gpu
     def construct_model(self) -> Tuple[Module, Optimizer]:
-        """ Construct model and optimizer based on hyperparameters
-        :return: instances of each (model, optimizer) using the hyperparameters as specified by the arm
+        """ Construct model and optimiser based on hyperparameters
+        :return: instances of each (model, optimiser) using the hyperparameters as specified by the arm
         """
         arm = self.arm
         base_lr = arm.learning_rate
 
         model = self.ml_model(self.in_channels, int(arm.n_units_1), int(arm.n_units_2), int(arm.n_units_3))
-        optimizer = SGD(model.parameters(), lr=base_lr, momentum=arm.momentum, weight_decay=arm.weight_decay)
-        return model, optimizer
+        optimiser = SGD(model.parameters(), lr=base_lr, momentum=arm.momentum, weight_decay=arm.weight_decay)
+        return model, optimiser
 
 
 class LogisticRegressionBuilder(TorchModelBuilder):
@@ -86,12 +86,12 @@ class LogisticRegressionBuilder(TorchModelBuilder):
 
     @_update_model_for_gpu
     def construct_model(self) -> Tuple[Module, Optimizer]:
-        """ Construct model and optimizer based on hyperparameters
-        :return: instances of each (model, optimizer) using the hyperparameters as specified by the arm
+        """ Construct model and optimiser based on hyperparameters
+        :return: instances of each (model, optimiser) using the hyperparameters as specified by the arm
         """
         arm = self.arm
         base_lr = arm.learning_rate
 
         model = self.ml_model(input_size=784, num_classes=10)
-        optimizer = SGD(model.parameters(), lr=base_lr, momentum=arm.momentum, weight_decay=arm.weight_decay)
-        return model, optimizer
+        optimiser = SGD(model.parameters(), lr=base_lr, momentum=arm.momentum, weight_decay=arm.weight_decay)
+        return model, optimiser

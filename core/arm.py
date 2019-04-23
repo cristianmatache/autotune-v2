@@ -16,36 +16,36 @@ class Arm(SimpleNamespace):
 
     def __init__(self, **kwargs: float):
         """ If a custom arm is needed, the hyperparameter values can be set from a dictionary. For example, for all
-        informed optimization methods creating Arm this way is required. If one needs random values for each hyperparam,
+        informed optimisation methods creating Arm this way is required. If one needs random values for each hyperparam,
         please use draw_hp_val.
         :param kwargs: {"hyperparameter_name": hyperparameter value}
         """
         super().__init__(**kwargs)
 
     def set_default_values(self, *, domain: Domain, hyperparams_to_opt: Tuple[str, ...]) -> None:
-        """ Sets the hyperparameters that appear in the domain but we don't want to optimize to their default values
+        """ Sets the hyperparameters that appear in the domain but we don't want to optimise to their default values
         if they are not already set
         :param domain: domain of hyperparameters with names, ranges, distributions etc
                        Eg. Domain(momentum=Param(...), learning_rate=Param(...))
-        :param hyperparams_to_opt: hyperparameters to optimize
+        :param hyperparams_to_opt: hyperparameters to optimise
         """
         for hp_name in domain.hyperparams_names():
             if not hasattr(self, hp_name) and hp_name not in hyperparams_to_opt:
-                # if we do not need to optimize hp_name, set Arm value to its default (if not already set)
+                # if we do not need to optimise hp_name, set Arm value to its default (if not already set)
                 hp_val = domain[hp_name].init_val
                 if hp_val is None:
                     raise ValueError(f"No default value for param {hp_name} was supplied")
                 setattr(self, hp_name, hp_val)
 
     def draw_hp_val(self, *, domain: Domain, hyperparams_to_opt: Tuple[str, ...]) -> None:
-        """ Draws random values for the hyperparameters that we want to optimize
+        """ Draws random values for the hyperparameters that we want to optimise
         :param domain: domain of hyperparameters with names, ranges, distributions etc
                        Eg. Domain(momentum=Param(...), learning_rate=Param(...))
-        :param hyperparams_to_opt: hyperparameters to optimize
+        :param hyperparams_to_opt: hyperparameters to optimise
         """
         self.set_default_values(domain=domain, hyperparams_to_opt=hyperparams_to_opt)
         for hp_name in domain.hyperparams_names():
-            if hp_name in hyperparams_to_opt:  # draw random value if we need to optimize the current hyperparameter
+            if hp_name in hyperparams_to_opt:  # draw random value if we need to optimise the current hyperparameter
                 hp_val = domain[hp_name].get_param_range(1, stochastic=True)[0]
                 setattr(self, hp_name, hp_val)
 

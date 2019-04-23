@@ -71,7 +71,7 @@ class BraninProblem(HyperparameterOptimisationProblem):
         :param output_dir: directory where to save the arms and their evaluation progress so far (as checkpoints)
         :param hyperparams_domain: names of the hyperparameters of a model along with their domain, that is
                                    ranges, distributions etc. (self.domain)
-        :param hyperparams_to_opt: names of hyperparameters to be optimized, if () all params from domain are optimized
+        :param hyperparams_to_opt: names of hyperparameters to be optimised, if () all params from domain are optimised
         """
         super().__init__(hyperparams_domain, hyperparams_to_opt, output_dir=output_dir)
 

@@ -20,9 +20,9 @@ class HyperbandOptimiser(Optimiser):
         :param eta: halving rate
         :param max_iter: max iteration (considered infinity if None) - stopping condition
         :param max_time: max time a user is willing to wait for (considered infinity if None) - stopping cond. NOT USED
-        :param min_or_max: min/max (built in functions) - whether to minimize or to maximize the optimization_goal
-        :param optimisation_func: function in terms of which to perform optimization (can aggregate several optimization
-                                  goals or can just return the value of one optimization goal)
+        :param min_or_max: min/max (built in functions) - whether to minimize or to maximize the optimisation_goal
+        :param optimisation_func: function in terms of which to perform optimisation (can aggregate several optimisation
+                                  goals or can just return the value of one optimisation goal)
         """
         super().__init__(max_iter, max_time, min_or_max, optimisation_func)
         if max_iter is None:
@@ -37,7 +37,7 @@ class HyperbandOptimiser(Optimiser):
         the value of the optimisation_func applied on evaluations
         :param n: number of top "best evaluators" to retrieve
         :param evaluations: A list of ordered pairs (evaluator, result of evaluator's evaluate() method)
-        :return: best n evaluators (those evaluators that gave the best n values on self.optimization_goal)
+        :return: best n evaluators (those evaluators that gave the best n values on self.optimisation_goal)
         """
         is_descending = self.min_or_max == max
         sorted_evaluations_by_res = sorted(evaluations, key=self._get_optimisation_func_val, reverse=is_descending)
@@ -46,9 +46,9 @@ class HyperbandOptimiser(Optimiser):
 
     def run_optimisation(self, problem: HyperparameterOptimisationProblem, verbosity: bool = False) -> Evaluation:
         """
-        :param problem: optimization problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
+        :param problem: optimisation problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
         :param verbosity: whether to print the results of every single evaluation/iteration
-        :return: Evaluation of best arm (evaluator, optimization_goals)
+        :return: Evaluation of best arm (evaluator, optimisation_goals)
         """
         self._init_optimiser_metrics()
 
@@ -83,7 +83,7 @@ class HyperbandOptimiser(Optimiser):
 
                 self._update_optimiser_metrics()
                 if verbosity:
-                    self._print_evaluation(self.optimisation_func(best_evaluation_in_round.optimization_goals))
+                    self._print_evaluation(self.optimisation_func(best_evaluation_in_round.optimisation_goals))
 
         return self._get_best_evaluation()
 

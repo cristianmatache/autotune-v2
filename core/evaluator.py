@@ -50,7 +50,7 @@ class Evaluator:
             - train model (available through self._train)
             - evaluate model with respect to the test/validation set(s) (available through self._test)
             - report performance
-        :return: optimization goals - metrics in terms of which we perform optimization
+        :return: optimisation goals - metrics in terms of which we perform optimization
                  Eg. validation error, test error
         """
         pass

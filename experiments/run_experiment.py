@@ -36,11 +36,11 @@ def optimisation_func_branin(opt_goals: OptimisationGoals) -> float:
 
 
 if PROBLEM == "branin":
-    optimization_func = optimisation_func_branin
+    optimisation_func = optimisation_func_branin
 
 
 def _get_args() -> Namespace:
-    parser = argparse.ArgumentParser(description='Running optimizations')
+    parser = argparse.ArgumentParser(description='Running optimisations')
     parser.add_argument('-i', '--input-dir', default=INPUT_DIR, type=str, help='input dir')
     parser.add_argument('-o', '--output-dir', default=OUTPUT_DIR, type=str, help='output dir')
     parser.add_argument('-time', '--max-time', default=MAX_TIME, type=int, help='max time (stop if exceeded)')

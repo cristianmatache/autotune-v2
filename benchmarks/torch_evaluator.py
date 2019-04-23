@@ -26,7 +26,7 @@ class TorchEvaluator(Evaluator):
         :param file_name: file (at output_dir/arm<i>/file_name) which stores the progress of the evaluation of an arm
         """
         super().__init__(model_builder, output_dir, file_name)
-        self.ml_model, self.optimizer = model_builder.construct_model()
+        self.ml_model, self.optimiser = model_builder.construct_model()
         self.criterion = criterion
         self.dataset_loader = dataset_loader
 
@@ -37,7 +37,7 @@ class TorchEvaluator(Evaluator):
         torch.save({
             'epoch': epoch,
             'model': self.ml_model,
-            'optimizer': self.optimizer,
+            'optimiser': self.optimiser,
             'val_error': val_error,
             'test_error': test_error,
         }, self.file_path)
@@ -49,7 +49,7 @@ class TorchEvaluator(Evaluator):
         checkpoint = torch.load(self.file_path)
         start_epoch = checkpoint['epoch']
         self.ml_model = checkpoint['model']
-        self.optimizer = checkpoint['optimizer']
+        self.optimiser = checkpoint['optimiser']
         return start_epoch
 
     def _train(self, epoch: int, max_batches: int, batch_size: int = 100) -> float:
@@ -72,12 +72,12 @@ class TorchEvaluator(Evaluator):
             if cuda.is_available():
                 inputs, targets = inputs.cuda(), targets.cuda()
 
-            self.optimizer.zero_grad()
+            self.optimiser.zero_grad()
             inputs, targets = Variable(inputs), Variable(targets)
             outputs = self.ml_model(inputs)
             loss = self.criterion(outputs, targets)
             loss.backward()
-            self.optimizer.step()
+            self.optimiser.step()
 
             train_loss += loss.data.item()
             _, predicted = torch.max(outputs.data, 1)
@@ -118,7 +118,7 @@ class TorchEvaluator(Evaluator):
             - evaluate model with respect to the test/validation set(s) (available through self._test)
             - report performance
         :param n_resources: number of resources allocated for training (used by Hyperband methods)
-        :return: optimization goals - metrics in terms of which we can perform optimization
+        :return: optimisation goals - metrics in terms of which we can perform optimisation
                  Eg. validation error, test error
         """
         pass

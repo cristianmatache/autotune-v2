@@ -21,17 +21,17 @@ class HyperparameterOptimisationProblem:
         """
         :param hyperparams_domain: names of the hyperparameters of a model along with their domain, that is
                                    ranges, distributions etc. (self.domain)
-        :param hyperparams_to_opt: names of hyperparameters to be optimized
-                                   if set to () all params from domain are optimized
+        :param hyperparams_to_opt: names of hyperparameters to be optimised
+                                   if set to () all params from domain are optimised
         :param dataset_loader: loads a dataset (e.g. CIFARLoader)
         :param output_dir: directory where to save the arms and their evaluation progress so far (as checkpoints)
         """
         self.domain = hyperparams_domain
         if hyperparams_to_opt:  # if any hyperparams_to_opt are given
             self.hyperparams_to_opt = tuple(set(hyperparams_to_opt) & set(self.domain.hyperparams_names()))
-        else:                   # if no hyperparams_to_opt are given, optimize all from domain
+        else:                   # if no hyperparams_to_opt are given, optimise all from domain
             self.hyperparams_to_opt = tuple(self.domain.hyperparams_names())
-        print(f"\n> Hyperparameters to optimize:\n    {'' if hyperparams_to_opt else 'ALL:'} {self.hyperparams_to_opt}")
+        print(f"\n> Hyperparameters to optimise:\n    {'' if hyperparams_to_opt else 'ALL:'} {self.hyperparams_to_opt}")
 
         self.dataset_loader = dataset_loader
         self.output_dir = output_dir
