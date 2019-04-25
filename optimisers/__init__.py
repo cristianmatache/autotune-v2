@@ -1,4 +1,5 @@
 from optimisers.hybrid_hyperband_tpe_optimiser import HybridHyperbandTpeOptimiser
+from optimisers.hybrid_hyperband_sigopt_optimiser import HybridHyperbandSigoptOptimiser
 from optimisers.hyperband_optimiser import HyperbandOptimiser
 from optimisers.random_optimiser import RandomOptimiser
 from optimisers.sigopt_optimiser import SigOptimiser

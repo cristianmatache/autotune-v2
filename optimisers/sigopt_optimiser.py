@@ -27,7 +27,7 @@ class SigOptimiser(Optimiser):
         super().__init__(max_iter, max_time, min_or_max, optimisation_func)
 
         # SigOpt supports maximization only, so if the problem is minimization, maximize -1 * optimisation goal
-        self.sign = -1 if min_or_max == max else 1
+        self.sign = -1 if min_or_max == min else 1
         self.n_resources = n_resources
 
     def run_optimisation(self, problem: HyperparameterOptimisationProblem, verbosity: bool) -> Evaluation:

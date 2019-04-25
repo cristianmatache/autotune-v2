@@ -5,7 +5,8 @@ from os.path import join as join_path
 
 # Optimisers
 from core import Optimiser
-from optimisers import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, TpeOptimiser
+from optimisers import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, TpeOptimiser, \
+    HybridHyperbandSigoptOptimiser
 
 # Problems
 from core import HyperparameterOptimisationProblem, OptimisationGoals
@@ -17,11 +18,11 @@ OUTPUT_DIR = "D:/datasets/output"
 
 N_RESOURCES = 3
 MAX_TIME = None
-MAX_ITER = 6
+MAX_ITER = 27
 ETA = 3
 
-PROBLEM = "mnist"
-METHOD = "hybrid"
+PROBLEM = "branin"
+METHOD = "hb+sigopt"
 MIN_OR_MAX = "min"
 
 
@@ -94,12 +95,15 @@ def get_optimiser() -> Optimiser:
     elif method == "tpe":
         return TpeOptimiser(n_resources=args.n_resources, max_iter=args.max_iter, max_time=args.max_time,
                             min_or_max=min_or_max, optimisation_func=optimisation_func)
-    elif method == "hybrid":
+    elif method == "hb+tpe":
         return HybridHyperbandTpeOptimiser(eta=args.eta, max_iter=args.max_iter, max_time=args.max_time,
                                            min_or_max=min_or_max, optimisation_func=optimisation_func)
     elif method == "sigopt":
         return SigOptimiser(n_resources=args.n_resources, max_iter=args.max_iter, max_time=args.max_time,
                             min_or_max=min_or_max, optimisation_func=optimisation_func)
+    elif method == "hb+sigopt":
+        return HybridHyperbandSigoptOptimiser(eta=args.eta, max_iter=args.max_iter, max_time=args.max_time,
+                                              min_or_max=min_or_max, optimisation_func=optimisation_func)
     else:
         raise ValueError(f"Supplied problem {method} does not exist")
 
