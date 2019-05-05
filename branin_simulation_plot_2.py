@@ -7,7 +7,7 @@ import scipy.stats as stats
 
 from core import Domain, Param
 
-PLOT_SURFACE = True
+PLOT_SURFACE = False
 OUTPUT_DIR = "D:/datasets/output"
 HYPERPARAMS_DOMAIN = Domain(
     x=Param('x', -5, 10, distrib='uniform', scale='linear'),
@@ -67,6 +67,7 @@ def get_aggressiveness_from_gamma_distrib(time: int, n: int, k: int) -> float:
 
 def branin_simulate_ml(x1: Union[int, np.ndarray], x2: Union[int, np.ndarray], time: int = 0,
                        n: int = 81) -> Union[int, np.ndarray]:
+    # for n = 81
     k = 2  # mode of gamma distribution - corresponds to 0 aggressiveness
     h1 = 0.5  # h1, h2 HYPERPARAMETERS TO OPTIMISE
     h2 = 15  # necessary aggressiveness or 5
@@ -96,31 +97,29 @@ def branin_simulate_ml(x1: Union[int, np.ndarray], x2: Union[int, np.ndarray], t
                 f_next_time = f_n
         fs.append(f_next_time)
 
-    # if time == n:
-    #     assert fs[-1] == f_n
-
-    # plt.plot(list(range(time+1)), fs)
+    plt.plot(list(range(time+1)), fs)
     return fs[-1]
 
 
-def plot_branin_surface(n_resources: int, n_iterations: int) -> None:
+def plot_branin_surface(n_resources: int, n_simulations: int) -> None:
     xs = []
     ys = []
-    for i in range(n_iterations):
+    for i in range(n_simulations):
         xs.append(HYPERPARAMS_DOMAIN["x"].get_param_range(1, stochastic=True)[0])
         ys.append(HYPERPARAMS_DOMAIN["y"].get_param_range(1, stochastic=True)[0])
 
+    xs = np.array(xs, dtype="float64")
+    ys = np.array(ys, dtype="float64")
+
     if n_resources == 0:
-        xs = np.array(xs, dtype="float64")
-        ys = np.array(ys, dtype="float64")
-        zs = branin(xs, ys) - 200
+        zs = branin(xs, ys)  # just to check branin works in vectorial form
     else:
         zs = []
-        for x in xs:
-            for y in ys:
-                z = branin_simulate_ml(x, y, time=n_resources, n=n_resources)
-                assert z == branin(x, y) - 200
-                zs.append(z)
+        for i in range(n_simulations):
+            z = branin_simulate_ml(xs[i], ys[i], time=n_resources, n=n_resources)
+            assert z == branin(xs[i], ys[i]) - 200
+            zs.append(branin(xs[i], ys[i]))
+        zs = np.array(zs, dtype="float64")
 
     fig = plt.figure()
     ax = fig.gca(projection=Axes3D.name)
@@ -130,11 +129,11 @@ def plot_branin_surface(n_resources: int, n_iterations: int) -> None:
     plt.show()
 
 
-def plot_simulations(n_simulations: int) -> None:
+def plot_simulations(n_resources: int, n_simulations: int) -> None:
     def evaluate_once() -> None:
         x = HYPERPARAMS_DOMAIN["x"].get_param_range(1, stochastic=True)[0]
         y = HYPERPARAMS_DOMAIN["y"].get_param_range(1, stochastic=True)[0]
-        branin_simulate_ml(x, y, 81, 81)
+        branin_simulate_ml(x, y, time=n_resources, n=n_resources)
 
     [evaluate_once() for _ in range(n_simulations)]
     plt.show()
@@ -142,7 +141,7 @@ def plot_simulations(n_simulations: int) -> None:
 
 if __name__ == "__main__":
     if PLOT_SURFACE:
-        plot_branin_surface(0, 100)
+        plot_branin_surface(n_resources=81, n_simulations=1000)
     else:
-        plot_simulations(5)
+        plot_simulations(n_resources=81, n_simulations=5)
     # plot_aggressiveness_gammas(n=81, k=2)
