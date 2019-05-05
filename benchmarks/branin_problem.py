@@ -1,6 +1,8 @@
 from __future__ import division
 import numpy as np
 from typing import Any, Tuple, Optional, Union
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 from core import HyperparameterOptimisationProblem, Evaluator, Arm, OptimisationGoals, ModelBuilder, Domain
 from core.params import *
@@ -90,3 +92,23 @@ class BraninProblem(HyperparameterOptimisationProblem):
             arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)
         model_builder = BraninBuilder(arm)
         return BraninEvaluator(model_builder, self.output_dir)
+
+    def plot_surface(self, n_simulations: int = 500) -> None:
+        xs, ys, zs = [], [], []
+        for _ in range(n_simulations):
+            evaluator = self.get_evaluator()
+            xs.append(evaluator.arm.x)
+            ys.append(evaluator.arm.y)
+            zs.append(evaluator.evaluate(n_resources=0).fval)
+
+        xs, ys, zs = [np.array(array, dtype="float64") for array in (xs, ys, zs)]
+        fig = plt.figure()
+        ax = fig.gca(projection=Axes3D.name)
+        surf = ax.plot_trisurf(xs, ys, zs, cmap="coolwarm", antialiased=True)
+        fig.colorbar(surf, shrink=0.5, aspect=5)
+
+        plt.show()
+
+
+if __name__ == "__main__":
+    BraninProblem().plot_surface()

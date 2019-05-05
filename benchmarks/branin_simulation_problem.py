@@ -1,7 +1,8 @@
 from __future__ import division
 import numpy as np
-from typing import Any, Optional, List
+from typing import Optional, List
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 from core import Arm, OptimisationGoals, ModelBuilder, Domain
 from core.params import *
@@ -35,7 +36,7 @@ class BraninSimulationEvaluator(BraninEvaluator):
                  necessary_aggressiveness: float = 0,
                  up_spikiness: float = 0):
         super().__init__(model_builder=model_builder, output_dir=output_dir, file_name=file_name)
-        self.max_resources: int = 81
+        self.max_resources: int = 81  # TODO
         self.fs: List[float] = []
 
         # Curve shape parameters DEPEND ON self.max_resources - feel free to add a schedule to them if you want
@@ -94,15 +95,6 @@ class BraninSimulationEvaluator(BraninEvaluator):
 
         return OptimisationGoals(fval=self.fs[-1], test_error=-1, validation_error=-1)
 
-    def _train(self, *args: Any, **kwargs: Any) -> None:
-        pass
-
-    def _test(self, *args: Any, **kwargs: Any) -> None:
-        pass
-
-    def _save_checkpoint(self, epoch: int, val_error: float, test_error: float) -> None:
-        pass
-
 
 class BraninSimulationProblem(BraninProblem):
 
@@ -128,11 +120,34 @@ class BraninSimulationProblem(BraninProblem):
                                          necessary_aggressiveness=necessary_aggressiveness,
                                          up_spikiness=up_spikiness)
 
+    def plot_surface(self, n_simulations: int = 500, n_resources: Optional[int] = None) -> None:
+        xs, ys, zs = [], [], []
+        for _ in range(n_simulations):
+            evaluator = self.get_evaluator()
+            xs.append(evaluator.arm.x)
+            ys.append(evaluator.arm.y)
+            if n_resources is None:
+                n_resources = evaluator.max_resources
+            z = evaluator.evaluate(n_resources=n_resources).fval
+            assert z == branin(evaluator.arm.x, evaluator.arm.y) - 200
+            zs.append(z)
+
+        xs, ys, zs = [np.array(array, dtype="float64") for array in (xs, ys, zs)]
+        fig = plt.figure()
+        ax = fig.gca(projection=Axes3D.name)
+        surf = ax.plot_trisurf(xs, ys, zs, cmap="coolwarm", antialiased=True)
+        fig.colorbar(surf, shrink=0.5, aspect=5)
+
+        plt.show()
+
 
 if __name__ == "__main__":
     branin_problem = BraninSimulationProblem()
-    schedule = [(None, 0.9, 10, 0.1), (None, 0.6, 5, 0.1), (None, 0.1, 6, 0.4)]
-    [branin_problem.get_evaluator(*shape).evaluate(81) for _ in range(2) for shape in schedule]
+    branin_problem.plot_surface()
+
+    # schedule = [(None, 0.9, 10, 0.1), (None, 0.6, 5, 0.1), (None, 0.1, 6, 0.4)]
+    # [branin_problem.get_evaluator(*shape).evaluate(81) for _ in range(2) for shape in schedule]
+
     # evaluator = branin_problem.get_evaluator()
     # evaluator.evaluate(30)
     # evaluator.evaluate(50)
