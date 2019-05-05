@@ -65,7 +65,7 @@ class BraninProblem(HyperparameterOptimisationProblem):
     See https://www.sfu.ca/~ssurjano/branin.html
     """
 
-    def __init__(self, output_dir: str, hyperparams_domain: Domain = HYPERPARAMS_DOMAIN,
+    def __init__(self, output_dir: Optional[str] = None, hyperparams_domain: Domain = HYPERPARAMS_DOMAIN,
                  hyperparams_to_opt: Tuple[str, ...] = ()):
         """
         :param output_dir: directory where to save the arms and their evaluation progress so far (as checkpoints)

@@ -1,7 +1,7 @@
 import os
 from os.path import join as join_path
 from abc import abstractmethod
-from typing import Any, Tuple
+from typing import Any, Tuple, Optional
 
 
 from core.model_builder import ModelBuilder
@@ -29,17 +29,18 @@ class Evaluator:
 
     __slots__ = ("model_builder", "output_dir", "file_name", "directory", "file_path", "arm", "n_resources")
 
-    def __init__(self, model_builder: ModelBuilder, output_dir: str = ".", file_name: str = "model.pth"):
+    def __init__(self, model_builder: ModelBuilder, output_dir: Optional[str] = None, file_name: str = "model.pth"):
         """
         :param model_builder: builder of a machine learning model based on an arm
         :param output_dir: directory where to save the arms and their progress so far (as checkpoints)
         :param file_name: file (at output_dir/arm<i>/file_name) which stores the progress of the evaluation of an arm
         """
         self.output_dir = output_dir
-        subdirectories = next(os.walk(output_dir))[1]
-        last_arm_number = len(subdirectories)
-        self.directory = ensure_dir(join_path(output_dir, f"arm{last_arm_number + 1}"))
-        self.file_path = join_path(self.directory, file_name)
+        if self.output_dir is not None:
+            subdirectories = next(os.walk(output_dir))[1]
+            last_arm_number = len(subdirectories)
+            self.directory = ensure_dir(join_path(output_dir, f"arm{last_arm_number + 1}"))
+            self.file_path = join_path(self.directory, file_name)
 
         self.arm = model_builder.arm
         self.n_resources = 0

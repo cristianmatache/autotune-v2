@@ -75,7 +75,7 @@ def get_problem(arguments: Namespace) -> HyperparameterOptimisationProblem:
     elif problem_name == "mrbi":
         problem_instance = MrbiProblem(arguments.input_dir, arguments.output_dir)
     elif problem_name == "branin":
-        problem_instance = BraninProblem(arguments.output_dir)
+        problem_instance = BraninProblem()
     else:
         raise ValueError(f"Supplied problem {problem_name} does not exist")
     problem_instance.print_domain()
