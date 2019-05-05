@@ -1,6 +1,6 @@
 from __future__ import division
 import numpy as np
-from typing import Optional, List
+from typing import Optional, List, Tuple
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
@@ -120,10 +120,12 @@ class BraninSimulationProblem(BraninProblem):
                                          necessary_aggressiveness=necessary_aggressiveness,
                                          up_spikiness=up_spikiness)
 
-    def plot_surface(self, n_simulations: int = 500, n_resources: Optional[int] = None) -> None:
+    def plot_surface(self, n_simulations: int = 500, n_resources: Optional[int] = None,
+                     shape_families: Tuple[Tuple[Optional[Arm], float, float, float], ...] = ((None, 0.9, 10, 0.1),)) \
+            -> None:
         xs, ys, zs = [], [], []
-        for _ in range(n_simulations):
-            evaluator = self.get_evaluator()
+        for i in range(n_simulations):
+            evaluator = self.get_evaluator(*shape_families[i % len(shape_families)])
             xs.append(evaluator.arm.x)
             ys.append(evaluator.arm.y)
             if n_resources is None:
@@ -143,9 +145,8 @@ class BraninSimulationProblem(BraninProblem):
 
 if __name__ == "__main__":
     branin_problem = BraninSimulationProblem()
-    branin_problem.plot_surface()
-
-    # schedule = [(None, 0.9, 10, 0.1), (None, 0.6, 5, 0.1), (None, 0.1, 6, 0.4)]
+    family_of_shapes = ((None, 0.9, 10.0, 0.1), (None, 0.6, 5.0, 0.1), (None, 0.1, 6.0, 0.4))
+    branin_problem.plot_surface(100, shape_families=family_of_shapes)
     # [branin_problem.get_evaluator(*shape).evaluate(81) for _ in range(2) for shape in schedule]
 
     # evaluator = branin_problem.get_evaluator()
