@@ -144,9 +144,14 @@ class BraninSimulationProblem(BraninProblem):
 
 
 if __name__ == "__main__":
+    # function colors: 1 blue 2 green 3 orange 4 red 5 purple 6 brown 7 pink 8 grey
     branin_problem = BraninSimulationProblem()
-    family_of_shapes = ((None, 0.9, 10.0, 0.1), (None, 0.6, 5.0, 0.1), (None, 0.1, 6.0, 0.4))
-    branin_problem.plot_surface(100, shape_families=family_of_shapes)
+    family_of_shapes = (
+                        (None, 1.3, 10.0, 0.14),  # with aggressive start
+                        (None, 0.6, 7.0, 0.1),    # with average aggressiveness at start and at the beginning
+                        (None, 0.3, 3.0, 0.2),    # non aggressive start, aggressive end
+                        )
+    branin_problem.plot_surface(10, shape_families=family_of_shapes)
     # [branin_problem.get_evaluator(*shape).evaluate(81) for _ in range(2) for shape in schedule]
 
     # evaluator = branin_problem.get_evaluator()
