@@ -19,8 +19,7 @@ def plot_aggressiveness_gammas(n: int, k: int) -> None:
 
     def plot_gamma_distrib(time: int) -> None:
         sqrt_beta_component = np.sqrt(k ** 2 + 4 * (n - time))
-        beta_t = (k + sqrt_beta_component) / (
-                    2 * (n - time))  # beta is increasing in terms of time so variance is decreasing
+        beta_t = (k + sqrt_beta_component) / (2 * (n - time))  # beta increases in terms of time so variance decreases
         alpha_t = k * beta_t + 1  # mode is always k (threshold for 0 aggressiveness)
 
         shape = alpha_t
@@ -67,11 +66,10 @@ def get_aggressiveness_from_gamma_distrib(time: int, n: int, k: int) -> float:
 
 def branin_simulate_ml(x1: Union[int, np.ndarray], x2: Union[int, np.ndarray], time: int = 0,
                        n: int = 81) -> Union[int, np.ndarray]:
-    # for n = 81
-    k = 2  # mode of gamma distribution - corresponds to 0 aggressiveness
-    h1 = 0.5  # h1, h2 HYPERPARAMETERS TO OPTIMISE
-    h2 = 15  # necessary aggressiveness or 5
-    h3 = 0.1  # up spikiniess
+    k = 2      # mode of gamma distribution - corresponds to 0 aggressiveness
+    h1 = 0.5   # proportion of ml aggressiveness (bites from function debt)
+    h2 = 10    # necessary aggressiveness (the higher h2 the later will necessary aggressiveness start)
+    h3 = 0.05  # up spikiniess (the lower h3 the smoother the function will be - that is fewer up spikes)
 
     if time == 0:
         return branin(x1, x2)
