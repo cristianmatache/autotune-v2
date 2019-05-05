@@ -13,6 +13,8 @@ HYPERPARAMS_DOMAIN = Domain(
     x=Param('x', -5, 10, distrib='uniform', scale='linear'),
     y=Param('y', 1, 15, distrib='uniform', scale='linear'))
 
+SHAPE_FAMILY_TYPE = Tuple[Optional[Arm], float, float, float, int]
+
 
 def get_aggressiveness_from_gamma_distrib(time: int, n: int, k: int) -> float:
     sqrt_beta_component = np.sqrt(k**2 + 4 * (n - time))
@@ -34,9 +36,19 @@ class BraninSimulationEvaluator(BraninEvaluator):
     def __init__(self, model_builder: ModelBuilder, output_dir: Optional[str] = None, file_name: str = "model.pth",
                  ml_aggressiveness: float = 0,
                  necessary_aggressiveness: float = 0,
-                 up_spikiness: float = 0):
+                 up_spikiness: float = 0,
+                 max_resources: int = 81):
+        """
+        :param model_builder:
+        :param output_dir:
+        :param file_name:
+        :param ml_aggressiveness:
+        :param necessary_aggressiveness:
+        :param up_spikiness:
+        :param max_resources:
+        """
         super().__init__(model_builder=model_builder, output_dir=output_dir, file_name=file_name)
-        self.max_resources: int = 81  # TODO
+        self.max_resources = max_resources
         self.fs: List[float] = []
 
         # Curve shape parameters DEPEND ON self.max_resources - feel free to add a schedule to them if you want
@@ -104,12 +116,14 @@ class BraninSimulationProblem(BraninProblem):
     def get_evaluator(self, arm: Optional[Arm] = None,
                       ml_aggressiveness: float = 0.9,
                       necessary_aggressiveness: float = 10,
-                      up_spikiness: float = 0.1) -> BraninSimulationEvaluator:
+                      up_spikiness: float = 0.1,
+                      max_resources: int = 81) -> BraninSimulationEvaluator:
         """
         :param arm: a combination of hyperparameters and their values
         :param ml_aggressiveness:
         :param necessary_aggressiveness:
         :param up_spikiness:
+        :param max_resources:
         :return: problem evaluator for an arm (given or random if not given)
         """
         if arm is None:  # if no arm is provided, generate a random arm
@@ -118,11 +132,10 @@ class BraninSimulationProblem(BraninProblem):
         model_builder = BraninBuilder(arm)
         return BraninSimulationEvaluator(model_builder, ml_aggressiveness=ml_aggressiveness,
                                          necessary_aggressiveness=necessary_aggressiveness,
-                                         up_spikiness=up_spikiness)
+                                         up_spikiness=up_spikiness, max_resources=max_resources)
 
     def plot_surface(self, n_simulations: int = 500, n_resources: Optional[int] = None,
-                     shape_families: Tuple[Tuple[Optional[Arm], float, float, float], ...] = ((None, 0.9, 10, 0.1),)) \
-            -> None:
+                     shape_families: Tuple[SHAPE_FAMILY_TYPE, ...] = ((None, 0.9, 10, 0.1, 81),)) -> None:
         xs, ys, zs = [], [], []
         for i in range(n_simulations):
             evaluator = self.get_evaluator(*shape_families[i % len(shape_families)])
@@ -147,12 +160,11 @@ if __name__ == "__main__":
     # function colors: 1 blue 2 green 3 orange 4 red 5 purple 6 brown 7 pink 8 grey
     branin_problem = BraninSimulationProblem()
     family_of_shapes = (
-                        (None, 1.3, 10.0, 0.14),  # with aggressive start
-                        (None, 0.6, 7.0, 0.1),    # with average aggressiveness at start and at the beginning
-                        (None, 0.3, 3.0, 0.2),    # non aggressive start, aggressive end
+                        (None, 1.3, 10.0, 0.14, 81),  # with aggressive start
+                        (None, 0.6, 7.0, 0.1, 81),    # with average aggressiveness at start and at the beginning
+                        (None, 0.3, 3.0, 0.2, 81),    # non aggressive start, aggressive end
                         )
     branin_problem.plot_surface(10, shape_families=family_of_shapes)
-    # [branin_problem.get_evaluator(*shape).evaluate(81) for _ in range(2) for shape in schedule]
 
     # evaluator = branin_problem.get_evaluator()
     # evaluator.evaluate(30)
