@@ -1,27 +1,16 @@
 from __future__ import division
 import numpy as np
-from typing import Any, Tuple, Optional, Union, List
+from typing import Any, Optional, List
 import matplotlib.pyplot as plt
 
-from core import HyperparameterOptimisationProblem, Evaluator, Arm, OptimisationGoals, ModelBuilder, Domain
+from core import Arm, OptimisationGoals, ModelBuilder, Domain
 from core.params import *
 from util.io import print_evaluation
+from benchmarks.branin_problem import BraninBuilder, BraninEvaluator, BraninProblem, branin
 
 HYPERPARAMS_DOMAIN = Domain(
     x=Param('x', -5, 10, distrib='uniform', scale='linear'),
     y=Param('y', 1, 15, distrib='uniform', scale='linear'))
-
-
-def branin(x1: Union[int, np.ndarray], x2: Union[int, np.ndarray]) -> Union[int, np.ndarray]:
-    a = 1
-    b = 5.1 / (4 * np.pi ** 2)
-    c = 5 / np.pi
-    r = 6
-    s = 10
-    t = 1 / (8 * np.pi)
-
-    f = a * (x2 - b * x1 ** 2 + c * x1 - r) ** 2 + s * (1 - t) * np.cos(x1) + s
-    return f
 
 
 def get_aggressiveness_from_gamma_distrib(time: int, n: int, k: int) -> float:
@@ -39,21 +28,7 @@ def get_aggressiveness_from_gamma_distrib(time: int, n: int, k: int) -> float:
     return aggresiveness
 
 
-class BraninBuilder(ModelBuilder[Any, Any]):
-
-    def __init__(self, arm: Arm):
-        """
-        :param arm: a combination of hyperparameters and their values
-        """
-        super().__init__(arm)
-
-    def construct_model(self) -> None:
-        """ Branin is a known function (so it has no machine learning model associated to it)
-        """
-        pass
-
-
-class BraninEvaluator(Evaluator):
+class BraninSimulationEvaluator(BraninEvaluator):
 
     def __init__(self, model_builder: ModelBuilder, output_dir: Optional[str] = None, file_name: str = "model.pth",
                  ml_aggressiveness: float = 0,
@@ -129,27 +104,15 @@ class BraninEvaluator(Evaluator):
         pass
 
 
-class BraninProblem(HyperparameterOptimisationProblem):
+class BraninSimulationProblem(BraninProblem):
 
     """
-    Canonical optimisation test problem
-    See https://www.sfu.ca/~ssurjano/branin.html
     """
-
-    def __init__(self, output_dir: Optional[str] = None, hyperparams_domain: Domain = HYPERPARAMS_DOMAIN,
-                 hyperparams_to_opt: Tuple[str, ...] = ()):
-        """
-        :param output_dir: directory where to save the arms and their evaluation progress so far (as checkpoints)
-        :param hyperparams_domain: names of the hyperparameters of a model along with their domain, that is
-                                   ranges, distributions etc. (self.domain)
-        :param hyperparams_to_opt: names of hyperparameters to be optimised, if () all params from domain are optimised
-        """
-        super().__init__(hyperparams_domain, hyperparams_to_opt, output_dir=output_dir)
 
     def get_evaluator(self, arm: Optional[Arm] = None,
                       ml_aggressiveness: float = 0.9,
                       necessary_aggressiveness: float = 10,
-                      up_spikiness: float = 0.1) -> BraninEvaluator:
+                      up_spikiness: float = 0.1) -> BraninSimulationEvaluator:
         """
         :param arm: a combination of hyperparameters and their values
         :param ml_aggressiveness:
@@ -161,13 +124,13 @@ class BraninProblem(HyperparameterOptimisationProblem):
             arm = Arm()
             arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)
         model_builder = BraninBuilder(arm)
-        # return BraninEvaluator(model_builder, self.output_dir)
-        return BraninEvaluator(model_builder, ml_aggressiveness=ml_aggressiveness,
-                               necessary_aggressiveness=necessary_aggressiveness, up_spikiness=up_spikiness)
+        return BraninSimulationEvaluator(model_builder, ml_aggressiveness=ml_aggressiveness,
+                                         necessary_aggressiveness=necessary_aggressiveness,
+                                         up_spikiness=up_spikiness)
 
 
 if __name__ == "__main__":
-    branin_problem = BraninProblem()
+    branin_problem = BraninSimulationProblem()
     schedule = [(None, 0.9, 10, 0.1), (None, 0.6, 5, 0.1), (None, 0.1, 6, 0.4)]
     [branin_problem.get_evaluator(*shape).evaluate(81) for _ in range(2) for shape in schedule]
     # evaluator = branin_problem.get_evaluator()

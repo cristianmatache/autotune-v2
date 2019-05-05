@@ -1,6 +1,6 @@
 from __future__ import division
 import numpy as np
-from typing import Any, Tuple, Optional
+from typing import Any, Tuple, Optional, Union
 
 from core import HyperparameterOptimisationProblem, Evaluator, Arm, OptimisationGoals, ModelBuilder, Domain
 from core.params import *
@@ -9,6 +9,23 @@ from util.io import print_evaluation
 HYPERPARAMS_DOMAIN = Domain(
     x=Param('x', -5, 10, distrib='uniform', scale='linear'),
     y=Param('y', 1, 15, distrib='uniform', scale='linear'))
+
+
+def branin(x1: Union[int, np.ndarray], x2: Union[int, np.ndarray]) -> Union[int, np.ndarray]:
+    """ Branin function
+    :param x1: x
+    :param x2: y
+    :return: value of Branin function
+    """
+    a = 1
+    b = 5.1 / (4 * np.pi ** 2)
+    c = 5 / np.pi
+    r = 6
+    s = 10
+    t = 1 / (8 * np.pi)
+
+    f = a * (x2 - b * x1 ** 2 + c * x1 - r) ** 2 + s * (1 - t) * np.cos(x1) + s
+    return f
 
 
 class BraninBuilder(ModelBuilder[Any, Any]):
@@ -34,19 +51,7 @@ class BraninEvaluator(Evaluator):
         :return: the function value for the current arm can be found in OptimisationGoals.fval, Note that test_error and
         validation_error attributes are mandatory for OptimisationGoals objects but Branin has no machine learning model
         """
-        a = 1
-        b = 5.1 / (4 * np.pi ** 2)
-        c = 5 / np.pi
-        r = 6
-        s = 10
-        t = 1 / (8 * np.pi)
-
-        arm = self.arm
-        x1 = arm.x
-        x2 = arm.y
-
-        f = a * (x2 - b * x1 ** 2 + c * x1 - r) ** 2 + s * (1 - t) * np.cos(x1) + s
-        return OptimisationGoals(fval=f, test_error=-1, validation_error=-1)
+        return OptimisationGoals(fval=branin(self.arm.x, self.arm.y), test_error=-1, validation_error=-1)
 
     def _train(self, *args: Any, **kwargs: Any) -> None:
         pass
