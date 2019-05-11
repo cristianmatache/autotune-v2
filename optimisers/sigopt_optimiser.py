@@ -98,5 +98,9 @@ class SigOptimiser(Optimiser):
         # hyperparameters that do not need to be optimised should be added to the Arm with their default values
         arm.set_default_values(domain=problem.domain, hyperparams_to_opt=problem.hyperparams_to_opt)
 
-        evaluator = problem.get_evaluator(arm=arm)
+        if not self.is_simulation:
+            evaluator = problem.get_evaluator(arm=arm)
+        else:  # is simulation
+            evaluator = problem.get_evaluator(*self.scheduler.get_family(arm=arm))
+
         return evaluator, evaluator.evaluate(self.n_resources)
