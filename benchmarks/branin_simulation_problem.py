@@ -85,28 +85,17 @@ class BraninSimulationEvaluator(BraninEvaluator):
         #                   spikes are proportional with time left = bigger spikes at the beginning, smaller in the end
         self.up_spikiness = up_spikiness
 
-    @print_evaluation(verbose=True, goals_to_print=())
-    def evaluate(self, n_resources: int) -> OptimisationGoals:
-        """ Given an arm (draw of hyperparameter values), evaluate the Branin function on it
-        :param n_resources: this parameter is not used in this function but all optimisers require this parameter
-        :return: the function value for the current arm can be found in OptimisationGoals.fval, Note that test_error and
-        validation_error attributes are mandatory for OptimisationGoals objects but Branin has no machine learning model
+    def simulate(self, time: int, n: int, f_n: float) -> None:
+        """ X is time/any other resources, Y is f(X) - simulated function at time X. Note that this function can
+        simulate any type of resource not only time but for simplicity in naming we use time for resource. This method,
+        will simulate Ys up to the given time. If the function was already evaluated at some times, it will continue
+        from there.
+        :param time: generate new Xs to simulate Ys, where lastX < newXs <= time
+        :param n: the last point that the simulated function will be evaluated at
+        :param f_n: target, f(n), last value of f, usually = branin - 200
         """
-        time = n_resources
-        n = self.max_resources
-        branin_value = branin(self.arm.x, self.arm.y)
         k = 2  # mode of all gamma distributions - corresponds to 0 aggressiveness
 
-        if time == 0:
-            self.fs = [branin_value]
-            return OptimisationGoals(fval=branin_value, test_error=-1, validation_error=-1)
-
-        f_n = branin_value - 200
-        print(f"Starting from: {branin_value}  and aiming to finish at: {f_n}")
-
-        if not self.fs:
-            self.fs = [branin_value]
-        
         prev_time = len(self.fs)
         for t in range(prev_time, time):
             agg_level = get_aggressiveness_from_gamma_distrib(t, n + 1, k)
@@ -127,8 +116,35 @@ class BraninSimulationEvaluator(BraninEvaluator):
                     f_next_time = f_n
             self.fs.append(f_next_time)
 
+    @print_evaluation(verbose=True, goals_to_print=())
+    def evaluate(self, n_resources: int) -> OptimisationGoals:
+        """ Given an arm (draw of hyperparameter values), evaluate the Branin function on it
+        :param n_resources: this parameter is not used in this function but all optimisers require this parameter
+        :return: the function value for the current arm can be found in OptimisationGoals.fval, Note that test_error and
+        validation_error attributes are mandatory for OptimisationGoals objects but Branin has no machine learning model
+        """
+        time = int(n_resources)
+        n_resources_before_first_halving = 1
+        n = self.max_resources + n_resources_before_first_halving
+        branin_value = branin(self.arm.x, self.arm.y)
+        f_n = branin_value - 200  # target (last value of f)
+        print(f"Starting from: {branin_value} and aiming to finish at: {f_n}")
+
+        if not self.fs:
+            self.fs = [branin_value]
+            self.simulate(n_resources_before_first_halving, n, f_n)
+
+        if time == 0:
+            self.fs = [branin_value]
+            self.simulate(n_resources_before_first_halving, n, f_n)
+            return OptimisationGoals(fval=branin_value, test_error=-1, validation_error=-1)
+
+        total_time = time + n_resources_before_first_halving
+        self.simulate(total_time, n, f_n)
+
+        plt.plot(list(range(total_time)), self.fs)
+        assert self.fs[0] == branin_value
         if time == self.max_resources:
-            plt.plot(list(range(time)), self.fs)
             assert self.fs[-1] == f_n
 
         return OptimisationGoals(fval=self.fs[-1], test_error=-1, validation_error=-1)
@@ -202,7 +218,7 @@ if __name__ == "__main__":
         (None, 0.6, 7.0, 0.1),    # with average aggressiveness at start and at the beginning
         (None, 0.3, 3.0, 0.2),    # non aggressive start, aggressive end
     )
-    branin_problem.plot_surface(n_simulations=500, max_resources=81, n_resources=40, shape_families=families_of_shapes)
+    branin_problem.plot_surface(n_simulations=9, max_resources=81, n_resources=81, shape_families=families_of_shapes)
 
     # evaluator = branin_problem.get_evaluator()
     # evaluator.evaluate(30)
