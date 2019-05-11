@@ -3,7 +3,7 @@ from typing import Callable, List, Optional
 from colorama import Style, Fore
 
 from core import Optimiser, Evaluation, Evaluator, HyperparameterOptimisationProblem, OptimisationGoals, \
-    ShapeFamilyScheduler
+    ShapeFamilyScheduler, optimisation_metric_user
 
 COL = Fore.MAGENTA
 
@@ -48,14 +48,13 @@ class HyperbandOptimiser(Optimiser):
         sorted_evaluators = [evaluation.evaluator for evaluation in sorted_evaluations_by_res]
         return sorted_evaluators[:n]
 
+    @optimisation_metric_user
     def run_optimisation(self, problem: HyperparameterOptimisationProblem, verbosity: bool = False) -> Evaluation:
         """
         :param problem: optimisation problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
         :param verbosity: whether to print the results of every single evaluation/iteration
         :return: Evaluation of best arm (evaluator, optimisation_goals)
         """
-        self._init_optimiser_metrics()
-
         R = self.max_iter  # maximum amount of resource that can be allocated to a single hyperparameter configuration
         eta = self.eta     # halving rate
 

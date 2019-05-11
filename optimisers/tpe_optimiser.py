@@ -4,7 +4,7 @@ from hyperopt import fmin, tpe, Trials, STATUS_OK
 from typing import Callable, Dict, Union, Optional
 
 from core import Optimiser, Evaluation, Arm, HyperparameterOptimisationProblem, Evaluator, OptimisationGoals, \
-    ShapeFamilyScheduler
+    ShapeFamilyScheduler, optimisation_metric_user
 
 
 class TpeOptimiser(Optimiser):
@@ -31,14 +31,13 @@ class TpeOptimiser(Optimiser):
         self.sign = -1 if min_or_max == max else 1
         self.n_resources = n_resources
 
+    @optimisation_metric_user
     def run_optimisation(self, problem: HyperparameterOptimisationProblem, verbosity: bool = False) -> Evaluation:
         """
         :param problem: optimisation problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
         :param verbosity: whether to print the results of every single evaluation/iteration
         :return: Evaluation of best arm (evaluator, optimisation_goals)
         """
-        self._init_optimiser_metrics()
-
         # Wrap parameter space
         param_space = problem.get_hyperopt_space_from_hyperparams_to_opt()
 

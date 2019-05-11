@@ -1,6 +1,7 @@
 from typing import Callable, Optional
 
-from core import HyperparameterOptimisationProblem, Optimiser, Evaluation, OptimisationGoals, ShapeFamilyScheduler
+from core import HyperparameterOptimisationProblem, Optimiser, Evaluation, OptimisationGoals, ShapeFamilyScheduler, \
+    optimisation_metric_user
 
 
 class RandomOptimiser(Optimiser):
@@ -26,14 +27,13 @@ class RandomOptimiser(Optimiser):
         super().__init__(max_iter, max_time, min_or_max, optimisation_func, is_simulation, scheduler)
         self.n_resources = n_resources
 
+    @optimisation_metric_user
     def run_optimisation(self, problem: HyperparameterOptimisationProblem, verbosity: bool = False) -> Evaluation:
         """
         :param problem: optimisation problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
         :param verbosity: whether to print the results of every single evaluation/iteration
         :return: Evaluation of best arm (evaluator, optimisation_goals)
         """
-        self._init_optimiser_metrics()
-
         while not self._needs_to_stop():
             # Draw random sample
             evaluator = problem.get_evaluator()

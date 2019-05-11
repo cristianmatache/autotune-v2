@@ -130,8 +130,9 @@ class Optimiser:
 RUN_OPTIMISATION_TYPE = Callable[[Optimiser, HyperparameterOptimisationProblem, bool], Evaluation]
 
 
-def check_simulation_problem(run_optimisation: RUN_OPTIMISATION_TYPE) -> RUN_OPTIMISATION_TYPE:
+def optimisation_metric_user(run_optimisation: RUN_OPTIMISATION_TYPE) -> RUN_OPTIMISATION_TYPE:
     def wrapper(self: Optimiser, problem: HyperparameterOptimisationProblem, verbosity: bool) -> Evaluation:
+        self._init_optimiser_metrics()
         if self.is_simulation and not isinstance(problem, SimulationProblem):
             raise ValueError("You are trying to run a simulation but you have not provided a shape family schedule")
         problem: HyperparameterOptimisationProblem

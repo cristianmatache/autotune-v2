@@ -2,7 +2,8 @@ from math import log, ceil
 from typing import Callable, Optional
 from colorama import Style, Fore
 
-from core import HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, Optimiser, ShapeFamilyScheduler
+from core import HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, Optimiser, ShapeFamilyScheduler, \
+    optimisation_metric_user
 
 from optimisers.hyperband_optimiser import HyperbandOptimiser
 from optimisers.tpe_optimiser import TpeOptimiser
@@ -32,14 +33,13 @@ class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
         """
         super().__init__(eta, max_iter, max_time, min_or_max, optimisation_func, is_simulation, scheduler)
 
+    @optimisation_metric_user
     def run_optimisation(self, problem: HyperparameterOptimisationProblem, verbosity: bool = False) -> Evaluation:
         """
         :param problem: optimisation problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
         :param verbosity: whether to print the results of every single evaluation/iteration
         :return: Evaluation of best arm (evaluator, optimisation_goals)
         """
-        self._init_optimiser_metrics()
-
         R = self.max_iter  # maximum amount of resource that can be allocated to a single hyperparameter configuration
         eta = self.eta     # halving rate
 

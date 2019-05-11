@@ -4,7 +4,7 @@ from sigopt.objects import Assignments
 from typing import Callable, Tuple, Optional
 
 from core import Optimiser, Evaluation, HyperparameterOptimisationProblem, Arm, OptimisationGoals, Evaluator, \
-    ShapeFamilyScheduler
+    ShapeFamilyScheduler, optimisation_metric_user
 
 SIGOPT_API_KEY = "RAGFJSAISOJGFQOXCAVIVQRNNGOQNYGDEYISHTETQZCNWJNA"
 
@@ -34,14 +34,13 @@ class SigOptimiser(Optimiser):
         self.sign = -1 if min_or_max == min else 1
         self.n_resources = n_resources
 
+    @optimisation_metric_user
     def run_optimisation(self, problem: HyperparameterOptimisationProblem, verbosity: bool) -> Evaluation:
         """
         :param problem: optimisation problem (eg. CIFAR, MNIST, SVHN, MRBI problems)
         :param verbosity: whether to print the results of every single evaluation/iteration
         :return: Evaluation of best arm (evaluator, optimisation_goals)
         """
-        self._init_optimiser_metrics()
-
         # Wrap parameter space
         space = problem.get_sigopt_space_from_hyperparams_to_opt()
 
