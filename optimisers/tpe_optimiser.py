@@ -1,9 +1,10 @@
 import time
 from functools import partial
 from hyperopt import fmin, tpe, Trials, STATUS_OK
-from typing import Callable, Dict, Union
+from typing import Callable, Dict, Union, Optional
 
-from core import Optimiser, Evaluation, Arm, HyperparameterOptimisationProblem, Evaluator, OptimisationGoals
+from core import Optimiser, Evaluation, Arm, HyperparameterOptimisationProblem, Evaluator, OptimisationGoals, \
+    ShapeFamilyScheduler
 
 
 class TpeOptimiser(Optimiser):
@@ -12,7 +13,8 @@ class TpeOptimiser(Optimiser):
     """
 
     def __init__(self, n_resources: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
-                 optimisation_func: Callable[[OptimisationGoals], float] = Optimiser.default_optimisation_func):
+                 optimisation_func: Callable[[OptimisationGoals], float] = Optimiser.default_optimisation_func,
+                 is_simulation: bool = False, scheduler: Optional[ShapeFamilyScheduler] = None):
         """
         :param n_resources: number of resources per evaluation (of each arm)
         :param max_iter: max iteration (considered infinity if None) - stopping condition
@@ -20,8 +22,10 @@ class TpeOptimiser(Optimiser):
         :param min_or_max: min/max (built in functions) - whether to minimize or to maximize the optimisation_goal
         :param optimisation_func: function in terms of which to perform optimisation (can aggregate several optimisation
                                   goals or can just return the value of one optimisation goal)
+        :param is_simulation: flag if the problem under optimisation is a real machine learning problem or a simulation
+        :param scheduler: if the problem is a simulation, the scheduler provides the parameters for families of shapes
         """
-        super().__init__(max_iter, max_time, min_or_max, optimisation_func)
+        super().__init__(max_iter, max_time, min_or_max, optimisation_func, is_simulation, scheduler)
 
         # TPE Hyperopt supports minimization only, so if the problem is maximization, minimize -1 * optimisation goal
         self.sign = -1 if min_or_max == max else 1

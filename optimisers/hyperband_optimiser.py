@@ -1,8 +1,9 @@
 from math import log, ceil
-from typing import Callable, List
+from typing import Callable, List, Optional
 from colorama import Style, Fore
 
-from core.optimiser import Optimiser, Evaluation, Evaluator, HyperparameterOptimisationProblem, OptimisationGoals
+from core import Optimiser, Evaluation, Evaluator, HyperparameterOptimisationProblem, OptimisationGoals, \
+    ShapeFamilyScheduler
 
 COL = Fore.MAGENTA
 
@@ -15,7 +16,8 @@ class HyperbandOptimiser(Optimiser):
     """
 
     def __init__(self, eta: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
-                 optimisation_func: Callable[[OptimisationGoals], float] = Optimiser.default_optimisation_func):
+                 optimisation_func: Callable[[OptimisationGoals], float] = Optimiser.default_optimisation_func,
+                 is_simulation: bool = False, scheduler: Optional[ShapeFamilyScheduler] = None):
         """
         :param eta: halving rate
         :param max_iter: max iteration (considered infinity if None) - stopping condition
@@ -23,8 +25,10 @@ class HyperbandOptimiser(Optimiser):
         :param min_or_max: min/max (built in functions) - whether to minimize or to maximize the optimisation_goal
         :param optimisation_func: function in terms of which to perform optimisation (can aggregate several optimisation
                                   goals or can just return the value of one optimisation goal)
+        :param is_simulation: flag if the problem under optimisation is a real machine learning problem or a simulation
+        :param scheduler: if the problem is a simulation, the scheduler provides the parameters for families of shapes
         """
-        super().__init__(max_iter, max_time, min_or_max, optimisation_func)
+        super().__init__(max_iter, max_time, min_or_max, optimisation_func, is_simulation, scheduler)
         if max_iter is None:
             raise ValueError("For Hyperband max_iter cannot be None")
         self.eta = eta

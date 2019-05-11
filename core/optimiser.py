@@ -1,6 +1,6 @@
 from abc import abstractmethod
 import numpy as np
-from typing import Callable, List
+from typing import Callable, List, Optional
 import time
 from colorama import Fore, Style
 
@@ -8,6 +8,7 @@ from core.problem_def import HyperparameterOptimisationProblem
 from core.optimisation_goals import OptimisationGoals
 from core.evaluator import Evaluator
 from core.evaluation import Evaluation
+from core.shape_family_scheduler import ShapeFamilyScheduler
 
 
 class Optimiser:
@@ -23,13 +24,16 @@ class Optimiser:
         return opt_goals.validation_error
 
     def __init__(self, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
-                 optimisation_func: Callable[[OptimisationGoals], float] = default_optimisation_func):
+                 optimisation_func: Callable[[OptimisationGoals], float] = default_optimisation_func,
+                 is_simulation: bool = False, scheduler: Optional[ShapeFamilyScheduler] = None):
         """
         :param max_iter: max iteration (considered infinity if None) - stopping condition
         :param max_time: max time a user is willing to wait for (considered infinity if None) - stopping condition
         :param min_or_max: min/max (built in functions) - whether to minimize or to maximize the optimization_goal
         :param optimisation_func: function in terms of which to perform optimization (can aggregate several optimization
                                   goals or can just return the value of one optimization goal)
+        :param is_simulation: flag if the problem under optimisation is a real machine learning problem or a simulation
+        :param scheduler: if the problem is a simulation, the scheduler provides the parameters for families of shapes
         """
         # stop conditions
         if (max_iter is None) and (max_time is None):
@@ -43,6 +47,12 @@ class Optimiser:
         self.optimisation_func = optimisation_func
 
         self.eval_history: List[Evaluation] = []
+
+        # Simulation-specific attributes
+        self.is_simulation = is_simulation
+        self.scheduler = scheduler
+        if scheduler is None and is_simulation:
+            raise ValueError("No scheduler supplied for simulation")
 
     def _update_evaluation_history(self, evaluator: Evaluator, opt_goals: OptimisationGoals) -> None:
         self.eval_history.append(Evaluation(evaluator, opt_goals))
