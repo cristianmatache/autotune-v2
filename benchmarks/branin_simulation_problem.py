@@ -62,7 +62,8 @@ class BraninSimulationEvaluator(BraninEvaluator):
                  ml_aggressiveness: float = 0,
                  necessary_aggressiveness: float = 0,
                  up_spikiness: float = 0,
-                 max_resources: int = 81):
+                 max_resources: int = 81,
+                 init_noise: int = 0):
         """
         :param model_builder:
         :param output_dir:
@@ -84,6 +85,7 @@ class BraninSimulationEvaluator(BraninEvaluator):
         # - up spikiniess = the lower h3 the smoother the function, the higher h3 the more upwards spikes
         #                   spikes are proportional with time left = bigger spikes at the beginning, smaller in the end
         self.up_spikiness = up_spikiness
+        self.init_noise = init_noise
 
     def simulate(self, time: int, n: int, f_n: float) -> None:
         """ X is time/any other resources, Y is f(X) - simulated function at time X. Note that this function can
@@ -116,7 +118,7 @@ class BraninSimulationEvaluator(BraninEvaluator):
                     f_next_time = f_n
             self.fs.append(f_next_time)
 
-    @print_evaluation(verbose=True, goals_to_print=())
+    @print_evaluation(verbose=False, goals_to_print=())
     def evaluate(self, n_resources: int) -> OptimisationGoals:
         """ Given an arm (draw of hyperparameter values), evaluate the Branin function on it
         :param n_resources: this parameter is not used in this function but all optimisers require this parameter
@@ -124,18 +126,19 @@ class BraninSimulationEvaluator(BraninEvaluator):
         validation_error attributes are mandatory for OptimisationGoals objects but Branin has no machine learning model
         """
         time = int(n_resources)
-        n_resources_before_first_halving = 1
+        n_resources_before_first_halving = 0
         n = self.max_resources + n_resources_before_first_halving
         branin_value = branin(self.arm.x, self.arm.y)
+        branin_noisy_value = branin(self.arm.x, self.arm.y, self.init_noise)
         f_n = branin_value - 200  # target (last value of f)
-        print(f"Starting from: {branin_value} and aiming to finish at: {f_n}")
+        # print(f"Starting from: {branin_value} and aiming to finish at: {f_n}")
 
         if not self.fs:
-            self.fs = [branin_value]
+            self.fs = [branin_noisy_value]
             self.simulate(n_resources_before_first_halving, n, f_n)
 
         if time == 0:
-            self.fs = [branin_value]
+            self.fs = [branin_noisy_value]
             self.simulate(n_resources_before_first_halving, n, f_n)
             return OptimisationGoals(fval=branin_value, test_error=-1, validation_error=-1)
 
@@ -143,7 +146,6 @@ class BraninSimulationEvaluator(BraninEvaluator):
         self.simulate(total_time, n, f_n)
 
         plt.plot(list(range(total_time)), self.fs)
-        assert self.fs[0] == branin_value
         if time == self.max_resources:
             assert self.fs[-1] == f_n
 
@@ -159,13 +161,15 @@ class BraninSimulationProblem(BraninProblem):
                       ml_aggressiveness: float = 0.9,
                       necessary_aggressiveness: float = 10,
                       up_spikiness: float = 0.1,
-                      max_resources: int = 81) -> BraninSimulationEvaluator:
+                      max_resources: int = 81,
+                      init_noise: int = 0) -> BraninSimulationEvaluator:
         """
         :param arm: a combination of hyperparameters and their values
         :param ml_aggressiveness:
         :param necessary_aggressiveness:
         :param up_spikiness:
         :param max_resources:
+        :param init_noise:
         :return: problem evaluator for an arm (given or random if not given)
         """
         if arm is None:  # if no arm is provided, generate a random arm
@@ -174,10 +178,12 @@ class BraninSimulationProblem(BraninProblem):
         model_builder = BraninBuilder(arm)
         return BraninSimulationEvaluator(model_builder, ml_aggressiveness=ml_aggressiveness,
                                          necessary_aggressiveness=necessary_aggressiveness,
-                                         up_spikiness=up_spikiness, max_resources=max_resources)
+                                         up_spikiness=up_spikiness, max_resources=max_resources,
+                                         init_noise=init_noise)
 
     def plot_surface(self, n_simulations: int, max_resources: int = 81, n_resources: Optional[int] = None,
-                     shape_families: Tuple[SHAPE_FAMILY_TYPE, ...] = ((None, 0.9, 10, 0.1, 81),)) -> None:
+                     shape_families: Tuple[SHAPE_FAMILY_TYPE, ...] = ((None, 0.9, 10, 0.1, 81),),
+                     init_noise: float = 0) -> None:
         """ plots the surface of the values of simulated loss functions at n_resources, by default is plot the losses
         at max resources, in which case their values would be 200-branin (if necessary aggressiveness is not disabled)
         :param n_simulations: number of simulations
@@ -185,11 +191,12 @@ class BraninSimulationProblem(BraninProblem):
         :param n_resources: show the surface of the values of simulated loss functions at n_resources
                             Note that this is relative to max_resources
         :param shape_families: shape families
+        :param init_noise:
         """
         if n_resources is None:
             n_resources = max_resources
         assert n_resources <= max_resources
-        scheduler = RoundRobinShapeFamilyScheduler(shape_families, max_resources)
+        scheduler = RoundRobinShapeFamilyScheduler(shape_families, max_resources, init_noise)
 
         xs, ys, zs = [], [], []
         for i in range(n_simulations):
@@ -218,7 +225,8 @@ if __name__ == "__main__":
         (None, 0.6, 7.0, 0.1),    # with average aggressiveness at start and at the beginning
         (None, 0.3, 3.0, 0.2),    # non aggressive start, aggressive end
     )
-    branin_problem.plot_surface(n_simulations=9, max_resources=81, n_resources=81, shape_families=families_of_shapes)
+    branin_problem.plot_surface(n_simulations=9, max_resources=81, n_resources=81, shape_families=families_of_shapes,
+                                init_noise=0.2)
 
     # evaluator = branin_problem.get_evaluator()
     # evaluator.evaluate(30)

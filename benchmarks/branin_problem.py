@@ -12,11 +12,14 @@ HYPERPARAMS_DOMAIN = Domain(
     x=Param('x', -5, 10, distrib='uniform', scale='linear'),
     y=Param('y', 1, 15, distrib='uniform', scale='linear'))
 
+GLOBAL_MIN = 0.397887
 
-def branin(x1: Union[int, np.ndarray], x2: Union[int, np.ndarray]) -> Union[int, np.ndarray]:
+
+def branin(x1: Union[int, np.ndarray], x2: Union[int, np.ndarray], noise_variance: int = 0) -> Union[int, np.ndarray]:
     """ Branin function
     :param x1: x
     :param x2: y
+    :param noise_variance: how noisy to make branin
     :return: value of Branin function
     """
     a = 1
@@ -27,7 +30,7 @@ def branin(x1: Union[int, np.ndarray], x2: Union[int, np.ndarray]) -> Union[int,
     t = 1 / (8 * np.pi)
 
     f = a * (x2 - b * x1 ** 2 + c * x1 - r) ** 2 + s * (1 - t) * np.cos(x1) + s
-    return f
+    return f + noise_variance * np.random.randn(1)[0] * (f - GLOBAL_MIN)
 
 
 class BraninBuilder(ModelBuilder[Any, Any]):
@@ -53,7 +56,7 @@ class BraninEvaluator(Evaluator):
         :return: the function value for the current arm can be found in OptimisationGoals.fval, Note that test_error and
         validation_error attributes are mandatory for OptimisationGoals objects but Branin has no machine learning model
         """
-        return OptimisationGoals(fval=branin(self.arm.x, self.arm.y), test_error=-1, validation_error=-1)
+        return OptimisationGoals(fval=branin(self.arm.x, self.arm.y, noise_variance=0), test_error=-1, validation_error=-1)
 
     def _train(self, *args: Any, **kwargs: Any) -> None:
         pass
@@ -102,6 +105,10 @@ class BraninProblem(HyperparameterOptimisationProblem):
             zs.append(evaluator.evaluate(n_resources=0).fval)
 
         xs, ys, zs = [np.array(array, dtype="float64") for array in (xs, ys, zs)]
+
+        # plt.hist(zs, bins=list(range(0, 200, 1)), cumulative=False)
+        # plt.show()
+
         fig = plt.figure()
         ax = fig.gca(projection=Axes3D.name)
         surf = ax.plot_trisurf(xs, ys, zs, cmap="coolwarm", antialiased=True)
@@ -111,4 +118,4 @@ class BraninProblem(HyperparameterOptimisationProblem):
 
 
 if __name__ == "__main__":
-    BraninProblem().plot_surface(500)
+    BraninProblem().plot_surface(10000)
