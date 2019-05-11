@@ -3,6 +3,7 @@ import numpy as np
 from typing import Optional, List, Tuple
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+import scipy.stats as stats
 
 from core import Arm, OptimisationGoals, ModelBuilder, Domain
 from core.params import *
@@ -14,6 +15,32 @@ HYPERPARAMS_DOMAIN = Domain(
     y=Param('y', 1, 15, distrib='uniform', scale='linear'))
 
 SHAPE_FAMILY_TYPE = Tuple[Optional[Arm], float, float, float, int]
+
+
+def _plot_gamma_process_distribs(n: int, k: int) -> None:
+    """ Overlaps all Gamma distributions of the Gamma process on which the simulation is based.
+    :param n: number of distributions
+    :param k: mode
+    """
+    x = np.linspace(0, 20, 200)
+
+    def plot_gamma_distrib(time: int) -> None:
+        sqrt_beta_component = np.sqrt(k ** 2 + 4 * (n - time))
+        beta_t = (k + sqrt_beta_component) / (2 * (n - time))  # beta increases in terms of time so variance decreases
+        alpha_t = k * beta_t + 1  # mode is always k (threshold for 0 aggressiveness)
+
+        shape = alpha_t
+        scale = 1 / beta_t
+
+        y = stats.gamma.pdf(x, a=shape, scale=scale)
+        plt.plot(x, y, "y-", label=r'$\alpha=29, \beta=3$')
+
+    for t in range(n):
+        plot_gamma_distrib(t)
+
+    plt.xlabel("level of aggressiveness")
+    plt.ylabel("pdf")
+    plt.show()
 
 
 def get_aggressiveness_from_gamma_distrib(time: int, n: int, k: int) -> float:
@@ -97,6 +124,7 @@ class BraninSimulationEvaluator(BraninEvaluator):
             else:  # aggressiveness < k - go up
                 time_left = n - t
                 f_next_time = f_time + self.up_spikiness * time_left
+                # (time_left if time_left < self.max_resources / 2 else 2 * np.sqrt(time_left)) instead of time_left
                 if time_left == 1:
                     f_next_time = f_n
             self.fs.append(f_next_time)
@@ -164,10 +192,11 @@ if __name__ == "__main__":
                         (None, 0.6, 7.0, 0.1, 81),    # with average aggressiveness at start and at the beginning
                         (None, 0.3, 3.0, 0.2, 81),    # non aggressive start, aggressive end
                         )
-    branin_problem.plot_surface(10, shape_families=family_of_shapes)
+    branin_problem.plot_surface(500, shape_families=family_of_shapes)
 
     # evaluator = branin_problem.get_evaluator()
     # evaluator.evaluate(30)
     # evaluator.evaluate(50)
     # evaluator.evaluate(81)
     plt.show()
+    # _plot_gamma_process_distribs(50, 2)

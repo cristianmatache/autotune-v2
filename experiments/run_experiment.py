@@ -32,8 +32,8 @@ def optimisation_func(opt_goals: OptimisationGoals) -> float:
 
 
 def optimisation_func_branin(opt_goals: OptimisationGoals) -> float:
-    """2*fval"""
-    return 2 * opt_goals.fval
+    """fval"""
+    return opt_goals.fval
 
 
 if PROBLEM == "branin":
@@ -120,6 +120,6 @@ if __name__ == "__main__":
           f"  - {optimisation_func.__doc__}: {optimisation_func(optimum_evaluation.optimisation_goals)}\n"
           f"Total time:\n  - {optimiser.checkpoints[-1]} seconds")
 
-    output_file_path = join_path(args.output_dir, "results.pkl")
+    output_file_path = join_path(args.output_dir, f"results-{PROBLEM}-{METHOD}.pkl")
     with open(output_file_path, 'wb') as f:
-        pickle.dump([optimum_evaluation], f)
+        pickle.dump((optimum_evaluation, optimiser.eval_history, optimiser.checkpoints), f)

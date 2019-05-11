@@ -2,38 +2,14 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import numpy as np
 from typing import Union
-import scipy.stats as stats
 
 
 from core import Domain, Param
 
 PLOT_SURFACE = False
-OUTPUT_DIR = "D:/datasets/output"
 HYPERPARAMS_DOMAIN = Domain(
     x=Param('x', -5, 10, distrib='uniform', scale='linear'),
     y=Param('y', 1, 15, distrib='uniform', scale='linear'))
-
-
-def plot_aggressiveness_gammas(n: int, k: int) -> None:
-    x = np.linspace(0, 20, 200)
-
-    def plot_gamma_distrib(time: int) -> None:
-        sqrt_beta_component = np.sqrt(k ** 2 + 4 * (n - time))
-        beta_t = (k + sqrt_beta_component) / (2 * (n - time))  # beta increases in terms of time so variance decreases
-        alpha_t = k * beta_t + 1  # mode is always k (threshold for 0 aggressiveness)
-
-        shape = alpha_t
-        scale = 1 / beta_t
-
-        y = stats.gamma.pdf(x, a=shape, scale=scale)
-        plt.plot(x, y, "y-", label=r'$\alpha=29, \beta=3$')
-
-    # for t in range(100, n):
-    #     plot_gamma_distrib(t)
-    plot_gamma_distrib(1)
-    plot_gamma_distrib(30)
-    plot_gamma_distrib(50)
-    plt.show()
 
 
 def branin(x1: Union[int, np.ndarray], x2: Union[int, np.ndarray]) -> Union[int, np.ndarray]:
@@ -67,9 +43,9 @@ def get_aggressiveness_from_gamma_distrib(time: int, n: int, k: int) -> float:
 def branin_simulate_ml(x1: Union[int, np.ndarray], x2: Union[int, np.ndarray], time: int = 0,
                        n: int = 81) -> Union[int, np.ndarray]:
     k = 2      # mode of gamma distribution - corresponds to 0 aggressiveness
-    h1 = 0.5   # proportion of ml aggressiveness (bites from function debt)
-    h2 = 10    # necessary aggressiveness (the higher h2 the later will necessary aggressiveness start)
-    h3 = 0.05  # up spikiniess (the lower h3 the smoother the function will be - that is fewer up spikes)
+    h1 = 0.6   # proportion of ml aggressiveness (the higher h1 the more it bites from function debt)
+    h2 = 2     # necessary aggressiveness (the higher h2 the later necessary aggressiveness starts-flattens tail later)
+    h3 = 0.15  # up spikiniess (the lower h3 the smoother the function - up spikes, the higher h3 the more up spikes)
 
     if time == 0:
         return branin(x1, x2)
@@ -142,4 +118,3 @@ if __name__ == "__main__":
         plot_branin_surface(n_resources=81, n_simulations=1000)
     else:
         plot_simulations(n_resources=81, n_simulations=5)
-    # plot_aggressiveness_gammas(n=81, k=2)
