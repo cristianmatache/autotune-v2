@@ -6,19 +6,10 @@ import matplotlib.pyplot as plt
 from core import Optimiser, RoundRobinShapeFamilyScheduler
 from optimisers import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, TpeOptimiser, \
     HybridHyperbandSigoptOptimiser
-# from optimisers import RandomOptimiser, SigOptimiser, HybridHyperbandSigoptOptimiser
-# from simulations.tpe_optimiser import TpeOptimiser
-# from simulations.hybrid_hyperband_tpe_optimiser import HybridHyperbandTpeOptimiser
-# from simulations.hyperband_optimiser import HyperbandOptimiser
-
 
 # Problems
 from core import HyperparameterOptimisationProblem, OptimisationGoals
 from benchmarks import BraninProblem, BraninSimulationProblem
-
-
-INPUT_DIR = "D:/datasets/"
-OUTPUT_DIR = "D:/datasets/output"
 
 N_RESOURCES = 3
 MAX_TIME = None
@@ -40,23 +31,12 @@ SHAPE_FAMILIES = (
 
 
 def optimisation_func(opt_goals: OptimisationGoals) -> float:
-    """validation_error"""
-    return opt_goals.validation_error
-
-
-def optimisation_func_branin(opt_goals: OptimisationGoals) -> float:
     """fval"""
     return opt_goals.fval
 
 
-if PROBLEM in ["branin", "sim-branin"]:
-    optimisation_func = optimisation_func_branin
-
-
 def _get_args() -> Namespace:
     parser = argparse.ArgumentParser(description='Running optimisations')
-    parser.add_argument('-i', '--input-dir', default=INPUT_DIR, type=str, help='input dir')
-    parser.add_argument('-o', '--output-dir', default=OUTPUT_DIR, type=str, help='output dir')
     parser.add_argument('-time', '--max-time', default=MAX_TIME, type=int, help='max time (stop if exceeded)')
     parser.add_argument('-iter', '--max-iter', default=MAX_ITER, type=int, help='max iterations (stop if exceeded')
     parser.add_argument('-p', '--problem', default=PROBLEM, type=str, help='problem (eg. cifar, mnist, svhn)')
