@@ -17,7 +17,7 @@ MAX_ITER = 81
 ETA = 3
 
 PROBLEM = "sim-branin"
-METHOD = "sim(hb)"
+METHOD = "sim(hb+tpe)"
 MIN_OR_MAX = "min"
 
 N_SIMULATIONS = 100
@@ -111,7 +111,7 @@ if __name__ == "__main__":
               f"  - {optimisation_func.__doc__}: {optimisation_func(optimum_evaluation.optimisation_goals)}\n"
               f"Total time:\n  - {optimiser.checkpoints[-1]} seconds")
         optimums.append(optimisation_func(optimum_evaluation.optimisation_goals))
-        plt.show()
+        # plt.show()
 
     average_optimum = sum(optimums) / len(optimums)
     print(optimums)

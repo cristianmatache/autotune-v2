@@ -9,31 +9,27 @@ from core.params import *
 from util.io import print_evaluation
 
 HYPERPARAMS_DOMAIN = Domain(
-    x=Param('x', -5, 10, distrib='uniform', scale='linear'),
-    y=Param('y', 1, 15, distrib='uniform', scale='linear'))
+    x=Param('x', -3, 3, distrib='uniform', scale='linear'),
+    y=Param('y', -2, 2, distrib='uniform', scale='linear'))
 
 GLOBAL_MIN = 0.397887
 
 
-def branin(x1: Union[int, np.ndarray], x2: Union[int, np.ndarray], noise_variance: int = 0) -> Union[int, np.ndarray]:
-    """ Branin function
+def six_hump_camel(x1: Union[int, np.ndarray], x2: Union[int, np.ndarray], noise_variance: int = 0) \
+        -> Union[int, np.ndarray]:
+    """ Six Hump Camel function
     :param x1: x
     :param x2: y
-    :param noise_variance: how noisy to make branin
-    :return: value of Branin function
+    :param noise_variance: how noisy to make six hump camel
+    :return: value of Six Hump Camel function
     """
-    a = 1
-    b = 5.1 / (4 * np.pi ** 2)
-    c = 5 / np.pi
-    r = 6
-    s = 10
-    t = 1 / (8 * np.pi)
-
-    f = a * (x2 - b * x1 ** 2 + c * x1 - r) ** 2 + s * (1 - t) * np.cos(x1) + s
+    f = (4 - (2.1*(x1**2)) + ((x1**4)/3)) * (x1**2)
+    f += x1 * x2
+    f += (-4 + 4*(x2**2)) * (x2**2)
     return f + noise_variance * np.random.randn(1)[0] * (f - GLOBAL_MIN)
 
 
-class BraninBuilder(ModelBuilder[Any, Any]):
+class CamelBuilder(ModelBuilder[Any, Any]):
 
     def __init__(self, arm: Arm):
         """
@@ -42,21 +38,21 @@ class BraninBuilder(ModelBuilder[Any, Any]):
         super().__init__(arm)
 
     def construct_model(self) -> None:
-        """ Branin is a known function (so it has no machine learning model associated to it)
+        """ Six Hump Camel is a known function (so it has no machine learning model associated to it)
         """
         pass
 
 
-class BraninEvaluator(Evaluator):
+class CamelEvaluator(Evaluator):
 
     @print_evaluation(verbose=True, goals_to_print=())
     def evaluate(self, n_resources: int) -> OptimisationGoals:
-        """ Given an arm (draw of hyperparameter values), evaluate the Branin function on it
+        """ Given an arm (draw of hyperparameter values), evaluate the Six Hump Camel (6HC) function on it
         :param n_resources: this parameter is not used in this function but all optimisers require this parameter
         :return: the function value for the current arm can be found in OptimisationGoals.fval, Note that test_error and
-        validation_error attributes are mandatory for OptimisationGoals objects but Branin has no machine learning model
+        validation_error attributes are mandatory for OptimisationGoals objects but 6HC has no machine learning model
         """
-        return OptimisationGoals(fval=branin(self.arm.x, self.arm.y, noise_variance=0), test_error=-1,
+        return OptimisationGoals(fval=six_hump_camel(self.arm.x, self.arm.y, noise_variance=0), test_error=-1,
                                  validation_error=-1)
 
     def _train(self, *args: Any, **kwargs: Any) -> None:
@@ -69,11 +65,11 @@ class BraninEvaluator(Evaluator):
         pass
 
 
-class BraninProblem(HyperparameterOptimisationProblem):
+class CamelProblem(HyperparameterOptimisationProblem):
 
     """
     Canonical optimisation test problem
-    See https://www.sfu.ca/~ssurjano/branin.html
+    See https://www.sfu.ca/~ssurjano/camel6.html
     """
 
     def __init__(self, output_dir: Optional[str] = None, hyperparams_domain: Domain = HYPERPARAMS_DOMAIN,
@@ -86,7 +82,7 @@ class BraninProblem(HyperparameterOptimisationProblem):
         """
         super().__init__(hyperparams_domain, hyperparams_to_opt, output_dir=output_dir)
 
-    def get_evaluator(self, arm: Optional[Arm] = None) -> BraninEvaluator:
+    def get_evaluator(self, arm: Optional[Arm] = None) -> CamelEvaluator:
         """
         :param arm: a combination of hyperparameters and their values
         :return: problem evaluator for an arm (given or random if not given)
@@ -94,8 +90,8 @@ class BraninProblem(HyperparameterOptimisationProblem):
         if arm is None:  # if no arm is provided, generate a random arm
             arm = Arm()
             arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)
-        model_builder = BraninBuilder(arm)
-        return BraninEvaluator(model_builder, self.output_dir)
+        model_builder = CamelBuilder(arm)
+        return CamelEvaluator(model_builder, self.output_dir)
 
     def plot_surface(self, n_simulations: int) -> None:
         xs, ys, zs = [], [], []
@@ -119,4 +115,4 @@ class BraninProblem(HyperparameterOptimisationProblem):
 
 
 if __name__ == "__main__":
-    BraninProblem().plot_surface(10000)
+    CamelProblem().plot_surface(10000)
