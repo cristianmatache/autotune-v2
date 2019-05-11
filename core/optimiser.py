@@ -4,7 +4,7 @@ from typing import Callable, List, Optional
 import time
 from colorama import Fore, Style
 
-from core.problem_def import HyperparameterOptimisationProblem
+from core.problem_def import HyperparameterOptimisationProblem, SimulationProblem
 from core.optimisation_goals import OptimisationGoals
 from core.evaluator import Evaluator
 from core.evaluation import Evaluation
@@ -125,3 +125,15 @@ class Optimiser:
               f"current {self.optimisation_func.__doc__}: {opt_func_value:.5f},{num_spaces * ' '}"
               f" best {self.optimisation_func.__doc__} so far: {best_so_far:.5f}"
               f"{Style.RESET_ALL}")
+
+
+RUN_OPTIMISATION_TYPE = Callable[[Optimiser, HyperparameterOptimisationProblem, bool], Evaluation]
+
+
+def check_simulation_problem(run_optimisation: RUN_OPTIMISATION_TYPE) -> RUN_OPTIMISATION_TYPE:
+    def wrapper(self: Optimiser, problem: HyperparameterOptimisationProblem, verbosity: bool) -> Evaluation:
+        if self.is_simulation and not isinstance(problem, SimulationProblem):
+            raise ValueError("You are trying to run a simulation but you have not provided a shape family schedule")
+        problem: HyperparameterOptimisationProblem
+        return run_optimisation(self, problem, verbosity)
+    return wrapper

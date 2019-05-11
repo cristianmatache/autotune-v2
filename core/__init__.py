@@ -1,4 +1,4 @@
-from core.problem_def import HyperparameterOptimisationProblem
+from core.problem_def import HyperparameterOptimisationProblem, SimulationProblem
 from core.params import Param, PairParam, CategoricalParam
 from core.arm import Arm
 from core.hyperparams_domain import Domain

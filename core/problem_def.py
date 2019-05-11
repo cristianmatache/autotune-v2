@@ -93,3 +93,8 @@ class HyperparameterOptimisationProblem:
             return dict(name=name, type=param_type, bounds=dict(min=param.min_val, max=param.max_val))
 
         return [convert_to_sigopt(self.domain[hp_name]) for hp_name in self.hyperparams_to_opt]
+
+
+class SimulationProblem:
+
+    pass

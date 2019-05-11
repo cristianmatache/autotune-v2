@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import scipy.stats as stats
 
-from core import Arm, OptimisationGoals, ModelBuilder, Domain, RoundRobinShapeFamilyScheduler, SHAPE_FAMILY_TYPE
+from core import Arm, OptimisationGoals, ModelBuilder, Domain, RoundRobinShapeFamilyScheduler, SHAPE_FAMILY_TYPE, \
+    SimulationProblem
 from core.params import *
 from util.io import print_evaluation
 from benchmarks.branin_problem import BraninBuilder, BraninEvaluator, BraninProblem, branin
@@ -152,7 +153,7 @@ class BraninSimulationEvaluator(BraninEvaluator):
         return OptimisationGoals(fval=self.fs[-1], test_error=-1, validation_error=-1)
 
 
-class BraninSimulationProblem(BraninProblem):
+class BraninSimulationProblem(BraninProblem, SimulationProblem):
 
     """
     """
