@@ -52,7 +52,7 @@ def _get_args() -> Namespace:
     parser.add_argument('-res', '--n-resources', default=N_RESOURCES, type=int, help='n_resources', required=False)
     parser.add_argument('-eta', default=ETA, type=int, help='halving rate for Hyperband', required=False)
     arguments = parser.parse_args()
-    print(f"""\n> ARGS random run:
+    print(f"""\n
     Input directory:  {arguments.input_dir}
     Output directory: {arguments.output_dir}
 

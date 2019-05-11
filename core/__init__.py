@@ -8,3 +8,4 @@ from core.optimisation_goals import OptimisationGoals
 from core.evaluation import Evaluation
 from core.optimiser import Optimiser, optimisation_metric_user
 from core.shape_family_scheduler import ShapeFamilyScheduler, RoundRobinShapeFamilyScheduler, SHAPE_FAMILY_TYPE
+from core.simulation_evaluator import SimulationEvaluator
