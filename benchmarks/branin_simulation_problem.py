@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import scipy.stats as stats
 
-from core import Arm, OptimisationGoals, ModelBuilder, Domain
+from core import Arm, OptimisationGoals, ModelBuilder, Domain, RoundRobinShapeFamilyScheduler, SHAPE_FAMILY_TYPE
 from core.params import *
 from util.io import print_evaluation
 from benchmarks.branin_problem import BraninBuilder, BraninEvaluator, BraninProblem, branin
@@ -13,8 +13,6 @@ from benchmarks.branin_problem import BraninBuilder, BraninEvaluator, BraninProb
 HYPERPARAMS_DOMAIN = Domain(
     x=Param('x', -5, 10, distrib='uniform', scale='linear'),
     y=Param('y', 1, 15, distrib='uniform', scale='linear'))
-
-SHAPE_FAMILY_TYPE = Tuple[Optional[Arm], float, float, float, int]
 
 
 def _plot_gamma_process_distribs(n: int, k: int) -> None:
@@ -162,18 +160,30 @@ class BraninSimulationProblem(BraninProblem):
                                          necessary_aggressiveness=necessary_aggressiveness,
                                          up_spikiness=up_spikiness, max_resources=max_resources)
 
-    def plot_surface(self, n_simulations: int = 500, n_resources: Optional[int] = None,
+    def plot_surface(self, n_simulations: int, max_resources: int = 81, n_resources: Optional[int] = None,
                      shape_families: Tuple[SHAPE_FAMILY_TYPE, ...] = ((None, 0.9, 10, 0.1, 81),)) -> None:
+        """ plots the surface of the values of simulated loss functions at n_resources, by default is plot the losses
+        at max resources, in which case their values would be 200-branin (if necessary aggressiveness is not disabled)
+        :param n_simulations: number of simulations
+        :param max_resources: maximum number of resources
+        :param n_resources: show the surface of the values of simulated loss functions at n_resources
+                            Note that this is relative to max_resources
+        :param shape_families: shape families
+        """
+        if n_resources is None:
+            n_resources = max_resources
+        assert n_resources <= max_resources
+        scheduler = RoundRobinShapeFamilyScheduler(shape_families, max_resources)
+
         xs, ys, zs = [], [], []
         for i in range(n_simulations):
-            evaluator = self.get_evaluator(*shape_families[i % len(shape_families)])
+            evaluator = self.get_evaluator(*scheduler.get_family())
             xs.append(evaluator.arm.x)
             ys.append(evaluator.arm.y)
-            if n_resources is None:
-                n_resources = evaluator.max_resources
             z = evaluator.evaluate(n_resources=n_resources).fval
-            assert z == branin(evaluator.arm.x, evaluator.arm.y) - 200
             zs.append(z)
+            if n_resources == max_resources:
+                assert z == branin(evaluator.arm.x, evaluator.arm.y) - 200
 
         xs, ys, zs = [np.array(array, dtype="float64") for array in (xs, ys, zs)]
         fig = plt.figure()
@@ -187,12 +197,12 @@ class BraninSimulationProblem(BraninProblem):
 if __name__ == "__main__":
     # function colors: 1 blue 2 green 3 orange 4 red 5 purple 6 brown 7 pink 8 grey
     branin_problem = BraninSimulationProblem()
-    family_of_shapes = (
-                        (None, 1.3, 10.0, 0.14, 81),  # with aggressive start
-                        (None, 0.6, 7.0, 0.1, 81),    # with average aggressiveness at start and at the beginning
-                        (None, 0.3, 3.0, 0.2, 81),    # non aggressive start, aggressive end
-                        )
-    branin_problem.plot_surface(500, shape_families=family_of_shapes)
+    families_of_shapes = (
+        (None, 1.3, 10.0, 0.14),  # with aggressive start
+        (None, 0.6, 7.0, 0.1),    # with average aggressiveness at start and at the beginning
+        (None, 0.3, 3.0, 0.2),    # non aggressive start, aggressive end
+    )
+    branin_problem.plot_surface(n_simulations=500, max_resources=81, n_resources=40, shape_families=families_of_shapes)
 
     # evaluator = branin_problem.get_evaluator()
     # evaluator.evaluate(30)

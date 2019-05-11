@@ -7,3 +7,4 @@ from core.evaluator import Evaluator
 from core.optimisation_goals import OptimisationGoals
 from core.evaluation import Evaluation
 from core.optimiser import Optimiser
+from core.shape_family_scheduler import RoundRobinShapeFamilyScheduler, SHAPE_FAMILY_TYPE

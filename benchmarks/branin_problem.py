@@ -93,7 +93,7 @@ class BraninProblem(HyperparameterOptimisationProblem):
         model_builder = BraninBuilder(arm)
         return BraninEvaluator(model_builder, self.output_dir)
 
-    def plot_surface(self, n_simulations: int = 500) -> None:
+    def plot_surface(self, n_simulations: int) -> None:
         xs, ys, zs = [], [], []
         for _ in range(n_simulations):
             evaluator = self.get_evaluator()
@@ -111,4 +111,4 @@ class BraninProblem(HyperparameterOptimisationProblem):
 
 
 if __name__ == "__main__":
-    BraninProblem().plot_surface()
+    BraninProblem().plot_surface(500)
