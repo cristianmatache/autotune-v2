@@ -17,11 +17,11 @@ MAX_ITER = 81
 ETA = 3
 
 PROBLEM = "sim-branin"
-METHOD = "sim(hb+sigopt)"
+METHOD = "sim(hb)"
 MIN_OR_MAX = "min"
 
-N_SIMULATIONS = 5
-INIT_NOISE = 0.2
+N_SIMULATIONS = 100
+INIT_NOISE = 0.3
 
 SHAPE_FAMILIES = (
     (None, 1.3, 10.0, 0.14),  # with aggressive start
@@ -45,13 +45,9 @@ def _get_args() -> Namespace:
     parser.add_argument('-res', '--n-resources', default=N_RESOURCES, type=int, help='n_resources', required=False)
     parser.add_argument('-eta', default=ETA, type=int, help='halving rate for Hyperband', required=False)
     arguments = parser.parse_args()
-    print(f"""\n> ARGS random run:
-    Input directory:  {arguments.input_dir}
-    Output directory: {arguments.output_dir}
-
+    print(f"""\n
     Problem:          {arguments.problem.upper()}
     Method:           {arguments.method.upper()}
-
     Func {arguments.min_or_max.upper()}imizes:   {optimisation_func.__doc__}
     """)
     return arguments
@@ -121,4 +117,3 @@ if __name__ == "__main__":
     print(optimums)
     print(f"\n\n------------- AVERAGE OPTIMUM OVER {N_SIMULATIONS} SIMULATIONS ------------- \n{average_optimum}")
     print(200+average_optimum)
-
