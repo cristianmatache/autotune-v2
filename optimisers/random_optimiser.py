@@ -36,7 +36,10 @@ class RandomOptimiser(Optimiser):
         """
         while not self._needs_to_stop():
             # Draw random sample
-            evaluator = problem.get_evaluator()
+            if not self.is_simulation:
+                evaluator = problem.get_evaluator()
+            else:  # is simulation
+                evaluator = problem.get_evaluator(*self.scheduler.get_family())
             opt_goals = evaluator.evaluate(self.n_resources)
             # Evaluate arm on problem
             # Update evaluation history: arms tried so far, validation and test errors so far

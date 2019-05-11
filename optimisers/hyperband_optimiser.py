@@ -68,7 +68,11 @@ class HyperbandOptimiser(Optimiser):
             n = int(ceil(int(B/R/(s+1))*eta**s))  # initial number of evaluators/configurations/arms
             r = R*eta**(-s)                       # initial resources allocated to each evaluator/arm
 
-            evaluators = [problem.get_evaluator() for _ in range(n)]
+            if not self.is_simulation:
+                evaluators = [problem.get_evaluator() for _ in range(n)]
+            else:  # is simulation
+                evaluators = [problem.get_evaluator(*self.scheduler.get_family()) for _ in range(n)]
+
             print(f"{COL}\n{'=' * 73}\n>> Generated {n} evaluators each with a random arm {Style.RESET_ALL}")
 
             # Successive halving with rate eta - based on values of self.optimisation_func(opt goals of each evaluation)

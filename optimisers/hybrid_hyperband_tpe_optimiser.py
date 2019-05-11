@@ -61,7 +61,8 @@ class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
 
                 if i == 0:  # Generate first n_i arms/evaluators with TPE
                     tpe_optimiser = TpeOptimiser(n_resources=r_i, max_iter=n_i,
-                                                 optimisation_func=self.optimisation_func, min_or_max=self.min_or_max)
+                                                 optimisation_func=self.optimisation_func, min_or_max=self.min_or_max,
+                                                 is_simulation=self.is_simulation, scheduler=self.scheduler)
                     tpe_optimiser.run_optimisation(problem, verbosity=True)
 
                     # evaluators = [h.evaluator for h in tpe_optimiser.eval_history]

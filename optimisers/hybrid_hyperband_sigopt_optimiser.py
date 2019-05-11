@@ -62,7 +62,8 @@ class HybridHyperbandSigoptOptimiser(HyperbandOptimiser):
 
                 if i == 0:  # Generate first n_i arms/evaluators with SigOpt
                     sig_optimiser = SigOptimiser(n_resources=r_i, max_iter=n_i,
-                                                 optimisation_func=self.optimisation_func, min_or_max=self.min_or_max)
+                                                 optimisation_func=self.optimisation_func, min_or_max=self.min_or_max,
+                                                 is_simulation=self.is_simulation, scheduler=self.scheduler)
                     sig_optimiser.run_optimisation(problem, verbosity=True)
                     self.num_iterations += sig_optimiser.num_iterations
 
