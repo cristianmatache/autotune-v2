@@ -13,13 +13,15 @@ class OptimisationGoals(SimpleNamespace):
     an optimization function (optimisation_func).
     """
 
-    def __init__(self, validation_error: float, test_error: float, **kwargs: float):
+    def __init__(self, **kwargs: float):
         """
         :param validation_error: error on validation set
         :param test_error: error on test set
         :param kwargs: other metrics in terms of which we can perform optimization
         """
-        super().__init__(validation_error=validation_error, test_error=test_error, **kwargs)
+        if ("validation_error" not in kwargs) or ("test_error" not in kwargs):
+            print("WARNING: validation_error or test_error or both are not included in the Optimization Goals")
+        super().__init__(**kwargs)
 
     def goals_to_str(self, goals_to_print: Tuple[str, ...] = ()) -> str:
         """ Formats  names and values for some/all attributes and formats them into a string

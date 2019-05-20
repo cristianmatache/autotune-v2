@@ -4,15 +4,10 @@ from typing import Optional, Tuple
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-from core import Arm, OptimisationGoals, ModelBuilder, Domain, RoundRobinShapeFamilyScheduler, SHAPE_FAMILY_TYPE, \
+from core import Arm, OptimisationGoals, ModelBuilder, RoundRobinShapeFamilyScheduler, SHAPE_FAMILY_TYPE, \
     SimulationProblem, SimulationEvaluator
-from core.params import *
 from util.io import print_evaluation
 from benchmarks.branin_problem import BraninBuilder, BraninEvaluator, BraninProblem, branin
-
-HYPERPARAMS_DOMAIN = Domain(
-    x=Param('x', -5, 10, distrib='uniform', scale='linear'),
-    y=Param('y', 1, 15, distrib='uniform', scale='linear'))
 
 
 class BraninSimulationEvaluator(BraninEvaluator, SimulationEvaluator):
@@ -143,8 +138,8 @@ if __name__ == "__main__":
         (None, 0.6, 7.0, 0.1),    # with average aggressiveness at start and at the beginning
         (None, 0.3, 3.0, 0.2),    # non aggressive start, aggressive end
     )
-    branin_problem.plot_surface(n_simulations=9, max_resources=81, n_resources=81, shape_families=families_of_shapes,
-                                init_noise=0.2)
+    branin_problem.plot_surface(n_simulations=10, max_resources=81, n_resources=81, shape_families=families_of_shapes,
+                                init_noise=0.3)
 
     # evaluator = branin_problem.get_evaluator()
     # evaluator.evaluate(30)
