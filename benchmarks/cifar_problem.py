@@ -75,6 +75,9 @@ class CifarEvaluator(TorchEvaluator):
             self._adjust_learning_rate(epoch, base_lr, gamma, step_size)
             # Train the net for one epoch
             self._train(epoch, min(n_batches, batches_per_epoch), batch_size=batch_size)
+            # Save/Update intermediate loss function values
+            val_error, val_correct, val_total = self._test(is_validation=True)
+            self._save_checkpoint(epoch, val_error, None)
             # Decrement n_batches remaining
             n_batches -= batches_per_epoch
 

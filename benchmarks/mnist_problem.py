@@ -50,6 +50,9 @@ class MnistEvaluator(TorchEvaluator):
         for epoch in range(start_epoch, start_epoch + max_epochs):
             # Train the net for one epoch
             self._train(epoch, min(n_batches, batches_per_epoch), batch_size=batch_size)
+            # Save/Update intermediate loss function values
+            val_error, val_correct, val_total = self._test(is_validation=True)
+            self._save_checkpoint(epoch, val_error, None)
             # Decrement n_batches remaining
             n_batches -= batches_per_epoch
 

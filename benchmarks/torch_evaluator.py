@@ -1,9 +1,11 @@
 from abc import abstractmethod
 import torch
+import os
+import pickle
 from torch.nn import Module
 from torch.autograd import Variable
 from torch import cuda
-from typing import Tuple
+from typing import Tuple, Optional
 
 from core import Evaluator, OptimisationGoals
 from benchmarks.torch_model_builders import ModelBuilder
@@ -33,7 +35,7 @@ class TorchEvaluator(Evaluator):
         # save first checkpoint to file file_path
         self._save_checkpoint(epoch=0, val_error=1, test_error=1)
 
-    def _save_checkpoint(self, epoch: int, val_error: float, test_error: float) -> None:
+    def _save_checkpoint(self, epoch: int, val_error: float, test_error: Optional[float]) -> None:
         torch.save({
             'epoch': epoch,
             'model': self.ml_model,
@@ -41,6 +43,14 @@ class TorchEvaluator(Evaluator):
             'val_error': val_error,
             'test_error': test_error,
         }, self.file_path)
+        val_errors = []
+        if os.path.exists(self.loss_progress_file):
+            with open(self.loss_progress_file, "rb") as f:
+                val_errors = pickle.load(f)
+        assert self.loss_history == val_errors
+        self.loss_history.append(val_error)
+        with open(self.loss_progress_file, "wb+") as f:
+            pickle.dump(self.loss_history, f)
 
     def _resume_from_checkpoint(self) -> int:
         """ Load model and optimiser from file to resume training

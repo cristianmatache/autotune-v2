@@ -1,11 +1,12 @@
 import os
 from os.path import join as join_path
 from abc import abstractmethod
-from typing import Any, Tuple, Optional
+from typing import Any, Tuple, Optional, List
 
 
 from core.model_builder import ModelBuilder
 from core.optimisation_goals import OptimisationGoals
+from core.arm import Arm
 
 
 def ensure_dir(path: str) -> str:
@@ -27,7 +28,8 @@ class Evaluator:
     by saving and restoring checkpoints
     """
 
-    __slots__ = ("model_builder", "output_dir", "file_name", "directory", "file_path", "arm", "n_resources")
+    __slots__ = ("model_builder", "output_dir", "file_name", "directory", "file_path", "arm", "n_resources",
+                 "loss_progress_file", "loss_history")
 
     def __init__(self, model_builder: ModelBuilder, output_dir: Optional[str] = None, file_name: str = "model.pth"):
         """
@@ -39,11 +41,13 @@ class Evaluator:
         if self.output_dir is not None:
             subdirectories = next(os.walk(output_dir))[1]
             last_arm_number = len(subdirectories)
-            self.directory = ensure_dir(join_path(output_dir, f"arm{last_arm_number + 1}"))
-            self.file_path = join_path(self.directory, file_name)
+            self.directory: str = ensure_dir(join_path(output_dir, f"arm{last_arm_number + 1}"))
+            self.file_path: str = join_path(self.directory, file_name)
+            self.loss_progress_file: str = join_path(self.directory, f"loss_progress.{file_name}")
 
-        self.arm = model_builder.arm
-        self.n_resources = 0
+        self.loss_history: List[float] = []
+        self.arm: Arm = model_builder.arm
+        self.n_resources: int = 0
 
     @abstractmethod
     def evaluate(self, *args: Any, **kwargs: Any) -> OptimisationGoals:
