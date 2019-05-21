@@ -109,7 +109,8 @@ if __name__ == "__main__":
     low_steep_medium_late = [4, 7, 20, 23, 40, 41, 42, 47, 58, 60]
     medium_steep = [16, 26, 30, 34, 38, 51, 53, 59, 61]
 
-    families_indices = (steep_start_early_flat, steep_start_late_flat, low_steep_medium_late, medium_steep) # jumpy_flat)
+    families_indices = (steep_start_early_flat, steep_start_late_flat, low_steep_medium_late, medium_steep)
+    # jumpy_flat)
 
     # plt.xlabel("epoch")
     # plt.ylabel("loss error")
