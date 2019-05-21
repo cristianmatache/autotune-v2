@@ -3,7 +3,7 @@ from argparse import Namespace
 import matplotlib.pyplot as plt
 
 # Optimisers
-from core import Optimiser, RoundRobinShapeFamilyScheduler
+from core import Optimiser, RoundRobinShapeFamilyScheduler, ShapeFamily
 from optimisers import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, TpeOptimiser, \
     HybridHyperbandSigoptOptimiser
 
@@ -11,7 +11,7 @@ from optimisers import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOp
 from core import HyperparameterOptimisationProblem, OptimisationGoals
 from benchmarks import BraninProblem, BraninSimulationProblem
 
-N_RESOURCES = 3
+N_RESOURCES = 81
 MAX_TIME = None
 MAX_ITER = 81
 ETA = 3
@@ -23,10 +23,12 @@ MIN_OR_MAX = "min"
 N_SIMULATIONS = 100
 INIT_NOISE = 0.3
 
+PLOT_EACH = True
+
 SHAPE_FAMILIES = (
-    (None, 1.3, 10.0, 0.14),  # with aggressive start
-    (None, 0.6, 7.0, 0.1),  # with average aggressiveness at start and at the beginning
-    (None, 0.3, 3.0, 0.2),  # non aggressive start, aggressive end
+    ShapeFamily(None, 1.3, 10.0, 0.14),  # with aggressive start
+    ShapeFamily(None, 0.6, 7.0, 0.1),  # with average aggressiveness at start and at the beginning
+    ShapeFamily(None, 0.3, 3.0, 0.2),  # non aggressive start, aggressive end
 )
 
 
@@ -111,7 +113,8 @@ if __name__ == "__main__":
               f"  - {optimisation_func.__doc__}: {optimisation_func(optimum_evaluation.optimisation_goals)}\n"
               f"Total time:\n  - {optimiser.checkpoints[-1]} seconds")
         optimums.append(optimisation_func(optimum_evaluation.optimisation_goals))
-        # plt.show()
+        if PLOT_EACH:
+            plt.show()
 
     average_optimum = sum(optimums) / len(optimums)
     print(optimums)
