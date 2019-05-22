@@ -12,6 +12,10 @@ from optimisers import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOp
 from core import HyperparameterOptimisationProblem, OptimisationGoals
 from benchmarks import MnistProblem, CifarProblem, SvhnProblem, MrbiProblem, BraninProblem
 
+# Set random seeds
+import random
+import torch
+
 
 INPUT_DIR = "D:/datasets/"
 OUTPUT_DIR = "D:/datasets/output"
@@ -24,6 +28,7 @@ ETA = 3
 PROBLEM = "branin"
 METHOD = "hb+sigopt"
 MIN_OR_MAX = "min"
+RANDOM_SEED = 42
 
 
 def optimisation_func(opt_goals: OptimisationGoals) -> float:
@@ -47,6 +52,7 @@ def _get_args() -> Namespace:
     parser.add_argument('-opt', '--min-or-max', default=MIN_OR_MAX, type=str, help="min or max")
     parser.add_argument('-res', '--n-resources', default=N_RESOURCES, type=int, help='n_resources', required=False)
     parser.add_argument('-eta', default=ETA, type=int, help='halving rate for Hyperband', required=False)
+    parser.add_argument('-s', '--seed', default=RANDOM_SEED, type=int, help='Random seed for all frameworks', required=False)
     arguments = parser.parse_args()
     print(f"""\n
     Input directory:  {arguments.input_dir}
@@ -107,6 +113,11 @@ def get_optimiser() -> Optimiser:
 
 if __name__ == "__main__":
     args = _get_args()
+
+    # FIXME move framework specifics under corresponding problems
+    random.seed(args.seed)
+    torch.manual_seed(args.seed)
+
     problem = get_problem(args)
     optimiser = get_optimiser()
 
