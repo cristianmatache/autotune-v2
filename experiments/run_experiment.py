@@ -36,10 +36,6 @@ def optimisation_func_branin(opt_goals: OptimisationGoals) -> float:
     return opt_goals.fval
 
 
-if PROBLEM == "branin":
-    optimisation_func = optimisation_func_branin
-
-
 def _get_args() -> Namespace:
     parser = argparse.ArgumentParser(description='Running optimisations')
     parser.add_argument('-i', '--input-dir', default=INPUT_DIR, type=str, help='input dir')
@@ -76,6 +72,7 @@ def get_problem(arguments: Namespace) -> HyperparameterOptimisationProblem:
         problem_instance = MrbiProblem(arguments.input_dir, arguments.output_dir)
     elif problem_name == "branin":
         problem_instance = BraninProblem()
+        optimisation_func = optimisation_func_branin
     else:
         raise ValueError(f"Supplied problem {problem_name} does not exist")
     problem_instance.print_domain()
