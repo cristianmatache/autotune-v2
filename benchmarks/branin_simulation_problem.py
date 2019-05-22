@@ -62,7 +62,7 @@ class BraninSimulationEvaluator(BraninEvaluator, SimulationEvaluator):
         total_time = time + n_resources_before_first_halving
         self.simulate(total_time, n, f_n)
 
-        # plt.plot(list(range(total_time)), self.fs)
+        plt.plot(list(range(total_time)), self.fs)
         if time == self.max_resources and self.necessary_aggressiveness != np.inf:
             assert self.fs[-1] == f_n
 
