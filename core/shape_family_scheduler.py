@@ -7,11 +7,12 @@ from core.arm import Arm
 
 class ShapeFamily(NamedTuple):
     arm: Optional[Arm]
-    ml_agg: float         # ML aggressiveness
-    necessary_agg: float  # Necessary aggressiveness
-    up_spikiness: float   # Up spikiness
-    start_shift: int = 0  # Shift f(0) downwards (before noise is applied)
-    end_shift: int = 200  # Shift f(n) downwards
+    ml_agg: float            # ML aggressiveness
+    necessary_agg: float     # Necessary aggressiveness
+    up_spikiness: float      # Up spikiness
+    is_smooth: bool = False  # Whether to apply smoothing on the family or not
+    start_shift: int = 0     # Shift f(0) downwards (before noise is applied)
+    end_shift: int = 200     # Shift f(n) downwards
 
 
 class EvaluatorParams(NamedTuple):
@@ -19,14 +20,15 @@ class EvaluatorParams(NamedTuple):
     Like ShapeFamily plus max_res and noise, also presents defaults
     """
     arm: Optional[Arm]
-    ml_agg: float         # ML aggressiveness
-    necessary_agg: float  # Necessary aggressiveness
-    up_spikiness: float   # Up spikiness
-    start_shift: int = 0  # Shift f(0) downwards (before noise is applied)
-    end_shift: int = 200  # Shift f(n) downwards
+    ml_agg: float            # ML aggressiveness
+    necessary_agg: float     # Necessary aggressiveness
+    up_spikiness: float      # Up spikiness
+    is_smooth: bool = False  # Whether to apply smoothing on the family or not
+    start_shift: int = 0     # Shift f(0) downwards (before noise is applied)
+    end_shift: int = 200     # Shift f(n) downwards
 
-    max_res: int = 81     # maximum resources
-    noise: float = 0.3    # initial noise
+    max_res: int = 81        # maximum resources
+    noise: float = 0.3       # initial noise
 
 
 class ShapeFamilyScheduler:

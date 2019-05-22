@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.stats as stats
+from scipy.signal import savgol_filter
 import matplotlib.pyplot as plt
 from typing import List
 
@@ -51,15 +52,18 @@ class SimulationEvaluator:
     """
 
     def __init__(self, ml_aggressiveness: float, necessary_aggressiveness: float, up_spikiness: float,
-                 max_resources: int):
+                 max_resources: int, is_smooth: bool = True):
         """
         :param ml_aggressiveness:
         :param necessary_aggressiveness:
         :param up_spikiness:
         :param max_resources:
+        :param is_smooth:
         """
         self.max_resources = max_resources
-        self.fs: List[float] = []
+
+        self.non_smooth_fs: List[float] = []
+        self.is_smooth = is_smooth
 
         # Curve shape parameters DEPEND ON self.max_resources - feel free to add a schedule to them if you want
         # - ml aggressiveness = the higher h1 the more it bites from function debt - especially at the beginning
@@ -69,6 +73,15 @@ class SimulationEvaluator:
         # - up spikiniess = the lower h3 the smoother the function, the higher h3 the more upwards spikes
         #                   spikes are proportional with time left = bigger spikes at the beginning, smaller in the end
         self.up_spikiness = up_spikiness
+
+    @property
+    def fs(self) -> List[float]:
+        if not self.is_smooth:
+            return self.non_smooth_fs
+        else:
+            window = int(0.17 * self.max_resources + 6)
+            window += 1 if window % 2 == 0 else 0
+            return list(savgol_filter(self.non_smooth_fs, window, 3))  # throws FutureWarning: Using a non-tuple ...
 
     def simulate(self, time: int, n: int, f_n: float) -> None:
         """ X is time/any other resources, Y is f(X) - simulated function at time X. Note that this function can
@@ -81,10 +94,10 @@ class SimulationEvaluator:
         """
         k = 2  # mode of all gamma distributions - corresponds to 0 aggressiveness
 
-        prev_time = len(self.fs)
+        prev_time = len(self.non_smooth_fs)
         for t in range(prev_time, time):
             agg_level = get_aggressiveness_from_gamma_distrib(t, n + 1, k)
-            f_time = self.fs[-1]
+            f_time = self.non_smooth_fs[-1]
             if agg_level == k:  # be neutral
                 f_next_time = f_time
             elif agg_level > k:  # be aggressive - go down with different aggressivenesses
@@ -99,4 +112,4 @@ class SimulationEvaluator:
                 # (time_left if time_left < self.max_resources / 2 else 2 * np.sqrt(time_left)) instead of time_left
                 if time_left == 1:
                     f_next_time = f_n
-            self.fs.append(f_next_time)
+            self.non_smooth_fs.append(f_next_time)

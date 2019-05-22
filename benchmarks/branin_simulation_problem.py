@@ -16,6 +16,7 @@ class BraninSimulationEvaluator(BraninEvaluator, SimulationEvaluator):
                  ml_aggressiveness: float = 0,
                  necessary_aggressiveness: float = 0,
                  up_spikiness: float = 0,
+                 is_smooth: bool = False,
                  start_shift: int = 0,
                  end_shift: int = 200,
                  max_resources: int = 81,
@@ -27,10 +28,15 @@ class BraninSimulationEvaluator(BraninEvaluator, SimulationEvaluator):
         :param ml_aggressiveness:
         :param necessary_aggressiveness:
         :param up_spikiness:
+        :param is_smooth:
+        :param start_shift:
+        :param end_shift:
         :param max_resources:
+        :param init_noise:
         """
         BraninEvaluator.__init__(self, model_builder=model_builder, output_dir=output_dir, file_name=file_name)
-        SimulationEvaluator.__init__(self, ml_aggressiveness, necessary_aggressiveness, up_spikiness, max_resources)
+        SimulationEvaluator.__init__(self, ml_aggressiveness, necessary_aggressiveness, up_spikiness, max_resources,
+                                     is_smooth)
         self.init_noise = init_noise
         self.start_shift, self.end_shift = start_shift, end_shift
 
@@ -50,23 +56,22 @@ class BraninSimulationEvaluator(BraninEvaluator, SimulationEvaluator):
         f_1 = branin_noisy_value - self.start_shift  # first value of f
         # print(f"Starting from: {branin_value} and aiming to finish at: {f_n}")
 
-        if not self.fs:
-            self.fs = [f_1]
-            self.simulate(n_resources_before_first_halving, n, f_n)
+        if not self.non_smooth_fs:
+            self.non_smooth_fs = [f_1]
+            self.simulate(n, n, f_n)
 
-        if time == 0:
-            self.fs = [f_1]
-            self.simulate(n_resources_before_first_halving, n, f_n)
-            return OptimisationGoals(fval=f_1, test_error=-1, validation_error=-1)
+        if time == 1:
+            self.non_smooth_fs = [f_1]
+            self.simulate(n, n, f_n)
+            return OptimisationGoals(fval=self.fs[time-1], test_error=-1, validation_error=-1)
 
-        total_time = time + n_resources_before_first_halving
-        self.simulate(total_time, n, f_n)
+        self.simulate(n, n, f_n)
 
-        plt.plot(list(range(total_time)), self.fs)
+        plt.plot(list(range(time)), self.fs[:time], linewidth=1.5)
         if time == self.max_resources and self.necessary_aggressiveness != np.inf:
-            assert self.fs[-1] == f_n
+            assert self.non_smooth_fs[n-1] == f_n
 
-        return OptimisationGoals(fval=self.fs[-1], test_error=-1, validation_error=-1)
+        return OptimisationGoals(fval=self.fs[time-1], test_error=-1, validation_error=-1)
 
 
 class BraninSimulationProblem(BraninProblem, SimulationProblem):
@@ -78,8 +83,8 @@ class BraninSimulationProblem(BraninProblem, SimulationProblem):
                       ml_aggressiveness: float = 0.9,
                       necessary_aggressiveness: float = 10,
                       up_spikiness: float = 0.1,
-                      start_shift: int = 0,
-                      end_shift: int = 200,
+                      is_smooth: bool = False,
+                      start_shift: int = 0, end_shift: int = 200,
                       max_resources: int = 81,
                       init_noise: int = 0) -> BraninSimulationEvaluator:
         """
@@ -87,6 +92,7 @@ class BraninSimulationProblem(BraninProblem, SimulationProblem):
         :param ml_aggressiveness:
         :param necessary_aggressiveness:
         :param up_spikiness:
+        :param is_smooth:
         :param start_shift:
         :param end_shift:
         :param max_resources:
@@ -99,7 +105,7 @@ class BraninSimulationProblem(BraninProblem, SimulationProblem):
         model_builder = BraninBuilder(arm)
         return BraninSimulationEvaluator(model_builder, ml_aggressiveness=ml_aggressiveness,
                                          necessary_aggressiveness=necessary_aggressiveness, up_spikiness=up_spikiness,
-                                         start_shift=start_shift, end_shift=end_shift,
+                                         is_smooth=is_smooth, start_shift=start_shift, end_shift=end_shift,
                                          max_resources=max_resources, init_noise=init_noise)
 
     def plot_surface(self, n_simulations: int, max_resources: int = 81, n_resources: Optional[int] = None,
@@ -140,14 +146,14 @@ if __name__ == "__main__":
     # function colors: 1 blue 2 green 3 orange 4 red 5 purple 6 brown 7 pink 8 grey
     branin_problem = BraninSimulationProblem()
     families_of_shapes = (
-        ShapeFamily(None, 1.3, 10.0, 0.14),  # with aggressive start
+        ShapeFamily(None, 1.3, 10.0, 0.14, True),  # with aggressive start
         ShapeFamily(None, 0.6, 7.0, 0.1),    # with average aggressiveness at start and at the beginning
         ShapeFamily(None, 0.3, 3.0, 0.2),    # non aggressive start, aggressive end
     )
     branin_problem.plot_surface(n_simulations=10, max_resources=81, n_resources=81, shape_families=families_of_shapes,
                                 init_noise=0.3)
 
-    # evaluator = branin_problem.get_evaluator()
+    # evaluator = branin_problem.get_evaluator(is_smooth=True)
     # evaluator.evaluate(30)
     # evaluator.evaluate(50)
     # evaluator.evaluate(81)

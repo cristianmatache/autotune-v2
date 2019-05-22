@@ -13,7 +13,7 @@ from core import Arm,  RoundRobinShapeFamilyScheduler, ShapeFamily, Evaluator
 # This will fetch the latest experiment on the following problem with the following optimization method
 PROBLEM = "mnist"
 METHOD = "random"
-IS_SIMULATION = False
+IS_SIMULATION = True
 
 FILE_PATH = join_path(OUTPUT_DIR, f"results-{PROBLEM}-{METHOD}.pkl")
 
@@ -64,7 +64,7 @@ def get_rel_profile(loss_functions_per_fam: np.ndarray) -> List[float]:
             still_less = set(less_i_t) & set(less_i_prev_t)
             still_great = set(great_i_t) & set(great_i_prev_t)
 
-            function_score = (1 + len(still_less) + len(still_great)) / (num_func + 1)
+            function_score = (len(still_less) + len(still_great)) / num_func
             function_scores.append(function_score)
         relativity.append(sum(function_scores) / len(function_scores))
 
@@ -93,7 +93,6 @@ def plot_simulated(n_simulations: int, max_resources: int = 81, n_resources: Opt
     for i in range(n_simulations):
         evaluator: BraninSimulationEvaluator = simulator.get_evaluator(*scheduler.get_family())
         evaluator.evaluate(n_resources=n_resources)
-        # plt.plot(list(range(len(evaluator.fs))), evaluator.fs)
         loss_functions.append(evaluator.fs)
 
     return loss_functions
@@ -106,7 +105,6 @@ def plot_profiles(loss_functions: List[List[float]]) -> None:
     med_profile = get_med_profile(loss_functions)
     std_profile = get_std_profile(loss_functions)
     rel_profile = get_rel_profile(loss_functions)
-    print('rel_profile', rel_profile)
 
     rack = list(range(len(avg_profile)))
     ax1.plot(rack, avg_profile)
@@ -129,14 +127,14 @@ if __name__ == "__main__":
     if IS_SIMULATION:
 
         families_of_shapes = (
-            ShapeFamily(None, 7, 2, 0.05, 750, 830),    # steep_start_early_flat
-            ShapeFamily(None, 6, 5, 0.05, 480, 710),    # steep_start_late_flat
-            ShapeFamily(None, 5, np.inf, 0.05, 0, 75),  # low_steep_medium_late
-            ShapeFamily(None, 6, 3.0, 0.005, 0, 500),   # medium_steep
+            ShapeFamily(None, 1.2, 3, 0.05, True, 450, 500),    # steep_start_early_flat - bottom blue cloud
+            ShapeFamily(None, 1.5, 500, 0.05, True, 170, 390),  # steep_start_late_flat - yellow cloud
+            ShapeFamily(None, 0.5, 20, 0.05, False, 0, 30),     # low_steep_medium_late - top green cloud
+            ShapeFamily(None, 0.72, 5, 0.15, True, 50, 290),    # medium_steep - red cloud
         )
 
         for fam in families_of_shapes:
-            simulated_loss_functions = plot_simulated(n_simulations=15, max_resources=20, n_resources=20,
+            simulated_loss_functions = plot_simulated(n_simulations=15, max_resources=81, n_resources=81,
                                                       shape_families=(fam,), init_noise=0.3)
             plot_profiles(simulated_loss_functions)
 
@@ -149,9 +147,7 @@ if __name__ == "__main__":
             with open(file, "rb") as f:
                 optimum_evaluation, eval_history, checkpoints = pickle.load(f)
                 all_evaluators.append([evaluator_t for evaluator_t, _ in eval_history])
-
         all_evaluators = flatten(all_evaluators)
-        # all_evaluators = all_evaluators[]
 
         steep_start_late_flat = [1, 2, 5, 10, 17, 19, 21, 22, 29, 36]
         steep_start_early_flat = [0, 3, 8, 11, 12, 14, 25, 28, 31, 32, 33, 35, 37, 44, 54, 55, 63]

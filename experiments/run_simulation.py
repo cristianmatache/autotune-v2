@@ -26,9 +26,9 @@ INIT_NOISE = 0.3
 PLOT_EACH = True
 
 SHAPE_FAMILIES = (
-    ShapeFamily(None, 1.3, 10.0, 0.14),  # with aggressive start
-    ShapeFamily(None, 0.6, 7.0, 0.1),  # with average aggressiveness at start and at the beginning
-    ShapeFamily(None, 0.3, 3.0, 0.2),  # non aggressive start, aggressive end
+    ShapeFamily(None, 1.3, 10.0, 0.14, True),  # with aggressive start
+    ShapeFamily(None, 0.6, 7.0, 0.1, True),  # with average aggressiveness at start and at the beginning
+    ShapeFamily(None, 0.3, 3.0, 0.2, True),  # non aggressive start, aggressive end
 )
 
 
