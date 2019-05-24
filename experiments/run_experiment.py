@@ -1,6 +1,7 @@
 import pickle
 import argparse
 from argparse import Namespace
+import os
 from os.path import join as join_path
 
 # Optimisers
@@ -120,6 +121,9 @@ if __name__ == "__main__":
 
     problem = get_problem(args)
     optimiser = get_optimiser()
+
+    os.makedirs(args.input_dir, exist_ok=True)
+    os.makedirs(args.output_dir, exist_ok=True)
 
     print(optimiser)
     optimum_evaluation = optimiser.run_optimisation(problem, verbosity=True)
