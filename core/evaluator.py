@@ -87,3 +87,9 @@ class Evaluator:
         :return: human readable representation of an (arm) evaluator
         """
         return f"Evaluator of arm:\n{self.arm}"
+
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, Evaluator) and self.arm == other.arm
+
+    def __hash__(self) -> int:
+        return hash(str(self))

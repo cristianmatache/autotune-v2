@@ -128,6 +128,6 @@ if __name__ == "__main__":
           f"  - {optimisation_func.__doc__}: {optimisation_func(optimum_evaluation.optimisation_goals)}\n"
           f"Total time:\n  - {optimiser.checkpoints[-1]} seconds")
 
-    output_file_path = join_path(args.output_dir, f"results-{PROBLEM}-{METHOD}.pkl")
+    output_file_path = join_path(args.output_dir, f"results-{args.problem}-{args.method}.pkl")
     with open(output_file_path, 'wb') as f:
         pickle.dump((optimum_evaluation, optimiser.eval_history, optimiser.checkpoints), f)

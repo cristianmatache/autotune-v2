@@ -14,7 +14,8 @@ class TpeOptimiser(Optimiser):
 
     def __init__(self, n_resources: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
                  optimisation_func: Callable[[OptimisationGoals], float] = Optimiser.default_optimisation_func,
-                 is_simulation: bool = False, scheduler: Optional[ShapeFamilyScheduler] = None):
+                 is_simulation: bool = False, scheduler: Optional[ShapeFamilyScheduler] = None,
+                 trials_to_inject: Optional[Trials] = None):
         """
         :param n_resources: number of resources per evaluation (of each arm)
         :param max_iter: max iteration (considered infinity if None) - stopping condition
@@ -24,8 +25,11 @@ class TpeOptimiser(Optimiser):
                                   goals or can just return the value of one optimisation goal)
         :param is_simulation: flag if the problem under optimisation is a real machine learning problem or a simulation
         :param scheduler: if the problem is a simulation, the scheduler provides the parameters for families of shapes
+        :param trials_to_inject: trials to be injected as history to TPE
         """
         super().__init__(max_iter, max_time, min_or_max, optimisation_func, is_simulation, scheduler)
+        self.trials = trials_to_inject if trials_to_inject is not None else Trials()
+        self.n_injected_trials = len(self.trials.trials)
 
         # TPE Hyperopt supports minimization only, so if the problem is maximization, minimize -1 * optimisation goal
         self.sign = -1 if min_or_max == max else 1
@@ -42,12 +46,12 @@ class TpeOptimiser(Optimiser):
         param_space = problem.get_hyperopt_space_from_hyperparams_to_opt()
 
         # Run TPE
-        trials = Trials()
         fmin(lambda arm_dict: self._tpe_objective_function(arm_dict, problem), param_space,
-             max_evals=self.max_iter, algo=partial(tpe.suggest, n_startup_jobs=10), trials=trials, verbose=verbosity)
+             max_evals=self.max_iter, algo=partial(tpe.suggest, n_startup_jobs=10 + self.n_injected_trials),
+             trials=self.trials, verbose=verbosity)
 
         # Compute statistics
-        for t in trials.trials:
+        for t in self.trials.trials[self.n_injected_trials:]:
             self._update_evaluation_history(t["result"]["evaluator"], t["result"]["optimisation_goals"])
             self.checkpoints.append(t['result']['eval_time'] - self.time_zero)
 
