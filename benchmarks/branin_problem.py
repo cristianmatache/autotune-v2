@@ -108,6 +108,8 @@ class BraninProblem(HyperparameterOptimisationProblem):
         xs, ys, zs = [np.array(array, dtype="float64") for array in (xs, ys, zs)]
 
         # plt.hist(zs, bins=list(range(0, 200, 1)), cumulative=False)
+        # plt.xlabel("values of Branin function")
+        # plt.ylabel("count")
         # plt.show()
 
         fig = plt.figure()

@@ -97,4 +97,6 @@ class HyperparameterOptimisationProblem:
 
 class SimulationProblem:
 
-    pass
+    @abstractmethod
+    def get_evaluator(self, arm: Optional[Arm] = None, should_plot: bool = True) -> Evaluator:
+        pass

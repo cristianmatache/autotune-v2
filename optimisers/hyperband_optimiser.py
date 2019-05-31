@@ -3,7 +3,7 @@ from typing import Callable, List, Optional
 from colorama import Style, Fore
 
 from core import Optimiser, Evaluation, Evaluator, HyperparameterOptimisationProblem, OptimisationGoals, \
-    ShapeFamilyScheduler, optimisation_metric_user
+    ShapeFamilyScheduler, optimisation_metric_user, SimulationProblem
 
 COL = Fore.MAGENTA
 
@@ -17,7 +17,8 @@ class HyperbandOptimiser(Optimiser):
 
     def __init__(self, eta: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
                  optimisation_func: Callable[[OptimisationGoals], float] = Optimiser.default_optimisation_func,
-                 is_simulation: bool = False, scheduler: Optional[ShapeFamilyScheduler] = None):
+                 is_simulation: bool = False, scheduler: Optional[ShapeFamilyScheduler] = None,
+                 plot_simulation: bool = False):
         """
         :param eta: halving rate
         :param max_iter: max iteration (considered infinity if None) - stopping condition
@@ -27,8 +28,9 @@ class HyperbandOptimiser(Optimiser):
                                   goals or can just return the value of one optimisation goal)
         :param is_simulation: flag if the problem under optimisation is a real machine learning problem or a simulation
         :param scheduler: if the problem is a simulation, the scheduler provides the parameters for families of shapes
+        :param plot_simulation: each simulated loss function will be added to plt.plot, use plt.show() to see results
         """
-        super().__init__(max_iter, max_time, min_or_max, optimisation_func, is_simulation, scheduler)
+        super().__init__(max_iter, max_time, min_or_max, optimisation_func, is_simulation, scheduler, plot_simulation)
         if max_iter is None:
             raise ValueError("For Hyperband max_iter cannot be None")
         self.eta = eta
@@ -71,7 +73,9 @@ class HyperbandOptimiser(Optimiser):
             if not self.is_simulation:
                 evaluators = [problem.get_evaluator() for _ in range(n)]
             else:  # is simulation
-                evaluators = [problem.get_evaluator(*self.scheduler.get_family()) for _ in range(n)]
+                problem: SimulationProblem
+                evaluators = [problem.get_evaluator(*self.scheduler.get_family(), should_plot=self.plot_simulation)
+                              for _ in range(n)]
 
             print(f"{COL}\n{'=' * 73}\n>> Generated {n} evaluators each with a random arm {Style.RESET_ALL}")
 

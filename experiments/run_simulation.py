@@ -23,10 +23,11 @@ MAX_ITER = 81
 ETA = 3
 
 PROBLEM = "sim-branin"
-METHOD = "sim(hb+tpe+transfer+same)"
+# METHOD = "sim(hb+tpe+transfer+all)"
+METHOD = "sim(hb)"
 MIN_OR_MAX = "min"
 
-N_SIMULATIONS = 500
+N_SIMULATIONS = 2000
 INIT_NOISE = 0.3
 
 PLOT_EACH = False
@@ -84,19 +85,19 @@ def get_optimiser() -> Optimiser:
     if method == "sim(random)":
         return RandomOptimiser(
             n_resources=args.n_resources, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
-            optimisation_func=optimisation_func, is_simulation=True, scheduler=scheduler)
+            optimisation_func=optimisation_func, is_simulation=True, scheduler=scheduler, plot_simulation=PLOT_EACH)
     elif method == "sim(hb)":
         return HyperbandOptimiser(
             eta=args.eta, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
-            optimisation_func=optimisation_func, is_simulation=True, scheduler=scheduler)
+            optimisation_func=optimisation_func, is_simulation=True, scheduler=scheduler, plot_simulation=PLOT_EACH)
     elif method == "sim(tpe)":
         return TpeOptimiser(
             n_resources=args.n_resources, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
-            optimisation_func=optimisation_func, is_simulation=True, scheduler=scheduler)
+            optimisation_func=optimisation_func, is_simulation=True, scheduler=scheduler, plot_simulation=PLOT_EACH)
     elif method == "sim(hb+tpe)":
         return HybridHyperbandTpeOptimiser(
             eta=args.eta, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
-            optimisation_func=optimisation_func, is_simulation=True, scheduler=scheduler)
+            optimisation_func=optimisation_func, is_simulation=True, scheduler=scheduler, plot_simulation=PLOT_EACH)
     elif "sim(hb+tpe+transfer" in method:
         hybrid_transfer = {
             "sim(hb+tpe+transfer+none)": HybridHyperbandTpeNoTransferOptimiser,
@@ -106,15 +107,15 @@ def get_optimiser() -> Optimiser:
         }[method]
         return hybrid_transfer(
             eta=args.eta, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
-            optimisation_func=optimisation_func, is_simulation=True, scheduler=scheduler)
+            optimisation_func=optimisation_func, is_simulation=True, scheduler=scheduler, plot_simulation=PLOT_EACH)
     elif method == "sim(sigopt)":
         return SigOptimiser(
             n_resources=args.n_resources, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
-            optimisation_func=optimisation_func, is_simulation=True, scheduler=scheduler)
+            optimisation_func=optimisation_func, is_simulation=True, scheduler=scheduler, plot_simulation=PLOT_EACH)
     elif method == "sim(hb+sigopt)":
         return HybridHyperbandSigoptOptimiser(
             eta=args.eta, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
-            optimisation_func=optimisation_func, is_simulation=True, scheduler=scheduler)
+            optimisation_func=optimisation_func, is_simulation=True, scheduler=scheduler, plot_simulation=PLOT_EACH)
     else:
         raise ValueError(f"Supplied problem {method} does not exist")
 

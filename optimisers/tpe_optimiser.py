@@ -4,7 +4,7 @@ from hyperopt import fmin, tpe, Trials, STATUS_OK
 from typing import Callable, Dict, Union, Optional
 
 from core import Optimiser, Evaluation, Arm, HyperparameterOptimisationProblem, Evaluator, OptimisationGoals, \
-    ShapeFamilyScheduler, optimisation_metric_user
+    ShapeFamilyScheduler, optimisation_metric_user, SimulationProblem
 
 
 class TpeOptimiser(Optimiser):
@@ -15,7 +15,7 @@ class TpeOptimiser(Optimiser):
     def __init__(self, n_resources: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
                  optimisation_func: Callable[[OptimisationGoals], float] = Optimiser.default_optimisation_func,
                  is_simulation: bool = False, scheduler: Optional[ShapeFamilyScheduler] = None,
-                 trials_to_inject: Optional[Trials] = None):
+                 trials_to_inject: Optional[Trials] = None, plot_simulation: bool = False):
         """
         :param n_resources: number of resources per evaluation (of each arm)
         :param max_iter: max iteration (considered infinity if None) - stopping condition
@@ -26,8 +26,9 @@ class TpeOptimiser(Optimiser):
         :param is_simulation: flag if the problem under optimisation is a real machine learning problem or a simulation
         :param scheduler: if the problem is a simulation, the scheduler provides the parameters for families of shapes
         :param trials_to_inject: trials to be injected as history to TPE
+        :param plot_simulation: each simulated loss function will be added to plt.plot, use plt.show() to see results
         """
-        super().__init__(max_iter, max_time, min_or_max, optimisation_func, is_simulation, scheduler)
+        super().__init__(max_iter, max_time, min_or_max, optimisation_func, is_simulation, scheduler, plot_simulation)
         self.trials = trials_to_inject if trials_to_inject is not None else Trials()
         self.n_injected_trials = len(self.trials.trials)
 
@@ -72,7 +73,8 @@ class TpeOptimiser(Optimiser):
         if not self.is_simulation:
             evaluator = problem.get_evaluator(arm=arm)
         else:  # is simulation
-            evaluator = problem.get_evaluator(*self.scheduler.get_family(arm=arm))
+            problem: SimulationProblem
+            evaluator = problem.get_evaluator(*self.scheduler.get_family(arm=arm), should_plot=self.plot_simulation)
 
         opt_goals = evaluator.evaluate(self.n_resources)
         return {

@@ -53,7 +53,8 @@ def _get_args() -> Namespace:
     parser.add_argument('-opt', '--min-or-max', default=MIN_OR_MAX, type=str, help="min or max")
     parser.add_argument('-res', '--n-resources', default=N_RESOURCES, type=int, help='n_resources', required=False)
     parser.add_argument('-eta', default=ETA, type=int, help='halving rate for Hyperband', required=False)
-    parser.add_argument('-s', '--seed', default=RANDOM_SEED, type=int, help='Random seed for all frameworks', required=False)
+    parser.add_argument('-s', '--seed', default=RANDOM_SEED, type=int, help='Random seed for all frameworks',
+                        required=False)
     arguments = parser.parse_args()
     print(f"""\n
     Input directory:  {arguments.input_dir}

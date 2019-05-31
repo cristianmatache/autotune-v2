@@ -21,7 +21,8 @@ class HybridHyperbandSigoptOptimiser(HyperbandOptimiser):
 
     def __init__(self, eta: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
                  optimisation_func: Callable[[OptimisationGoals], float] = Optimiser.default_optimisation_func,
-                 is_simulation: bool = False, scheduler: Optional[ShapeFamilyScheduler] = None):
+                 is_simulation: bool = False, scheduler: Optional[ShapeFamilyScheduler] = None,
+                 plot_simulation: bool = False):
         """
         :param eta: halving rate
         :param max_iter: max iteration (considered infinity if None) - stopping condition
@@ -31,8 +32,10 @@ class HybridHyperbandSigoptOptimiser(HyperbandOptimiser):
                                   goals or can just return the value of one optimisation goal)
         :param is_simulation: flag if the problem under optimisation is a real machine learning problem or a simulation
         :param scheduler: if the problem is a simulation, the scheduler provides the parameters for families of shapes
+        :param plot_simulation: each simulated loss function will be added to plt.plot, use plt.show() to see results
         """
-        super().__init__(eta, max_iter, max_time, min_or_max, optimisation_func, is_simulation, scheduler)
+        super().__init__(eta, max_iter, max_time, min_or_max, optimisation_func, is_simulation, scheduler,
+                         plot_simulation)
 
     @optimisation_metric_user
     def run_optimisation(self, problem: HyperparameterOptimisationProblem, verbosity: bool = False) -> Evaluation:
@@ -63,7 +66,8 @@ class HybridHyperbandSigoptOptimiser(HyperbandOptimiser):
                 if i == 0:  # Generate first n_i arms/evaluators with SigOpt
                     sig_optimiser = SigOptimiser(n_resources=r_i, max_iter=n_i,
                                                  optimisation_func=self.optimisation_func, min_or_max=self.min_or_max,
-                                                 is_simulation=self.is_simulation, scheduler=self.scheduler)
+                                                 is_simulation=self.is_simulation, scheduler=self.scheduler,
+                                                 plot_simulation=self.plot_simulation)
                     sig_optimiser.run_optimisation(problem, verbosity=True)
                     self.num_iterations += sig_optimiser.num_iterations
 
