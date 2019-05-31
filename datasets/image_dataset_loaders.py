@@ -89,9 +89,15 @@ class MNISTLoader(ImageDatasetLoader):
         super().__init__(data_dir, mean_normalize, std_normalize)
 
     def _split_dataset(self):
-        train_data = MNIST(root=self.data_dir, train=True, download=True, transform=self.def_transform)
-        val_data = MNIST(root=self.data_dir, train=True, download=True, transform=self.def_transform)
-        test_data = MNIST(root=self.data_dir, train=False, download=True, transform=self.def_transform)
+        from filelock import Timeout, FileLock
+        from os.path import join as join_path
+        lock = FileLock(join_path(self.data_dir, "download.lock"))
+        with lock:
+            train_data = MNIST(root=self.data_dir, train=True, download=True, transform=self.def_transform)
+        with lock:
+            val_data = MNIST(root=self.data_dir, train=True, download=True, transform=self.def_transform)
+        with lock:
+            test_data = MNIST(root=self.data_dir, train=False, download=True, transform=self.def_transform)
 
         return train_data, val_data, test_data
 
