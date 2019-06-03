@@ -45,7 +45,7 @@ class BraninSimulationEvaluator(BraninEvaluator, SimulationEvaluator):
 
     @print_evaluation(verbose=False, goals_to_print=())
     def evaluate(self, n_resources: int) -> OptimisationGoals:
-        """ Given an arm (draw of hyperparameter values), evaluate the Branin function on it
+        """ Given an arm (draw of hyperparameter values), evaluate the Branin simulation function on it
         :param n_resources: this parameter is not used in this function but all optimisers require this parameter
         :return: the function value for the current arm can be found in OptimisationGoals.fval, Note that test_error and
         validation_error attributes are mandatory for OptimisationGoals objects but Branin has no machine learning model
@@ -72,9 +72,9 @@ class BraninSimulationEvaluator(BraninEvaluator, SimulationEvaluator):
 
         if self.should_plot:
             plt.plot(list(range(time)), self.fs[:time], linewidth=1.5)
-            plt.xlabel("time/resources")
+            plt.xlabel("time/epoch/resources")
             plt.ylabel("error/loss")
-            plt.ylim(-self.end_shift-10, 210-self.start_shift)
+            # plt.ylim(-self.end_shift-10, 210-self.start_shift)
         if time == self.max_resources and self.necessary_aggressiveness != np.inf:
             assert self.non_smooth_fs[n-1] == f_n
 
@@ -155,9 +155,9 @@ if __name__ == "__main__":
     # function colors: 1 blue 2 green 3 orange 4 red 5 purple 6 brown 7 pink 8 grey
     branin_problem = BraninSimulationProblem()
     families_of_shapes = (
-        ShapeFamily(None, 1.3, 10.0, 0.14, True),  # with aggressive start
-        ShapeFamily(None, 0.6, 7.0, 0.1),    # with average aggressiveness at start and at the beginning
-        ShapeFamily(None, 0.3, 3.0, 0.2),    # non aggressive start, aggressive end
+        ShapeFamily(None, 1.5, 10.0, 5),        # with aggressive start
+        ShapeFamily(None, 0.5, 7.0, 3),        # with average aggressiveness at start and at the beginning
+        ShapeFamily(None, 0.2, 4.0, 1, True),  # non aggressive start, aggressive end
     )
     branin_problem.plot_surface(n_simulations=10, max_resources=81, n_resources=81, shape_families=families_of_shapes,
                                 init_noise=0.3)

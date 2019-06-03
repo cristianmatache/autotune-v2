@@ -4,3 +4,4 @@ from benchmarks.mnist_problem import MnistProblem
 from benchmarks.mrbi_problem import MrbiProblem
 from benchmarks.svhn_problem import SvhnProblem
 from benchmarks.branin_simulation_problem import BraninSimulationProblem
+from benchmarks.known_loss_fn_problem import KnownFnProblem

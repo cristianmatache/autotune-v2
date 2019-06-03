@@ -107,9 +107,12 @@ class SimulationEvaluator:
                 time_aggressed = (f_n - ml_aggressed) * ((t / (n - 1)) ** self.necessary_aggressiveness)
                 f_next_time = ml_aggressed + time_aggressed
             else:  # aggressiveness < k - go up
+                # time_left = n - t
+                # f_next_time = f_time + self.up_spikiness * 1 / (1 + agg_level)
                 time_left = n - t
-                f_next_time = f_time + self.up_spikiness * time_left
-                # (time_left if time_left < self.max_resources / 2 else 2 * np.sqrt(time_left)) instead of time_left
+                up_aggressed = f_time + self.up_spikiness * 1 / (1 + agg_level)
+                time_aggressed = (f_n - up_aggressed) * ((t / (n - 1)) ** (1.1 * self.necessary_aggressiveness))
+                f_next_time = up_aggressed + time_aggressed
                 if time_left == 1:
                     f_next_time = f_n
             self.non_smooth_fs.append(f_next_time)

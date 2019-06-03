@@ -60,3 +60,12 @@ class Arm(SimpleNamespace):
 
         return '\n'.join(
             [f"   - {hp_name}:{' '*padding(hp_name)}{hp_val}" for hp_name, hp_val in self.__dict__.items()])
+
+    def __hash__(self) -> int:
+        return hash(self.__str__())
+
+    def __getitem__(self, hyperparam_name: str) -> float:
+        """ Allow dictionary-like access to attributes. That is:
+        instead of getattr(arm, hyperparam_name), one can use arm[hyperparam_name]
+        """
+        return getattr(self, hyperparam_name)
