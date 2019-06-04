@@ -107,7 +107,6 @@ class SimulationEvaluator:
                 time_aggressed = (f_n - ml_aggressed) * ((t / (n - 1)) ** self.necessary_aggressiveness)
                 f_next_time = ml_aggressed + time_aggressed
             else:  # aggressiveness < k - go up
-                # time_left = n - t
                 # f_next_time = f_time + self.up_spikiness * 1 / (1 + agg_level)
                 time_left = n - t
                 up_aggressed = f_time + self.up_spikiness * 1 / (1 + agg_level)

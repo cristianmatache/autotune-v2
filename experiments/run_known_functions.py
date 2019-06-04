@@ -28,8 +28,7 @@ MAX_ITER = 18
 ETA = 3
 
 PROBLEM = "mnist"
-# METHOD = "sim(hb+tpe+transfer+none)"
-METHOD = "sim(tpe)"
+METHOD = "sim(hb+tpe+transfer+none)"
 MIN_OR_MAX = "min"
 
 N_SIMULATIONS = 1000
@@ -92,10 +91,11 @@ def get_known_functions(arguments: Namespace) -> Dict[Arm, List[float]]:
         return {}
     elif problem_name == "mnist":
         all_evaluators = []
-        mnist_files = [join_path(OUTPUT_DIR, f"results-{PROBLEM}-random-{n}.pkl") for n in (10, 20, 15, 19, 1, 100)]
-        for file in mnist_files:
-            with open(file, "rb") as f:
-                _, eval_history, checkpoints = pickle.load(f)
+        files = [join_path(OUTPUT_DIR, f"results-{PROBLEM}-random-{n}.pkl") for n in (10, 20, 15, 19, 1, 100, 30)] + \
+                [join_path(OUTPUT_DIR, f"results-{PROBLEM}-tpe-{n}.pkl") for n in (30, 200)]
+        for file in files:
+            with open(file, "rb") as f_:
+                _, eval_history, checkpoints = pickle.load(f_)
                 all_evaluators.append([evaluator_t for evaluator_t, _ in eval_history])
         return {e.arm: e.loss_history[1:] for e in flatten(all_evaluators)}
     elif problem_name == "svhn":
@@ -121,19 +121,19 @@ def get_optimiser() -> Optimiser:
     if method == "sim(random)":
         return RandomOptimiser(
             n_resources=args.n_resources, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
-            optimisation_func=optimisation_func, is_simulation=False, plot_simulation=PLOT_EACH)
+            optimisation_func=optimisation_func, is_simulation=True, plot_simulation=PLOT_EACH)
     elif method == "sim(hb)":
         return HyperbandOptimiser(
             eta=args.eta, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
-            optimisation_func=optimisation_func, is_simulation=False, plot_simulation=PLOT_EACH)
+            optimisation_func=optimisation_func, is_simulation=True, plot_simulation=PLOT_EACH)
     elif method == "sim(tpe)":
         return TpeOptimiser(
             n_resources=args.n_resources, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
-            optimisation_func=optimisation_func, is_simulation=False, plot_simulation=PLOT_EACH)
+            optimisation_func=optimisation_func, is_simulation=True, plot_simulation=PLOT_EACH)
     elif method == "sim(hb+tpe)":
         return HybridHyperbandTpeOptimiser(
             eta=args.eta, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
-            optimisation_func=optimisation_func, is_simulation=False, plot_simulation=PLOT_EACH)
+            optimisation_func=optimisation_func, is_simulation=True, plot_simulation=PLOT_EACH)
     elif "sim(hb+tpe+transfer" in method:
         hybrid_transfer = {
             "sim(hb+tpe+transfer+none)": HybridHyperbandTpeNoTransferOptimiser,
@@ -143,15 +143,15 @@ def get_optimiser() -> Optimiser:
         }[method]
         return hybrid_transfer(
             eta=args.eta, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
-            optimisation_func=optimisation_func, is_simulation=False, plot_simulation=PLOT_EACH)
+            optimisation_func=optimisation_func, is_simulation=True, plot_simulation=PLOT_EACH)
     elif method == "sim(sigopt)":
         return SigOptimiser(
             n_resources=args.n_resources, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
-            optimisation_func=optimisation_func, is_simulation=False, plot_simulation=PLOT_EACH)
+            optimisation_func=optimisation_func, is_simulation=True, plot_simulation=PLOT_EACH)
     elif method == "sim(hb+sigopt)":
         return HybridHyperbandSigoptOptimiser(
             eta=args.eta, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
-            optimisation_func=optimisation_func, is_simulation=False, plot_simulation=PLOT_EACH)
+            optimisation_func=optimisation_func, is_simulation=True, plot_simulation=PLOT_EACH)
     else:
         raise ValueError(f"Supplied problem {method} does not exist")
 
@@ -198,7 +198,7 @@ if __name__ == "__main__":
 
     increasing_errors = sorted([fn[-1] for arm, fn in known_fns.items()])
     step_size = increasing_errors[1] - increasing_errors[0]
-    bins = [increasing_errors[0] + i * step_size for i in range(-1, 40)]
+    bins = [0.074 + i * 0.001 for i in range(50)]
 
     print(increasing_errors)
     print(bins)

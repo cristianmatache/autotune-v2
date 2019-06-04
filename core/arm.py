@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Tuple
 from types import SimpleNamespace
 
@@ -48,6 +49,20 @@ class Arm(SimpleNamespace):
             if hp_name in hyperparams_to_opt:  # draw random value if we need to optimise the current hyperparameter
                 hp_val = domain[hp_name].get_param_range(1, stochastic=True)[0]
                 setattr(self, hp_name, hp_val)
+
+    @staticmethod
+    def normalize(arm: Arm, *, domain: Domain) -> Arm:
+        """ Normalizes values of an arm as specified by the given domain
+        :param arm: arm to be normalized
+        :param domain: domain of hyperparameters with names, ranges, distributions etc
+                       Eg. Domain(momentum=Param(...), learning_rate=Param(...))
+        """
+        normalized_arm_dict = {}
+        arm_hp_names = arm.__dict__.keys()
+        for hp_name in set(domain.hyperparams_names()) & set(arm_hp_names):
+            hp = domain[hp_name]
+            normalized_arm_dict[hp_name] = (arm[hp_name] - hp.min_val) / (hp.max_val - hp.min_val)
+        return Arm(**normalized_arm_dict)
 
     def __str__(self) -> str:
         """

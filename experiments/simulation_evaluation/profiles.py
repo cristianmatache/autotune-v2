@@ -35,18 +35,18 @@ def get_dynamic_order_profile(loss_functions_per_fam: np.ndarray) -> List[float]
             for j in range(num_func):
                 if loss_functions_per_fam[j, t] < loss_functions_per_fam[i, t]:
                     less_i_t.append(j)
-                else:
+                elif loss_functions_per_fam[j, t] > loss_functions_per_fam[i, t]:
                     great_i_t.append(j)
 
                 if loss_functions_per_fam[j, t-1] < loss_functions_per_fam[i, t-1]:
                     less_i_prev_t.append(j)
-                else:
+                elif loss_functions_per_fam[j, t-1] > loss_functions_per_fam[i, t-1]:
                     great_i_prev_t.append(j)
 
             still_less = set(less_i_t) & set(less_i_prev_t)
             still_great = set(great_i_t) & set(great_i_prev_t)
 
-            function_score = (len(still_less) + len(still_great)) / num_func
+            function_score = (len(still_less) + len(still_great)) / (num_func - 1)
             function_scores.append(function_score)
         relativity.append(sum(function_scores) / len(function_scores))
 
@@ -61,20 +61,20 @@ def get_ends_order_profile(loss_functions_per_fam: np.ndarray) -> float:
         less_i_t, less_i_prev_t = [], []
         great_i_t, great_i_prev_t = [], []
         for j in range(num_func):
-            if loss_functions_per_fam[j, 1] < loss_functions_per_fam[i, 1]:
+            if loss_functions_per_fam[j, max_time - 1] < loss_functions_per_fam[i, max_time - 1]:
                 less_i_t.append(j)
-            else:
+            elif loss_functions_per_fam[j, max_time - 1] > loss_functions_per_fam[i, max_time - 1]:
                 great_i_t.append(j)
 
-            if loss_functions_per_fam[j, max_time-1] < loss_functions_per_fam[i, max_time-1]:
+            if loss_functions_per_fam[j, 0] < loss_functions_per_fam[i, 0]:
                 less_i_prev_t.append(j)
-            else:
+            elif loss_functions_per_fam[j, 0] > loss_functions_per_fam[i, 0]:
                 great_i_prev_t.append(j)
 
         still_less = set(less_i_t) & set(less_i_prev_t)
         still_great = set(great_i_t) & set(great_i_prev_t)
 
-        function_score = (len(still_less) + len(still_great)) / num_func
+        function_score = (len(still_less) + len(still_great)) / (num_func - 1)
         function_scores.append(function_score)
     return sum(function_scores) / len(function_scores)
 

@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from os.path import join as join_path
 import pickle
-from typing import List, Any
+from typing import List
 from sklearn.neighbors import KernelDensity
 import numpy as np
 
@@ -15,7 +15,7 @@ def unpickle(method: str, n_simulations: int, til: int = 1) -> List[float]:
     for i in range(1, til+1):
         with open(join_path(OUTPUT_DIR, f"known-fns-hist-{method}-{n_simulations}-{til}.pkl"), "rb") as f:
             unpickled = pickle.load(f)
-            print(unpickled)
+            print({k: v for k, v in unpickled.items() if k != "all_norm_optimums"})
             res.append(unpickled["all_norm_optimums"])
     return flatten(res)
 
@@ -29,32 +29,24 @@ def plot_smooth(x: List[float], start: float, end: float, bandwidth: float = 0.5
 
 
 if __name__ == "__main__":
-    bins = [
-        0.07433333333333336, 0.07566666666666666, 0.07699999999999996, 0.07833333333333325, 0.07966666666666655,
-        0.08099999999999985, 0.08233333333333315, 0.08366666666666644, 0.08499999999999974, 0.08633333333333304,
-        0.08766666666666634, 0.08899999999999963, 0.09033333333333293, 0.09166666666666623, 0.09299999999999953,
-        0.09433333333333282, 0.09566666666666612, 0.09699999999999942, 0.09833333333333272, 0.09966666666666602,
-        0.10099999999999931, 0.10233333333333261, 0.10366666666666591, 0.1049999999999992, 0.1063333333333325,
-        0.1076666666666658, 0.1089999999999991, 0.1103333333333324, 0.11166666666666569, 0.11299999999999899,
-        0.11433333333333229, 0.11566666666666559, 0.11699999999999888, 0.11833333333333218, 0.11966666666666548,
-        0.12099999999999878, 0.12233333333333207, 0.12366666666666537, 0.12499999999999867, 0.12633333333333197,
-        0.12766666666666526
-    ]
-
+    bins = [0.074 + i * 0.001 for i in range(20)]
     print('n_bins', len(bins))
 
-    known_rand = unpickle("sim(random)", 100) + unpickle("sim(tpe)", 1000)
-    known_tpe = unpickle("sim(tpe)", 100)
-    known_hb_tpe_none = unpickle("sim(hb+tpe+transfer+none)", 100) + unpickle("sim(hb+tpe+transfer+none)", 1000)
-    known_hb_tpe_all = unpickle("sim(hb+tpe+transfer+all)", 100) + unpickle("sim(hb+tpe+transfer+none)", 1000)
+    # known_rand = unpickle("sim(random)", 100) + unpickle("sim(tpe)", 1000)
+    # known_tpe = unpickle("sim(tpe)", 100)
+    known_hb = unpickle("sim(hb)", 2000)  # + unpickle("sim(hb)", 5000)
+    known_hb_tpe_none = unpickle("sim(hb+tpe+transfer+none)", 2000)   # + unpickle("sim(hb+tpe+transfer+none)", 5000)
+    known_hb_tpe_all = unpickle("sim(hb+tpe+transfer+all)", 2000)  # + unpickle("sim(hb+tpe+transfer+all)", 5000)
 
     data = (
+        known_hb,
         known_hb_tpe_none,
         known_hb_tpe_all,
         # known_rand,
-        known_tpe,
+        # known_tpe,
     )
-    labels = ['hb-tpe-transfer-none', 'hb-tpe-transfer-all', 'tpe', 'rand']
+    labels = ['hb', 'hb-tpe-transfer-none', 'hb-tpe-transfer-all', 'tpe', 'rand']
+    print(len(known_hb), len(known_hb_tpe_none), len(known_hb_tpe_all))
 
     plt.hist(data, bins=bins, label=labels, cumulative=False, stacked=False, histtype='bar', density=True)
     plt.legend()
@@ -75,21 +67,21 @@ if __name__ == "__main__":
     plt.show()
 
     for dataset in data:
-        plot_smooth(dataset, bins[0], bins[int(len(bins)/4)], bandwidth=0.1)
+        plot_smooth(dataset, bins[0], bins[int(len(bins)/4)], bandwidth=0.003)
     plt.xlabel("Branin-normalized (i.e. result+200) values")
     plt.ylabel("Smoothed count around smallest values")
     plt.legend(labels)
     plt.show()
 
     for dataset in data:
-        plot_smooth(dataset, bins[0], bins[int(len(bins)/2)], bandwidth=0.2)
+        plot_smooth(dataset, bins[0], bins[int(len(bins)/2)], bandwidth=0.005)
     plt.xlabel("Branin-normalized (i.e. result+200) values")
     plt.ylabel("Smoothed count in the 'better' half")
     plt.legend(labels)
     plt.show()
 
     for dataset in data:
-        plot_smooth(dataset, bins[0], bins[-1], bandwidth=0.5)
+        plot_smooth(dataset, bins[0], bins[-1], bandwidth=0.005)
         plt.xlabel("Branin-normalized (i.e. result+200) values")
         plt.ylabel("Smoothed count everywhere")
     plt.legend(labels)

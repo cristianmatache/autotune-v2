@@ -53,8 +53,6 @@ class Optimiser:
         # Simulation-specific attributes
         self.is_simulation = is_simulation
         self.scheduler = scheduler
-        if scheduler is None and is_simulation:
-            raise ValueError("No scheduler supplied for simulation")
         self.plot_simulation = plot_simulation
 
     def _update_evaluation_history(self, evaluator: Evaluator, opt_goals: OptimisationGoals) -> None:

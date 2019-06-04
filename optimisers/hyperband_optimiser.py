@@ -74,7 +74,8 @@ class HyperbandOptimiser(Optimiser):
                 evaluators = [problem.get_evaluator() for _ in range(n)]
             else:  # is simulation
                 problem: SimulationProblem
-                evaluators = [problem.get_evaluator(*self.scheduler.get_family(), should_plot=self.plot_simulation)
+                evaluators = [problem.get_evaluator(*self.scheduler.get_family() if self.scheduler else (),
+                                                    should_plot=self.plot_simulation)
                               for _ in range(n)]
 
             print(f"{COL}\n{'=' * 73}\n>> Generated {n} evaluators each with a random arm {Style.RESET_ALL}")

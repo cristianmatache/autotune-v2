@@ -3,13 +3,15 @@ import numpy as np
 from typing import Optional, Dict, List
 import matplotlib.pyplot as plt
 
-from core import Arm, OptimisationGoals, SimulationProblem, SimulationEvaluator, HyperparameterOptimisationProblem
+from core import Arm, OptimisationGoals, SimulationProblem, SimulationEvaluator, HyperparameterOptimisationProblem, \
+    Domain
 from util.io import print_evaluation
 
 
 class KnownFnEvaluator(SimulationEvaluator):
 
-    def __init__(self, known_fs: Dict[Arm, List[float]], should_plot: bool = False, proposed_arm: Arm = None):
+    def __init__(self, known_fs: Dict[Arm, List[float]], should_plot: bool = False, proposed_arm: Arm = None,
+                 domain: Domain = None):
         """
         :param known_fs:
         :param should_plot:
@@ -18,12 +20,14 @@ class KnownFnEvaluator(SimulationEvaluator):
         self.should_plot = should_plot
         self.known_fs = known_fs
         self.proposed_arm = self.arm = proposed_arm
+        self.domain = domain
 
     @print_evaluation(verbose=False, goals_to_print=("fval",))
     def evaluate(self, n_resources: int) -> OptimisationGoals:
         """ Given an arm (draw of hyperparameter values), find the existing loss function that minimizes mean square
         error with the proposed arm. That is, the loss function that corresponds to the arm that is closest to the
-        proposed arm (in terms of mean square error) will be returned.
+        proposed arm (in terms of mean square error) will be returned. Note that hyperparameter values of an arm are
+        normalized before applying mean square error.
         :param n_resources: this parameter is not used in this function but all optimisers require this parameter
         :return: the function value for the current arm can be found in OptimisationGoals.fval, Note that test_error and
         validation_error attributes are mandatory for OptimisationGoals objects but Branin has no machine learning model
@@ -34,11 +38,20 @@ class KnownFnEvaluator(SimulationEvaluator):
         min_sq_error = np.inf
         min_sq_error_arm = None
         for arm in available_arms:
-            sq_error = sum([(float(self.proposed_arm[hp]) - float(arm[hp])) ** 2 for hp in hyperparams_names])
+            normalized_arm = Arm.normalize(arm, domain=self.domain)
+            normalized_proposed_arm = Arm.normalize(self.proposed_arm, domain=self.domain)
+
+            def sq_error_term(hp: str) -> float:
+                return (float(normalized_proposed_arm[hp]) - float(normalized_arm[hp])) ** 2
+
+            sq_error = sum([sq_error_term(hp_name) for hp_name in hyperparams_names])
+
             if sq_error < min_sq_error:
                 min_sq_error_arm = arm
                 min_sq_error = sq_error
-        # print("*"*50, "\n", "min_sq_error:", min_sq_error)
+
+        with open("min_sq_error_file.txt", "a") as f:
+            f.write(f"{np.sqrt(min_sq_error/len(hyperparams_names))},")
 
         if self.should_plot:
             plt.plot(list(range(time)), self.known_fs[min_sq_error_arm][:time], linewidth=1.5)
@@ -68,7 +81,7 @@ class KnownFnProblem(HyperparameterOptimisationProblem, SimulationProblem):
         if arm is None:  # if no arm is provided, generate a random arm
             arm = Arm()
             arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)
-        return KnownFnEvaluator(known_fs=self.known_fs, proposed_arm=arm, should_plot=should_plot)
+        return KnownFnEvaluator(known_fs=self.known_fs, proposed_arm=arm, should_plot=should_plot, domain=self.domain)
 
 
 if __name__ == "__main__":

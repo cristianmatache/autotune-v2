@@ -74,7 +74,8 @@ class TpeOptimiser(Optimiser):
             evaluator = problem.get_evaluator(arm=arm)
         else:  # is simulation
             problem: SimulationProblem
-            evaluator = problem.get_evaluator(*self.scheduler.get_family(arm=arm), should_plot=self.plot_simulation)
+            evaluator = problem.get_evaluator(*self.scheduler.get_family(arm=arm) if self.scheduler else (arm,),
+                                              should_plot=self.plot_simulation)
 
         opt_goals = evaluator.evaluate(self.n_resources)
         return {

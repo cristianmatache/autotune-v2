@@ -42,7 +42,8 @@ class RandomOptimiser(Optimiser):
                 evaluator = problem.get_evaluator()
             else:  # is simulation
                 problem: SimulationProblem
-                evaluator = problem.get_evaluator(*self.scheduler.get_family(), should_plot=self.plot_simulation)
+                evaluator = problem.get_evaluator(*self.scheduler.get_family() if self.scheduler else (),
+                                                  should_plot=self.plot_simulation)
             opt_goals = evaluator.evaluate(self.n_resources)
             # Evaluate arm on problem
             # Update evaluation history: arms tried so far, validation and test errors so far

@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import pickle
-from typing import List, Any
+from typing import List
 from os.path import join as join_path
 
 from experiments.run_experiment import OUTPUT_DIR
@@ -18,7 +18,8 @@ IS_OVERALL_PROFILE = True
 
 FILE_PATH = join_path(OUTPUT_DIR, f"results-{PROBLEM}-{METHOD}.pkl")
 
-FILES = [join_path(OUTPUT_DIR, f"results-{PROBLEM}-{METHOD}-{n}.pkl") for n in (10, 20, 15, 19, 1, 100, 30)]
+FILES = [join_path(OUTPUT_DIR, f"results-{PROBLEM}-{METHOD}-{n}.pkl") for n in (10, 20, 15, 19, 1, 100, 30)] + \
+        [join_path(OUTPUT_DIR, f"results-{PROBLEM}-tpe-{n}.pkl") for n in (30, 200)]
 
 groups: List[List[Arm]] = []
 
@@ -40,22 +41,25 @@ if __name__ == "__main__":
             # ShapeFamily(None, 0.2, 4.0, 1, True),  # non aggressive start, aggressive end
 
             ShapeFamily(None, 7, 2, 0.05, True, 750, 830),    # steep_start_early_flat - blue
-            ShapeFamily(None, 6, 5, 0, True, 450, 710),    # steep_start_late_flat - yellow
+            ShapeFamily(None, 6, 5, 0, True, 400, 710),    # steep_start_late_flat - yellow
             ShapeFamily(None, 5, 500, 0.05, True, 0, 75),  # low_steep_medium_late - green
-            ShapeFamily(None, 5, 6, 0.05, True, 0, 250),  # flat_slight_incline - red
-            ShapeFamily(None, 6, 3, 0, True, 0, 570),   # medium_steep - purple
-            ShapeFamily(None, 20, 500, 50, False, 750, 800),  # jumpy_flat - purple
+            ShapeFamily(None, 4, 10, 4, True, 0, 290),  # flat_slight_incline - red
+            ShapeFamily(None, 6, 3, 0, True, 0, 530),   # medium_steep - purple
+            ShapeFamily(None, 20, 500, 50, False, 750, 800),  # jumpy_flat - brown
         )
 
+        max_res = 20
+        init_noise = 0.3
+
         if IS_OVERALL_PROFILE:
-            simulated_loss_functions = plot_simulated(n_simulations=164, max_resources=20, n_resources=20,
-                                                      shape_families=families_of_shapes, init_noise=0.2)
+            simulated_loss_functions = plot_simulated(n_simulations=230, max_resources=max_res, n_resources=max_res,
+                                                      shape_families=families_of_shapes, init_noise=init_noise)
             plot_profiles(simulated_loss_functions, ax1, ax2, ax4, 0.5, 10)
         else:
             interval_len = 1 / (1 + len(families_of_shapes))
             for i, fam in enumerate(families_of_shapes):
-                simulated_loss_functions = plot_simulated(n_simulations=10, max_resources=20, n_resources=20,
-                                                          shape_families=(fam,), init_noise=0.2)
+                simulated_loss_functions = plot_simulated(n_simulations=15, max_resources=max_res, n_resources=max_res,
+                                                          shape_families=(fam,), init_noise=init_noise)
                 plot_profiles(simulated_loss_functions, ax1, ax2, ax4, interval_len * (i + 1), 10)
 
     else:
@@ -73,7 +77,7 @@ if __name__ == "__main__":
         low_steep_medium_late = [20, 58, 60, 47, 42, 23]
         flat_slight_incline = [41, 4, 7, 40]
         medium_steep = [16, 26, 30, 34, 38, 51, 53, 59, 61]
-        not_labelled = list(range(65, 195))
+        not_labelled = list(range(65, 425))
 
         if IS_OVERALL_PROFILE:
             families_indices = (steep_start_early_flat + steep_start_late_flat + low_steep_medium_late +
@@ -94,6 +98,11 @@ if __name__ == "__main__":
         for evaluator_t in [all_evaluators[i] for i in all_indices]:
             plt.plot(list(range(len(evaluator_t.loss_history) - 1)), evaluator_t.loss_history[1:])
 
-        print("best error:", min([e.loss_history[-1]for e in [all_evaluators[i] for i in all_indices]]))
+        plt.show()
+
+        bins = [0.074 + i * 0.001 for i in range(100)]
+        print(bins)
+        plt.hist([e.loss_history[-1] for e in [all_evaluators[i] for i in all_indices]], bins=bins)
+        print("best errors:", sorted([e.loss_history[-1] for e in [all_evaluators[i] for i in all_indices]]))
 
     plt.show()
