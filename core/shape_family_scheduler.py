@@ -12,8 +12,8 @@ class ShapeFamily(NamedTuple):
     necessary_agg: float     # Necessary aggressiveness
     up_spikiness: float      # Up spikiness
     is_smooth: bool = False  # Whether to apply smoothing on the family or not
-    start_shift: int = 0     # Shift f(0) downwards (before noise is applied)
-    end_shift: int = 200     # Shift f(n) downwards
+    start_shift: float = 0   # Shift f(0) downwards (before noise is applied)
+    end_shift: float = 200   # Shift f(n) downwards
 
 
 class EvaluatorParams(NamedTuple):
@@ -25,8 +25,8 @@ class EvaluatorParams(NamedTuple):
     necessary_agg: float     # Necessary aggressiveness
     up_spikiness: float      # Up spikiness
     is_smooth: bool = False  # Whether to apply smoothing on the family or not
-    start_shift: int = 0     # Shift f(0) downwards (before noise is applied)
-    end_shift: int = 200     # Shift f(n) downwards
+    start_shift: float = 0   # Shift f(0) downwards (before noise is applied)
+    end_shift: float = 200   # Shift f(n) downwards
 
     max_res: int = 81        # maximum resources
     noise: float = 0.3       # initial noise
@@ -57,7 +57,7 @@ class RoundRobinShapeFamilyScheduler(ShapeFamilyScheduler):
     def get_family(self, arm: Optional[Arm] = None) -> EvaluatorParams:
         """
         :param arm: if not None replaces the default arm that has been supplied in self.shape_families
-        :return: parameters ready to be passed to BraninSimulationProblem.get_evaluator
+        :return: parameters ready to be passed to OptFunctionSimulationProblem.get_evaluator
         """
         shape_family = self.shape_families[self.index % len(self.shape_families)]
         default_arm, *rest_family = shape_family
@@ -74,7 +74,7 @@ class UniformShapeFamilyScheduler(ShapeFamilyScheduler):
     def get_family(self, arm: Optional[Arm] = None) -> EvaluatorParams:
         """
         :param arm: if not None replaces the default arm that has been supplied in self.shape_families
-        :return: parameters ready to be passed to BraninSimulationProblem.get_evaluator
+        :return: parameters ready to be passed to OptFunctionSimulationProblem.get_evaluator
         """
         default_arm, *rest_family = random.choice(self.shape_families)
         arm = arm if arm is not None else default_arm

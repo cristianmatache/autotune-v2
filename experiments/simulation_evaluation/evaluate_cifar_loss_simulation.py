@@ -9,10 +9,11 @@ from experiments.simulation_evaluation.profiles import plot_profiles, plot_simul
 
 # This will fetch the latest experiment on the following problem with the following optimization method
 
-IS_SIMULATION = True
+IS_SIMULATION = False
 
 FILE_PATH = join_path(OUTPUT_DIR, "true_loss_functions.pkl")
 MIN_LEN_THRESHOLD = 300
+UNDERLYING_OPT_FUNCTION = 'branin'
 
 if __name__ == "__main__":
 
@@ -26,7 +27,8 @@ if __name__ == "__main__":
 
         interval_len = 1 / (1 + len(families_of_shapes))
         for i, fam in enumerate(families_of_shapes):
-            simulated_loss_functions = plot_simulated(n_simulations=10, max_resources=400, n_resources=400,
+            simulated_loss_functions = plot_simulated(func_name=UNDERLYING_OPT_FUNCTION,
+                                                      n_simulations=10, max_resources=400, n_resources=400,
                                                       shape_families=(fam,), init_noise=1)
             plot_profiles(simulated_loss_functions, ax1, ax2, ax4, interval_len * (i + 1), 13)
 

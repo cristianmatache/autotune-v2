@@ -69,7 +69,7 @@ def plot_histograms(data: Tuple[List[float], ...], labels: List[str], bins: List
 
     # plt.hist(data, 100, label=labels, cumulative=False, stacked=False, histtype='step', fill=False, linewidth=2)
     # plt.xlabel("Minimum final error found by one optimizer run (OFE)", fontsize=font_size)
-    # plt.ylabel("Count occurrences in simulation results", fontsize=font_size)
+    # plt.ylabel("Count occurrences", fontsize=font_size)
     # plt.legend(prop={'size': font_size})
     # plt.tick_params(axis='both', which='major', labelsize=font_size)
     # plt.tick_params(axis='both', which='minor', labelsize=font_size)

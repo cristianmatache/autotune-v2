@@ -13,7 +13,8 @@ from util import flatten
 PROBLEM = "mnist"
 METHOD = "random"
 IS_SIMULATION = True
-IS_OVERALL_PROFILE = True
+IS_OVERALL_PROFILE = False
+UNDERLYING_OPT_FUNCTION = 'branin'
 
 
 FILE_PATH = join_path(OUTPUT_DIR, f"results-{PROBLEM}-{METHOD}.pkl")
@@ -36,9 +37,9 @@ if __name__ == "__main__":
             # ShapeFamily(None, 0.9, 3, 15, True, 0, 40),     # low_steep_medium_late - top green cloud
             # ShapeFamily(None, 0.72, 5, 0.15, True, 50, 290),    # medium_steep - red cloud
 
-            # ShapeFamily(None, 1.5, 10.0, 5),        # with aggressive start
-            # ShapeFamily(None, 0.5, 7.0, 3),        # with average aggressiveness at start and at the beginning
-            # ShapeFamily(None, 0.2, 4.0, 1, True),  # non aggressive start, aggressive end
+            # ShapeFamily(None, 1.5, 10.0, 15),        # with aggressive start
+            # ShapeFamily(None, 0.5, 7.0, 10),        # with average aggressiveness at start and at the beginning
+            # ShapeFamily(None, 0.2, 4.0, 7, True),  # non aggressive start, aggressive end
 
             ShapeFamily(None, 7, 2, 0.05, True, 750, 830),    # steep_start_early_flat - blue
             ShapeFamily(None, 6, 5, 0, True, 400, 710),    # steep_start_late_flat - yellow
@@ -51,16 +52,18 @@ if __name__ == "__main__":
         )
 
         max_res = 20
-        init_noise = 0.3
+        init_noise = 30
 
         if IS_OVERALL_PROFILE:
-            simulated_loss_functions = plot_simulated(n_simulations=230, max_resources=max_res, n_resources=max_res,
+            simulated_loss_functions = plot_simulated(func_name=UNDERLYING_OPT_FUNCTION,
+                                                      n_simulations=230, max_resources=max_res, n_resources=max_res,
                                                       shape_families=families_of_shapes, init_noise=init_noise)
             plot_profiles(simulated_loss_functions, ax1, ax2, ax4, 0.5, 10)
         else:
             interval_len = 1 / (1 + len(families_of_shapes))
             for i, fam in enumerate(families_of_shapes):
-                simulated_loss_functions = plot_simulated(n_simulations=15, max_resources=max_res, n_resources=max_res,
+                simulated_loss_functions = plot_simulated(func_name=UNDERLYING_OPT_FUNCTION,
+                                                          n_simulations=15, max_resources=max_res, n_resources=max_res,
                                                           shape_families=(fam,), init_noise=init_noise)
                 plot_profiles(simulated_loss_functions, ax1, ax2, ax4, interval_len * (i + 1), 10)
 

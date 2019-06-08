@@ -4,7 +4,7 @@ from matplotlib.axes import Axes
 from typing import List, Optional, Tuple, Type
 import numpy as np
 
-from benchmarks.branin_simulation_problem import BraninSimulationProblem, BraninSimulationEvaluator
+from benchmarks.opt_function_simulation_problem import OptFunctionSimulationProblem, OptFunctionSimulationEvaluator
 from core import Arm,  RoundRobinShapeFamilyScheduler, ShapeFamily, Evaluator, ShapeFamilyScheduler
 
 
@@ -79,12 +79,13 @@ def get_ends_order_profile(loss_functions_per_fam: np.ndarray) -> float:
     return sum(function_scores) / len(function_scores)
 
 
-def plot_simulated(n_simulations: int, max_resources: int = 81, n_resources: Optional[int] = None,
+def plot_simulated(func_name: str, n_simulations: int, max_resources: int = 81, n_resources: Optional[int] = None,
                    shape_families: Tuple[ShapeFamily, ...] = (ShapeFamily(None, 0.9, 10, 0.1),),
                    init_noise: float = 0, scheduler: Type[ShapeFamilyScheduler] = RoundRobinShapeFamilyScheduler) \
         -> List[List[float]]:
     """ plots the surface of the values of simulated loss functions at n_resources, by default is plot the losses
     at max resources, in which case their values would be 200-branin (if necessary aggressiveness is not disabled)
+    :param func_name: optimization function name eg. branin, egg
     :param n_simulations: number of simulations
     :param max_resources: maximum number of resources
     :param n_resources: show the surface of the values of simulated loss functions at n_resources
@@ -93,7 +94,7 @@ def plot_simulated(n_simulations: int, max_resources: int = 81, n_resources: Opt
     :param init_noise: variance of initial noise
     :param scheduler: class not instance of a scheduler
     """
-    simulator = BraninSimulationProblem()
+    simulator = OptFunctionSimulationProblem(func_name)
     if n_resources is None:
         n_resources = max_resources
     assert n_resources <= max_resources
@@ -101,7 +102,7 @@ def plot_simulated(n_simulations: int, max_resources: int = 81, n_resources: Opt
 
     loss_functions = []
     for i in range(n_simulations):
-        evaluator: BraninSimulationEvaluator = simulator.get_evaluator(*scheduler.get_family(), should_plot=True)
+        evaluator: OptFunctionSimulationEvaluator = simulator.get_evaluator(*scheduler.get_family(), should_plot=True)
         evaluator.evaluate(n_resources=n_resources)
         loss_functions.append(evaluator.fs)
 

@@ -3,5 +3,5 @@ from benchmarks.cifar_problem import CifarProblem
 from benchmarks.mnist_problem import MnistProblem
 from benchmarks.mrbi_problem import MrbiProblem
 from benchmarks.svhn_problem import SvhnProblem
-from benchmarks.branin_simulation_problem import BraninSimulationProblem
+from benchmarks.opt_function_simulation_problem import OptFunctionSimulationProblem
 from benchmarks.known_loss_fn_problem import KnownFnProblem

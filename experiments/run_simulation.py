@@ -6,14 +6,14 @@ import pickle
 from os.path import join as join_path
 
 # Optimisers
-from core import Optimiser, RoundRobinShapeFamilyScheduler, ShapeFamily
+from core import Optimiser, RoundRobinShapeFamilyScheduler, ShapeFamily, UniformShapeFamilyScheduler
 from optimisers import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, TpeOptimiser, \
     HybridHyperbandSigoptOptimiser, HybridHyperbandTpeTransferAllOptimiser, HybridHyperbandTpeNoTransferOptimiser, \
     HybridHyperbandTpeTransferLongestOptimiser, HybridHyperbandTpeTransferSameOptimiser
 
 # Problems
 from core import HyperparameterOptimisationProblem, OptimisationGoals
-from benchmarks import BraninProblem, BraninSimulationProblem
+from benchmarks import OptFunctionSimulationProblem
 
 OUTPUT_DIR = "D:/datasets/output"
 
@@ -22,23 +22,33 @@ MAX_TIME = None
 MAX_ITER = 81
 ETA = 3
 
-PROBLEM = "sim-branin"
-# METHOD = "sim(hb+tpe+transfer+all)"
+PROBLEM = "sim-egg"
+# METHOD = "sim(hb+tpe+transfer+same)"
 METHOD = "sim(hb)"
 MIN_OR_MAX = "min"
 
-N_SIMULATIONS = 2000
-INIT_NOISE = 0.3
+N_SIMULATIONS = 500
+INIT_NOISE = 5
 
 PLOT_EACH = False
 
-SHAPE_FAMILIES = (
-    ShapeFamily(None, 1.3, 10.0, 0.14, True),  # with aggressive start
-    ShapeFamily(None, 0.6, 7.0, 0.1, True),  # with average aggressiveness at start and at the beginning
-    ShapeFamily(None, 0.3, 3.0, 0.2, True),  # non aggressive start, aggressive end
+families_of_shapes_egg = (
+    ShapeFamily(None, 1.5, 10, 15, False, 0, 200),  # with aggressive start
+    ShapeFamily(None, 0.5, 7, 10, False, 0, 200),  # with average aggressiveness at start and at the beginning
+    ShapeFamily(None, 0.2, 4, 7, True, 0, 200),  # non aggressive start, aggressive end
+)
+families_of_shapes_general = (
+    ShapeFamily(None, 1.5, 10, 15, False),  # with aggressive start
+    ShapeFamily(None, 0.5, 7, 10, False),  # with average aggressiveness at start and at the beginning
+    ShapeFamily(None, 0.2, 4, 7, True),  # non aggressive start, aggressive end
 )
 
-BRANIN_MIN = 0.397887
+SCHEDULING = "uniform"
+
+SHAPE_FAMILIES = {
+    'sim-egg': families_of_shapes_egg,
+    'sim-wave': families_of_shapes_general,
+}.get(PROBLEM, families_of_shapes_general)
 
 
 def optimisation_func(opt_goals: OptimisationGoals) -> float:
@@ -66,12 +76,11 @@ def _get_args() -> Namespace:
 
 def get_problem(arguments: Namespace) -> HyperparameterOptimisationProblem:
     problem_name = arguments.problem.lower()
-    if problem_name == "branin":
-        problem_instance = BraninProblem()
-    elif problem_name == "sim-branin":
-        problem_instance = BraninSimulationProblem()
-    else:
-        raise ValueError(f"Supplied problem {problem_name} is not a simulation problem")
+    problem_instance = OptFunctionSimulationProblem(func_name={
+            'sim-branin': 'branin',
+            'sim-egg': 'egg',
+            'sim-camel': 'camel'
+        }[problem_name])
     problem_instance.print_domain()
     return problem_instance
 
@@ -79,8 +88,11 @@ def get_problem(arguments: Namespace) -> HyperparameterOptimisationProblem:
 def get_optimiser() -> Optimiser:
     method = args.method.lower()
     min_or_max = min if args.min_or_max == 'min' else max
-    scheduler = RoundRobinShapeFamilyScheduler(shape_families=SHAPE_FAMILIES, max_resources=args.max_iter,
-                                               init_noise=INIT_NOISE)
+    scheduler = {
+        'uniform': UniformShapeFamilyScheduler,
+        'round-robin': RoundRobinShapeFamilyScheduler
+    }[SCHEDULING](shape_families=SHAPE_FAMILIES, max_resources=args.max_iter, init_noise=INIT_NOISE)
+
     # SIMULATIONS
     if method == "sim(random)":
         return RandomOptimiser(
@@ -133,10 +145,7 @@ if __name__ == "__main__":
               f"  - {optimisation_func.__doc__}: {optimisation_func(optimum_evaluation.optimisation_goals)}\n"
               f"Total time:\n  - {optimiser.checkpoints[-1]} seconds")
         res = optimisation_func(optimum_evaluation.optimisation_goals)
-        if 200 + res >= BRANIN_MIN:
-            optimums.append(res)
-        else:
-            print(res, 'not ok')
+        optimums.append(res)
         if PLOT_EACH:
             plt.show()
 
