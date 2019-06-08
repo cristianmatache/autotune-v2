@@ -12,7 +12,7 @@ from util import flatten
 # This will fetch the latest experiment on the following problem with the following optimization method
 PROBLEM = "mnist"
 METHOD = "random"
-IS_SIMULATION = False
+IS_SIMULATION = True
 IS_OVERALL_PROFILE = True
 
 
@@ -46,6 +46,8 @@ if __name__ == "__main__":
             ShapeFamily(None, 4, 10, 4, True, 0, 290),  # flat_slight_incline - red
             ShapeFamily(None, 6, 3, 0, True, 0, 530),   # medium_steep - purple
             ShapeFamily(None, 20, 500, 50, False, 750, 800),  # jumpy_flat - brown
+
+            # ShapeFamily(None, 0, 1, 0, False, 0, 0),  # flat Branin
         )
 
         max_res = 20
