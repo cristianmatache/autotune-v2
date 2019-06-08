@@ -15,11 +15,13 @@ HYPERPARAMS_DOMAIN = Domain(
 GLOBAL_MIN = 0.397887
 
 
-def branin(x1: Union[int, np.ndarray], x2: Union[int, np.ndarray], noise_variance: int = 0) -> Union[int, np.ndarray]:
+def branin(x1: Union[int, np.ndarray], x2: Union[int, np.ndarray], noise_variance: float = 0,
+           scaled_noise: bool = False) -> Union[int, np.ndarray]:
     """ Branin function
     :param x1: x
     :param x2: y
     :param noise_variance: how noisy to make branin
+    :param scaled_noise:
     :return: value of Branin function
     """
     a = 1
@@ -30,7 +32,7 @@ def branin(x1: Union[int, np.ndarray], x2: Union[int, np.ndarray], noise_varianc
     t = 1 / (8 * np.pi)
 
     f = a * (x2 - b * x1 ** 2 + c * x1 - r) ** 2 + s * (1 - t) * np.cos(x1) + s
-    return f + noise_variance * np.random.randn(1)[0] * (f - GLOBAL_MIN)
+    return f + noise_variance * np.random.randn(1)[0] * (1 if not scaled_noise else f - GLOBAL_MIN)
 
 
 class BraninBuilder(ModelBuilder[Any, Any]):
