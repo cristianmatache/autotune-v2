@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Optional, Tuple, NamedTuple
 from abc import abstractmethod
+import random
 
 from core.arm import Arm
 
@@ -62,4 +63,19 @@ class RoundRobinShapeFamilyScheduler(ShapeFamilyScheduler):
         default_arm, *rest_family = shape_family
         arm = arm if arm is not None else default_arm
         self.index += 1
+        return EvaluatorParams(arm, *rest_family, self.max_resources, self.init_noise)
+
+
+class UniformShapeFamilyScheduler(ShapeFamilyScheduler):
+
+    def __init__(self, shape_families: Tuple[ShapeFamily, ...], max_resources: int, init_noise: float):
+        super().__init__(shape_families, max_resources, init_noise)
+
+    def get_family(self, arm: Optional[Arm] = None) -> EvaluatorParams:
+        """
+        :param arm: if not None replaces the default arm that has been supplied in self.shape_families
+        :return: parameters ready to be passed to BraninSimulationProblem.get_evaluator
+        """
+        default_arm, *rest_family = random.choice(self.shape_families)
+        arm = arm if arm is not None else default_arm
         return EvaluatorParams(arm, *rest_family, self.max_resources, self.init_noise)
