@@ -33,6 +33,7 @@ if __name__ == "__main__":
     known_hb_tpe_same = unpickle("sim(hb+tpe+transfer+same)", 7000)
 
     known_tpe = unpickle("sim(tpe)", 7000)
+    known_tpe2 = unpickle("sim(tpe2xbudget)", 7000)
     # known_rand = unpickle("sim(random)", 7000)
 
     data = (
@@ -43,10 +44,11 @@ if __name__ == "__main__":
         known_hb_tpe_same,
 
         known_tpe,
+        known_tpe2,
         # known_rand,
     )
-    labels = ['Hyperband', 'NONE', 'ALL', 'SURV', 'SAME', 'TPE']
-    # labels = ['Hyperband', 'TPE']
+    labels = ['Hyperband', 'NONE', 'ALL', 'SURV', 'SAME', 'TPE', 'TPE 2xBUDGET']
+    # labels = ['Hyperband', 'TPE', 'TPE 2xBUDGET']
     print([len(d) for d in data])
 
     plot_histograms(data, labels, bins, font_size=FONT_SIZE)
