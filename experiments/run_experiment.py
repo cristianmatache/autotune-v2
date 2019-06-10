@@ -7,7 +7,8 @@ from os.path import join as join_path
 # Optimisers
 from core import Optimiser
 from optimisers import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, TpeOptimiser, \
-    HybridHyperbandSigoptOptimiser
+    HybridHyperbandSigoptOptimiser, HybridHyperbandTpeTransferAllOptimiser, HybridHyperbandTpeNoTransferOptimiser, \
+    HybridHyperbandTpeTransferLongestOptimiser, HybridHyperbandTpeTransferSameOptimiser
 
 # Problems
 from core import HyperparameterOptimisationProblem, OptimisationGoals
@@ -21,15 +22,15 @@ import torch
 INPUT_DIR = "D:/datasets/"
 OUTPUT_DIR = "D:/datasets/output"
 
-N_RESOURCES = 3
+N_RESOURCES = 81
 MAX_TIME = None
 MAX_ITER = 27
 ETA = 3
 
-PROBLEM = "branin"
-METHOD = "hb+sigopt"
+PROBLEM = "mnist"
+METHOD = "hb+tpe+transfer+surv"
 MIN_OR_MAX = "min"
-RANDOM_SEED = 42
+RANDOM_SEED = 70
 
 
 def optimisation_func(opt_goals: OptimisationGoals) -> float:
@@ -109,6 +110,16 @@ def get_optimiser() -> Optimiser:
     elif method == "hb+sigopt":
         return HybridHyperbandSigoptOptimiser(eta=args.eta, max_iter=args.max_iter, max_time=args.max_time,
                                               min_or_max=min_or_max, optimisation_func=optimisation_func)
+    elif "hb+tpe+transfer" in method:
+        hybrid_transfer = {
+            "hb+tpe+transfer+none": HybridHyperbandTpeNoTransferOptimiser,
+            "hb+tpe+transfer+all": HybridHyperbandTpeTransferAllOptimiser,
+            "hb+tpe+transfer+surv": HybridHyperbandTpeTransferLongestOptimiser,
+            "hb+tpe+transfer+same": HybridHyperbandTpeTransferSameOptimiser
+        }[method]
+        return hybrid_transfer(
+            eta=args.eta, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
+            optimisation_func=optimisation_func)
     else:
         raise ValueError(f"Supplied problem {method} does not exist")
 

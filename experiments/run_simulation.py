@@ -17,36 +17,48 @@ from benchmarks import OptFunctionSimulationProblem
 
 OUTPUT_DIR = "D:/datasets/output"
 
-N_RESOURCES = 81
+N_RESOURCES = 24
 MAX_TIME = None
-MAX_ITER = 81
+MAX_ITER = 24
 ETA = 3
 
-PROBLEM = "sim-egg"
-# METHOD = "sim(hb+tpe+transfer+same)"
-METHOD = "sim(hb)"
+PROBLEM = "sim-branin"
+# METHOD = "sim(hb+tpe+transfer+all)"
+METHOD = "sim(tpe)"
 MIN_OR_MAX = "min"
 
-N_SIMULATIONS = 500
-INIT_NOISE = 5
+N_SIMULATIONS = 7000
+INIT_NOISE = 0
 
 PLOT_EACH = False
 
 families_of_shapes_egg = (
-    ShapeFamily(None, 1.5, 10, 15, False, 0, 200),  # with aggressive start
-    ShapeFamily(None, 0.5, 7, 10, False, 0, 200),  # with average aggressiveness at start and at the beginning
-    ShapeFamily(None, 0.2, 4, 7, True, 0, 200),  # non aggressive start, aggressive end
+    ShapeFamily(None, 1.5, 10, 15, False, 0, 1000),  # with aggressive start
+    ShapeFamily(None, 0.5, 7, 10, False, 0, 1000),  # with average aggressiveness at start and at the beginning
+    ShapeFamily(None, 0.2, 4, 7, True, 0, 1000),  # non aggressive start, aggressive end
 )
 families_of_shapes_general = (
-    ShapeFamily(None, 1.5, 10, 15, False),  # with aggressive start
-    ShapeFamily(None, 0.5, 7, 10, False),  # with average aggressiveness at start and at the beginning
-    ShapeFamily(None, 0.2, 4, 7, True),  # non aggressive start, aggressive end
+    # ShapeFamily(None, 1.5, 10, 15, False),  # with aggressive start
+    # ShapeFamily(None, 0.5, 7, 10, False),  # with average aggressiveness at start and at the beginning
+    # ShapeFamily(None, 0.2, 4, 7, True),  # non aggressive start, aggressive end
+
+    ShapeFamily(None, 0, 1, 0, False, 0, 0),  # flat
+
+    # ShapeFamily(None, 1.5, 10, 15, False, 0, 200),  # with aggressive start
+    # ShapeFamily(None, 0.5, 7, 10, False, 0, 200),  # with average aggressiveness at start and at the beginning
+    # ShapeFamily(None, 0.2, 4, 7, True, 0, 200),  # non aggressive start, aggressive end
+    # ShapeFamily(None, 1.5, 10, 15, False, 150, 350),
+    # ShapeFamily(None, 0.5, 7, 10, False, 150, 350),
+    # ShapeFamily(None, 0.2, 4, 7, True, 150, 350),
+    # ShapeFamily(None, 1.5, 10, 15, False, 250, 450),
+    # ShapeFamily(None, 0.5, 7, 10, False, 250, 450),
+    # ShapeFamily(None, 0.2, 4, 7, True, 250, 450),
 )
 
 SCHEDULING = "uniform"
 
 SHAPE_FAMILIES = {
-    'sim-egg': families_of_shapes_egg,
+    # 'sim-egg': families_of_shapes_egg,
     'sim-wave': families_of_shapes_general,
 }.get(PROBLEM, families_of_shapes_general)
 
@@ -79,7 +91,9 @@ def get_problem(arguments: Namespace) -> HyperparameterOptimisationProblem:
     problem_instance = OptFunctionSimulationProblem(func_name={
             'sim-branin': 'branin',
             'sim-egg': 'egg',
-            'sim-camel': 'camel'
+            'sim-camel': 'camel',
+            'sim-wave': 'wave',
+            'sim-rastrigin': 'rastrigin',
         }[problem_name])
     problem_instance.print_domain()
     return problem_instance
@@ -156,27 +170,18 @@ if __name__ == "__main__":
     sample std dev:  {np.std(optimums, ddof=1)}
     avg top 25%:     {np.mean(sorted(optimums)[:int(N_SIMULATIONS/4)])}
     top quartile:    {sorted(optimums)[:int(N_SIMULATIONS/4)]}
-    \n------------- NORMALIZED (+200) OPTIMUM STATISTICS OVER {N_SIMULATIONS} -------------
-    200+avg optimum: {200 + np.mean(optimums)} (to normalize back to Branin)
-    200+avg top 25%: {200 + np.mean(sorted(optimums)[:int(N_SIMULATIONS/4)])}
-    norm top quartile: {[200 + o for o in sorted(optimums)[:int(N_SIMULATIONS/4)]]}
     """)
     print(200+average_optimum)
 
-    with open(join_path(OUTPUT_DIR, f"hist-{METHOD}-{N_SIMULATIONS}.pkl"), "wb") as f:
+    with open(join_path(OUTPUT_DIR, f"hist-{PROBLEM}-{METHOD}-{N_SIMULATIONS}.pkl"), "wb") as f:
         pickle.dump({
             "method": METHOD,
 
             "n_simulations": N_SIMULATIONS,
             "all_optimums": optimums,
-            "all_norm_optimums": [200 + o for o in optimums],
 
             "avg_optimum": np.mean(optimums),
             "sample_std_dev": np.std(optimums, ddof=1),
             "avg_top_25%": np.mean(sorted(optimums)[:int(N_SIMULATIONS / 4)]),
             "top_quartile": sorted(optimums)[:int(N_SIMULATIONS / 4)],
-
-            "200+avg_optimum": 200 + np.mean(optimums),
-            "200+avg_top_25%": 200 + np.mean(sorted(optimums)[:int(N_SIMULATIONS / 4)]),
-            "norm_top_quartile": [200 + o for o in sorted(optimums)[:int(N_SIMULATIONS / 4)]]
         }, f)
