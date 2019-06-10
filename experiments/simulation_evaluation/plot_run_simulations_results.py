@@ -5,48 +5,76 @@ from typing import List
 from util import flatten
 from experiments.simulation_evaluation.plot_results import plot_epdf_ofe, plot_histograms
 
-OUTPUT_DIR = "../../../epdf-ofes/simulation-flat-branin/"
+SIMULATION = "flat-drop-wave"
+output_dir = f"../../../epdf-ofes/simulation-{SIMULATION}/"
 
 
 def unpickle(method: str, n_simulations: int, til: int = 1) -> List[float]:
     res = []
     for i in range(1, til+1):
-        with open(join_path(OUTPUT_DIR, f"hist-{method}-{n_simulations}-{til}.pkl"), "rb") as f:
+        with open(join_path(output_dir, f"hist-sim-wave-{method}-{n_simulations}-{til}.pkl"), "rb") as f:
             unpickled = pickle.load(f)
             print(unpickled)
-            # res.append(unpickled["all_norm_optimums"])
             res.append(unpickled["all_optimums"])
     return flatten(res)
 
 
-FONT_SIZE = 30
+FONT_SIZE = 50
 
 if __name__ == "__main__":
-    start = 0.3
-    end = 2
-    step = 0.05
+    start = {
+        "flat-branin": 0.37,
+        "flat-drop-wave": -1,
+        "flat-rastrigin": 0,
+        "rastrigin-families-2": 0,
+    }[SIMULATION]
+    end = {
+        "flat-branin": 1.5,
+        "flat-drop-wave": -0.3,
+        "flat-rastrigin": 18,
+        "rastrigin-families-2": 0,
+    }[SIMULATION]
+    step = {
+        "flat-branin": 0.05,
+        "flat-drop-wave": 0.02,
+        "flat-rastrigin": 1,
+        "rastrigin-families-2": 1,
+    }[SIMULATION]
+    bandwidth = {
+        "flat-branin": 0.1,
+        "flat-drop-wave": 0.02,
+        "flat-rastrigin": 3,
+        "rastrigin-families-2": 0,
+    }[SIMULATION]
 
     bins = [start + step * i for i in range(1+int((end-start)/step))]
     print('n_bins', len(bins))
+    # bins = None
 
     hb = unpickle("sim(hb)", 7000)
     none = unpickle("sim(hb+tpe+transfer+none)", 7000)
     all_ = unpickle("sim(hb+tpe+transfer+all)", 7000)
     tpe = unpickle("sim(tpe)", 7000)
+    tpe2 = unpickle("sim(tpe2xbudget)", 7000)
     surv = unpickle("sim(hb+tpe+transfer+longest)", 7000)
+    same = unpickle("sim(hb+tpe+transfer+same)", 7000)
 
     data = (
         hb,
         none,
         all_,
+        surv,
+        same,
         tpe,
-        surv
+        tpe2,
     )
-    labels = ['Hyperband', 'NONE', 'ALL', 'TPE', 'SURV']
+    print([len(d) for d in data])
+    labels = ['Hyperband', 'NONE', 'ALL', 'SURV', 'SAME', 'TPE', 'TPE 2xBUDGET']
+    # labels = ['Hyperband', 'TPE', 'TPE 2xBUDGET']
 
     plot_histograms(data, labels, bins, font_size=FONT_SIZE)
 
-    plot_epdf_ofe(data, labels, start=start, end=end, bandwidth=0.1, order_profile=False, font_size=FONT_SIZE)
+    plot_epdf_ofe(data, labels, start=start, end=end, bandwidth=bandwidth, order_profile=False, font_size=FONT_SIZE)
     # plot_epdf_ofe(data, labels, start=0, end=5, bandwidth=0.2, order_profile=False, font_size=FONT_SIZE)
     # plot_epdf_ofe(data, labels, start=0, end=26, bandwidth=0.5, order_profile=True, font_size=FONT_SIZE)
 

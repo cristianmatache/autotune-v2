@@ -96,7 +96,7 @@ class CifarProblem(HyperparameterOptimisationProblem):
     Classification on CIFAR-10 dataset with a CNN
     """
 
-    def __init__(self, data_dir: str, output_dir: str, dataset_loader: Type[ImageDatasetLoader] = CIFARLoader,
+    def __init__(self, data_dir: str, output_dir: str, dataset_loader: Optional[Type[ImageDatasetLoader]] = CIFARLoader,
                  hyperparams_domain: Domain = HYPERPARAMS_DOMAIN,
                  hyperparams_to_opt: Tuple[str, ...] = HYPERPARAMETERS_TO_OPTIMIZE, in_channels: int = 3):
         """
@@ -108,7 +108,8 @@ class CifarProblem(HyperparameterOptimisationProblem):
         :param hyperparams_to_opt: names of hyperparameters to be optimised, if () all params from domain are optimised
         :param in_channels: in_channels of CNNBuilder (for CudaConvNet2)
         """
-        dataset_loader = dataset_loader(data_dir)
+        if dataset_loader is not None:
+            dataset_loader = dataset_loader(data_dir)
         super().__init__(hyperparams_domain, hyperparams_to_opt, dataset_loader, output_dir)
         self.in_channels = in_channels
 

@@ -1,6 +1,7 @@
-from math import log, ceil
+from math import ceil
 from typing import Callable, Optional
 from colorama import Style, Fore
+import mpmath
 
 from core import HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, Optimiser, ShapeFamilyScheduler, \
     optimisation_metric_user
@@ -10,6 +11,8 @@ from optimisers.tpe_optimiser import TpeOptimiser
 
 COL = Fore.MAGENTA
 END = Style.RESET_ALL
+
+mpmath.mp.dps = 64
 
 
 class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
@@ -46,7 +49,7 @@ class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
         R = self.max_iter  # maximum amount of resource that can be allocated to a single hyperparameter configuration
         eta = self.eta     # halving rate
 
-        def log_eta(x: int) -> int: return int(log(x)/log(eta))
+        def log_eta(x: int) -> int: return int(mpmath.log(x)/mpmath.log(eta))
         s_max = log_eta(R)              # number of unique executions of Successive Halving (minus one)
         s_min = 2 if s_max >= 2 else 0  # skip the rest of the brackets after s_min
         B = (s_max + 1) * R             # total/max resources (without reuse) per execution of Successive Halving

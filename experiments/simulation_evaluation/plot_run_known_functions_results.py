@@ -18,7 +18,7 @@ def unpickle(method: str, n_simulations: int, til: int = 1) -> List[float]:
     return flatten(res)
 
 
-FONT_SIZE = 30
+FONT_SIZE = 50
 
 
 if __name__ == "__main__":
@@ -32,7 +32,7 @@ if __name__ == "__main__":
                             unpickle("sim(hb+tpe+transfer+longest)", 5000))
     known_hb_tpe_same = unpickle("sim(hb+tpe+transfer+same)", 7000)
 
-    # known_tpe = unpickle("sim(tpe)", 7000)
+    known_tpe = unpickle("sim(tpe)", 7000)
     # known_rand = unpickle("sim(random)", 7000)
 
     data = (
@@ -42,12 +42,12 @@ if __name__ == "__main__":
         known_hb_tpe_longest,
         known_hb_tpe_same,
 
-        # known_tpe,
+        known_tpe,
         # known_rand,
     )
-    labels = ['Hyperband', 'NONE', 'ALL', 'SURV', 'SAME']
-    # labels = ['Hyperband', 'NONE']
-    print(len(known_hb), len(known_hb_tpe_none), len(known_hb_tpe_all))
+    labels = ['Hyperband', 'NONE', 'ALL', 'SURV', 'SAME', 'TPE']
+    # labels = ['Hyperband', 'TPE']
+    print([len(d) for d in data])
 
     plot_histograms(data, labels, bins, font_size=FONT_SIZE)
 
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     plot_epdf_ofe(data, labels, start=bins[0], end=bins[int(len(bins)/2)], bandwidth=0.005,
                   order_profile=False, font_size=FONT_SIZE)
     plot_epdf_ofe(data, labels, start=bins[0], end=bins[-1], bandwidth=0.005,
-                  order_profile=True, font_size=FONT_SIZE)
+                  order_profile=False, font_size=FONT_SIZE)
 
     # known_hybrid = [float(np.mean(tpes)) for tpes in zip(
     #     sorted(known_hb_tpe_none), sorted(known_hb_tpe_all), sorted(known_hb_tpe_longest), sorted(known_hb_tpe_same)

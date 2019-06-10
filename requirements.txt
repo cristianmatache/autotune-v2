@@ -1,3 +1,5 @@
+pandas
+mpmath
 scipy
 Pillow
 sigopt==4.0.0

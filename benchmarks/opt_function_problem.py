@@ -31,12 +31,14 @@ HYPERPARAMS_DOMAIN_WAVE = Domain(
     y=Param('y', -5.12, 5.12, distrib='uniform', scale='linear'))
 
 GLOBAL_MIN_WAVE = -1
+GLOBAL_MIN_RASTRIGIN = 0
 
 DOMAINS = {
     'egg': HYPERPARAMS_DOMAIN_EGGHOLDER,
     'branin': HYPERPARAMS_DOMAIN_BRANIN,
     'camel': HYPERPARAMS_DOMAIN_CAMEL,
     'wave': HYPERPARAMS_DOMAIN_WAVE,
+    'rastrigin': HYPERPARAMS_DOMAIN_WAVE,
 }
 
 
@@ -103,11 +105,28 @@ def drop_wave(x1: Union[int, np.ndarray], x2: Union[int, np.ndarray], noise_vari
     return f + noise_variance * np.random.randn(1)[0] * (1 if not scaled_noise else f - GLOBAL_MIN_WAVE)
 
 
+def rastrigin(x1: Union[int, np.ndarray], x2: Union[int, np.ndarray], noise_variance: int = 0,
+              scaled_noise: bool = False) -> Union[int, np.ndarray]:
+    """ Rastrigin function
+    :param x1: x
+    :param x2: y
+    :param noise_variance: how noisy to make rastrigin
+    :param scaled_noise:
+    :return: value of rastrigin function
+    """
+    d = 2
+    x = [x1, x2]
+    def rastrigin_term(x_i: float) -> float: return x_i**2 - 10 * np.cos(2*np.pi*x_i)
+    f = 10*d + sum([rastrigin_term(x_i) for x_i in x])
+    return f + noise_variance * np.random.randn(1)[0] * (1 if not scaled_noise else f - GLOBAL_MIN_RASTRIGIN)
+
+
 OPT_FUNCTIONS = {
     'egg': egg_holder,
     'branin': branin,
     'camel': six_hump_camel,
     'wave': drop_wave,
+    'rastrigin': rastrigin,
 }
 
 
@@ -189,7 +208,9 @@ class OptFunctionProblem(HyperparameterOptimisationProblem):
 
         xs, ys, zs = [np.array(array, dtype="float64") for array in (xs, ys, zs)]
 
-        # plt.hist(zs, bins=list(range(0, 200, 1)), cumulative=False)
+        # plt.hist(zs, cumulative=False)
+        # plt.xlabel(f"Values of {self.func_name} function")
+        # plt.ylabel("Count")
         # plt.show()
 
         fig = plt.figure()
@@ -201,7 +222,8 @@ class OptFunctionProblem(HyperparameterOptimisationProblem):
 
 
 if __name__ == "__main__":
-    OptFunctionProblem('wave').plot_surface(10000)
+    OptFunctionProblem('rastrigin').plot_surface(50000)
+    OptFunctionProblem('wave').plot_surface(50000)
     OptFunctionProblem('egg').plot_surface(50000)
-    OptFunctionProblem('branin').plot_surface(10000)
-    OptFunctionProblem('camel').plot_surface(10000)
+    OptFunctionProblem('branin').plot_surface(50000)
+    OptFunctionProblem('camel').plot_surface(50000)

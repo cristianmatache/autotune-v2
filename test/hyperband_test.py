@@ -10,7 +10,7 @@ from util.io import print_evaluation
 from optimisers.hyperband_optimiser import HyperbandOptimiser
 
 ETA = 3
-MAX_ITER = 81
+MAX_ITER = 243
 
 LEARNING_RATE = Param('learning_rate', np.log(10 ** -6), np.log(10 ** 0), distrib='uniform', scale='log')
 WEIGHT_DECAY = Param('weight_decay', np.log(10 ** -6), np.log(10 ** -1), distrib='uniform', scale='log')
@@ -25,7 +25,7 @@ HYPERPARAMS_DOMAIN = Domain(
 
 class HyperbandTestEvaluator(Evaluator):
 
-    @print_evaluation(verbose=True, goals_to_print=("test_correct",))
+    @print_evaluation(verbose=False, goals_to_print=("test_correct",))
     def evaluate(self, n_resources: int) -> OptimisationGoals:
         return OptimisationGoals(validation_error=1, test_error=1)
 

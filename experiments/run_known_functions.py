@@ -18,22 +18,22 @@ from benchmarks import MnistProblem, CifarProblem, SvhnProblem, MrbiProblem, Bra
 
 from util import flatten
 
-
+KNOWN_FUNCTIONS_DIR = "../../loss_functions/"
 INPUT_DIR = "D:/datasets/"
 OUTPUT_DIR = "D:/datasets/output"
 
-N_RESOURCES = 3
+N_RESOURCES = 18
 MAX_TIME = None
-MAX_ITER = 18
+MAX_ITER = 6
 ETA = 3
 
 PROBLEM = "mnist"
 METHOD = "sim(hb+tpe+transfer+none)"
 MIN_OR_MAX = "min"
 
-N_SIMULATIONS = 1000
+N_SIMULATIONS = 7000
 
-PLOT_EACH = True
+PLOT_EACH = False
 
 
 def optimisation_func(opt_goals: OptimisationGoals) -> float:
@@ -69,7 +69,7 @@ def _get_args() -> Namespace:
 def get_real_problem(arguments: Namespace) -> HyperparameterOptimisationProblem:
     problem_name = arguments.problem.lower()
     if problem_name == "cifar":
-        problem_instance = CifarProblem(arguments.input_dir, arguments.output_dir)
+        problem_instance = CifarProblem(arguments.input_dir, arguments.output_dir, dataset_loader=None)
     elif problem_name == "mnist":
         problem_instance = MnistProblem(arguments.input_dir, arguments.output_dir)
     elif problem_name == "svhn":
@@ -88,11 +88,22 @@ def get_real_problem(arguments: Namespace) -> HyperparameterOptimisationProblem:
 def get_known_functions(arguments: Namespace) -> Dict[Arm, List[float]]:
     problem_name = arguments.problem.lower()
     if problem_name == "cifar":
-        return {}
+        arm_to_loss_function = {}
+        files = [join_path(KNOWN_FUNCTIONS_DIR, "cifar", f"best_loss_functions-{n}.pkl") for n in range(1, 2)]
+        for file in files:
+            with open(file, "rb") as f_:
+                data = pickle.load(f_)
+                for _, evals in data.items():
+                    for e in evals:
+                        loss_func, arm = e
+                        if len(loss_func[1:]) > 300:
+                            arm_to_loss_function[arm] = loss_func[1:]
+        return arm_to_loss_function
     elif problem_name == "mnist":
         all_evaluators = []
-        files = [join_path(OUTPUT_DIR, f"results-{PROBLEM}-random-{n}.pkl") for n in (10, 20, 15, 19, 1, 100, 30)] + \
-                [join_path(OUTPUT_DIR, f"results-{PROBLEM}-tpe-{n}.pkl") for n in (30, 200)]
+        files = [join_path(KNOWN_FUNCTIONS_DIR, "mnist", f"results-{PROBLEM}-random-{n}.pkl")
+                 for n in (10, 20, 15, 19, 1, 100, 30)] + \
+                [join_path(KNOWN_FUNCTIONS_DIR, "mnist", f"results-{PROBLEM}-tpe-{n}.pkl") for n in (30, 200)]
         for file in files:
             with open(file, "rb") as f_:
                 _, eval_history, checkpoints = pickle.load(f_)
@@ -160,8 +171,12 @@ if __name__ == "__main__":
     args = _get_args()
     optimums = []
     known_fns = get_known_functions(args)
+
+    # plt.hist([loss_fn[-1] for arm, loss_fn in known_fns.items()])
+    # plt.show()
+
     for _ in range(N_SIMULATIONS):
-        print("********iteration:", _, "avg so far:", 200 + np.mean(optimums))
+        print("********iteration:", _, "avg so far:", np.mean(optimums))
         real_problem = get_real_problem(args)
         problem = KnownFnProblem(known_fs=known_fns, real_problem=real_problem)
         optimiser = get_optimiser()

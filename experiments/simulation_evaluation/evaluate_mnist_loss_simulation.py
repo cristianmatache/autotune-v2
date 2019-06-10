@@ -37,22 +37,22 @@ if __name__ == "__main__":
             # ShapeFamily(None, 0.9, 3, 15, True, 0, 40),     # low_steep_medium_late - top green cloud
             # ShapeFamily(None, 0.72, 5, 0.15, True, 50, 290),    # medium_steep - red cloud
 
-            # ShapeFamily(None, 1.5, 10.0, 15),        # with aggressive start
-            # ShapeFamily(None, 0.5, 7.0, 10),        # with average aggressiveness at start and at the beginning
-            # ShapeFamily(None, 0.2, 4.0, 7, True),  # non aggressive start, aggressive end
+            ShapeFamily(None, 1.5, 10, 15, False),  # with aggressive start
+            ShapeFamily(None, 0.5, 7, 10, False),  # with average aggressiveness at start and at the beginning
+            ShapeFamily(None, 0.2, 4, 7, True),  # non aggressive start, aggressive end
 
-            ShapeFamily(None, 7, 2, 0.05, True, 750, 830),    # steep_start_early_flat - blue
-            ShapeFamily(None, 6, 5, 0, True, 400, 710),    # steep_start_late_flat - yellow
-            ShapeFamily(None, 5, 500, 0.05, True, 0, 75),  # low_steep_medium_late - green
-            ShapeFamily(None, 4, 10, 4, True, 0, 290),  # flat_slight_incline - red
-            ShapeFamily(None, 6, 3, 0, True, 0, 530),   # medium_steep - purple
-            ShapeFamily(None, 20, 500, 50, False, 750, 800),  # jumpy_flat - brown
+            # ShapeFamily(None, 7, 2, 0.05, True, 750, 830),    # steep_start_early_flat - blue
+            # ShapeFamily(None, 6, 5, 0, True, 400, 710),    # steep_start_late_flat - yellow
+            # ShapeFamily(None, 5, 500, 0.05, True, 0, 75),  # low_steep_medium_late - green
+            # ShapeFamily(None, 4, 10, 4, True, 0, 290),  # flat_slight_incline - red
+            # ShapeFamily(None, 6, 3, 0, True, 0, 530),   # medium_steep - purple
+            # ShapeFamily(None, 20, 500, 50, False, 750, 800),  # jumpy_flat - brown
 
-            # ShapeFamily(None, 0, 1, 0, False, 0, 0),  # flat Branin
+            # ShapeFamily(None, 0, 1, 0, False, 0, 0),  # flat
         )
 
-        max_res = 20
-        init_noise = 30
+        max_res = 81
+        init_noise = 5
 
         if IS_OVERALL_PROFILE:
             simulated_loss_functions = plot_simulated(func_name=UNDERLYING_OPT_FUNCTION,

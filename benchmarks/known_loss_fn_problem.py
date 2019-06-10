@@ -50,8 +50,8 @@ class KnownFnEvaluator(SimulationEvaluator):
                 min_sq_error_arm = arm
                 min_sq_error = sq_error
 
-        with open("min_sq_error_file.txt", "a") as f:
-            f.write(f"{np.sqrt(min_sq_error/len(hyperparams_names))},")
+        # with open("min_sq_error_file.txt", "a") as f:
+        #     f.write(f"{np.sqrt(min_sq_error/len(hyperparams_names))},")
 
         if self.should_plot:
             plt.plot(list(range(time)), self.known_fs[min_sq_error_arm][:time], linewidth=1.5)
