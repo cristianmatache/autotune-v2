@@ -3,10 +3,10 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-from torch_net_problem import TorchNetProblem
-from ..core.params import *
-from data.mnist_data_loader import get_train_val_set, get_test_set
-from ml_models.logistic_regression import LogisticRegression
+from benchmarks.torch_net_problem import TorchNetProblem
+from core.params import *
+from benchmarks.data.mnist_data_loader import get_train_val_set, get_test_set
+from benchmarks.ml_models.logistic_regression import LogisticRegression
 
 
 class MnistProblem(TorchNetProblem):
@@ -88,7 +88,7 @@ class MnistProblem(TorchNetProblem):
         val_error = self.test(self.val_loader, model, criterion)
         test_error = self.test(self.test_loader, model, criterion)
 
-        self.save_checkpoint(arm['filename'], epoch, model, optimizer, val_error, test_error)
+        self.save_checkpoint(arm['filename'], start_epoch+max_epochs, model, optimizer, val_error, test_error)
 
         return val_error, test_error
 

@@ -1,7 +1,7 @@
 import pickle
 import argparse
 
-from core.HyperbandOptimiser import HyperbandOptimiser
+from core.HybridOptimizer import HybridOptimiser
 from benchmarks.mnist_problem import MnistProblem
 
 
@@ -9,7 +9,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='PyTorch Training')
     parser.add_argument('-i', '--input_dir', type=str, help='input dir')
     parser.add_argument('-o', '--output_dir', type=str, help='output dir')
-    parser.add_argument('-res', '--n_resources', default=3, type=int, help='n_resources')
+    parser.add_argument('-res', '--n_resources', default=9, type=int, help='n_resources')
     args = parser.parse_args()
 
     print("Input directory: {}".format(args.input_dir))
@@ -24,8 +24,8 @@ if __name__ == "__main__":
     n_resources = args.n_resources
 
     # # Run hyperband
-    hyperband_opt = HyperbandOptimiser()
-    hyperband_opt.run_optimization(problem, max_iter=n_resources, verbosity=True)
+    hyperband_opt = HybridOptimiser()
+    hyperband_opt.run_optimization(problem, max_iter=n_resources, verbosity=False)
 
     # Constrain random optimisation to the same time budget
     time_budget = hyperband_opt.checkpoints[-1]

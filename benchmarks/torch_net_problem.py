@@ -46,14 +46,14 @@ class TorchNetProblem(Problem):
             loss.backward()
             optimizer.step()
 
-            train_loss += loss.data[0]
+            train_loss += loss.data.item()
             _, predicted = torch.max(outputs.data, 1)
             total += targets.size(0)
             correct += predicted.eq(targets.data).cpu().sum()
 
-            if batch_idx % disp_interval == 0 or batch_idx == len(loader):
-                progress_bar(batch_idx, len(loader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
-                             % (train_loss / batch_idx, 100. * correct / total, correct, total))
+            # if batch_idx % disp_interval == 0 or batch_idx == len(loader):
+            #     progress_bar(batch_idx, len(loader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
+            #                  % (train_loss / batch_idx, 100. * correct / total, correct, total))
         return train_loss
 
     def test(self, loader, model, criterion, disp_interval=100):
@@ -68,14 +68,14 @@ class TorchNetProblem(Problem):
             outputs = model(inputs)
             loss = criterion(outputs, targets)
 
-            test_loss += loss.data[0]
+            test_loss += loss.data.item()
             _, predicted = torch.max(outputs.data, 1)
             total += targets.size(0)
-            correct += predicted.eq(targets.data).cpu().sum()
+            correct += predicted.eq(targets.data).cpu().sum().item()
 
-            if batch_idx % disp_interval == 0 or batch_idx == len(loader):
-                progress_bar(batch_idx, len(loader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
-                             % (test_loss / batch_idx, 100. * correct / total, correct, total))
+            # if batch_idx % disp_interval == 0 or batch_idx == len(loader):
+            #     progress_bar(batch_idx, len(loader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
+            #                  % (test_loss / batch_idx, 100. * correct / total, correct, total))
 
         return 1 - correct / total
 

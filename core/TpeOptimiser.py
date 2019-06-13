@@ -1,8 +1,8 @@
 import time
-from hyperopt_source import fmin, tpe, hp, Trials, STATUS_OK
+from hyperopt import fmin, tpe, hp, Trials, STATUS_OK
 import numpy as np
 from functools import partial
-from RandomOptimiser import RandomOptimiser
+from core.RandomOptimiser import RandomOptimiser
 
 
 class TpeOptimiser(RandomOptimiser):
@@ -49,7 +49,6 @@ class TpeOptimiser(RandomOptimiser):
                     space,
                     algo=partial(tpe.suggest, n_startup_jobs=10),
                     max_evals=self.max_iter,
-                    max_time=self.max_time,
                     trials=trials,
                     verbose=verbosity)
 
@@ -59,7 +58,7 @@ class TpeOptimiser(RandomOptimiser):
         self.val_loss = []
         self.checkpoints = []
         for t in trials.trials:
-            self.arms.append(t['misc']['vals'])
+            self.arms.append(t['result']['arm'])
             self.Y.append(t['result']['test_loss'])
             self.val_loss.append(t['result']['loss'])
             self.checkpoints.append(t['result']['eval_time'] - self.time_zero)
@@ -81,7 +80,7 @@ class TpeOptimiser(RandomOptimiser):
         arms = problem.construct_arms([params])
         # run model
         val_loss, Y_new = problem.eval_arm(arms[0], n_resources)
-        return {'loss': val_loss, 'status': STATUS_OK, 'test_loss': Y_new, 'eval_time': time.time()}
+        return {'loss': val_loss, 'status': STATUS_OK, 'test_loss': Y_new, 'eval_time': time.time(), 'arm': arms[0]}
 
     def initialise_hyperopt_space(self, problem):
         def hyperopt_param_converter(hb_param):

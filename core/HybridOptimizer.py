@@ -1,12 +1,21 @@
 import time
 from math import log, ceil
-import numpy as np
 from core.RandomOptimiser import RandomOptimiser
+from core.TpeOptimiser import TpeOptimiser
 
 
-class HyperbandOptimiser(RandomOptimiser):
+def print_evaluations(evaluations):
+    for arm, val_loss, test_loss in evaluations:
+        print("-" * 50)
+        print("arm:", arm)
+        print("val_loss", val_loss)
+        print("test_loss", test_loss)
+        print("\n\n")
+
+
+class HybridOptimiser(RandomOptimiser):
     def __init__(self):
-        super(HyperbandOptimiser, self).__init__()
+        super(HybridOptimiser, self).__init__()
         self.name = "Hyperband"
 
     def run_optimization(self, problem, n_units=None, max_iter=None, eta=3, verbosity=False):
@@ -37,29 +46,25 @@ class HyperbandOptimiser(RandomOptimiser):
             r = max_iter*eta**(-s)  # initial number of iterations to run configurations for
 
             #### Begin Finite Horizon Successive Halving with (n,r)
-            # arms = [ problem.generate_random_arm(problem.hps) for i in range(n) ]
-            arms = problem.generate_arms(n, problem.hps)
             for i in range(s+1):
                 # Run each of the n_i configs for r_i iterations and keep best n_i/eta
                 n_i = n*eta**(-i)
-                r_i = r*eta**(i)
-                val_losses = []
-                test_losses = []
+                r_i = r*eta**i
 
-                for arm in arms:
-                    # Assign r_i units of resource to arm
-                    # arm['n_resources'] = r_i
-                    val_loss, test_loss = problem.eval_arm(arm, r_i)
-                    val_losses.append(val_loss)
-                    test_losses.append(test_loss)
+                if i == 0:
+                    tpe_optimizer = TpeOptimiser()
+                    tpe_optimizer.run_optimization(problem, max_iter=n_i, n_resources=r_i)
+                    evaluations = list(zip(tpe_optimizer.arms, tpe_optimizer.val_loss, tpe_optimizer.Y))
+                    print(f"\n{'=' * 73}\n>> Generated {n} evaluators and evaluated with TPE for {r_i} resources\n"
+                          f"--- Starting halving ---")
+                else:
+                    evaluations = [(arm, *problem.eval_arm(arm, r_i)) for arm, _, _ in evaluations]
+                    print(f"** Evaluated {len(evaluations)} arms (n_i is {n_i}), each with {r_i:.2f} resources")
 
-                # Track stats
-                min_val = min(val_losses)
-                min_index = val_losses.index(min_val)
-                best_arm = arms[min_index]
-                Y_new = test_losses[min_index]
+                # print_evaluations(evaluations)
 
                 # Update history
+                best_arm, min_val, Y_new = sorted(evaluations, key=lambda evaluation: evaluation[1])[0]
                 self.arms.append(best_arm)
                 self.val_loss.append(min_val)
                 self.Y.append(Y_new)
@@ -72,7 +77,7 @@ class HyperbandOptimiser(RandomOptimiser):
                     print("time elapsed: {:.2f}s, f_current: {:.5f}, f_best: {:.5f}".format(
                         self.cum_time, Y_new, min(self.Y)))
 
-                arms = [ arms[i] for i in np.argsort(val_losses)[0:int( n_i/eta )] ]
+                evaluations = sorted(evaluations, key=lambda evaluation: evaluation[1])[:int(n_i/eta)]
             #### End Finite Horizon Successive Halving with (n,r)
 
         self._compute_results()
