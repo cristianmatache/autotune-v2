@@ -2,6 +2,7 @@ import pickle
 import argparse
 
 from core.HyperbandOptimiser import HyperbandOptimiser
+from core.HybridOptimizer import HybridOptimiser
 from benchmarks.dltk_problem import DLTKProblem
 import os
 
@@ -30,7 +31,7 @@ problem = DLTKProblem(args.input_dir, args.output_dir, args.seed)
 problem.print_domain()
 
 # Run hyperband
-hyperband_opt = HyperbandOptimiser()
+hyperband_opt = HybridOptimiser()
 hyperband_opt.run_optimization(problem, max_iter=n_resources, verbosity=True)
 
 print("Optimal arm: "

@@ -1,8 +1,10 @@
 import time
-from math import log, ceil
+from math import ceil
 import numpy as np
 from core.RandomOptimiser import RandomOptimiser
+import mpmath
 
+mpmath.mp.dps = 64
 
 class HyperbandOptimiser(RandomOptimiser):
     def __init__(self):
@@ -23,7 +25,7 @@ class HyperbandOptimiser(RandomOptimiser):
         self.num_iterations = 0
         self.checkpoints = []
 
-        logeta = lambda x: log(x)/log(eta)
+        logeta = lambda x: mpmath.log(x)/mpmath.log(eta)
         s_max = int(logeta(max_iter))  # number of unique executions of Successive Halving (minus one)
         if s_max >= 2:
             s_min = 2  # skip the rest of the brackets after s_min
