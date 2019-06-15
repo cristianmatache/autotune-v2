@@ -1,6 +1,7 @@
 from os.path import join as join_path
 import pickle
 from typing import List
+from scipy .stats import ks_2samp
 
 from util import flatten
 from experiments.simulation_evaluation.plot_results import plot_epdf_ofe, plot_histograms
@@ -35,6 +36,13 @@ if __name__ == "__main__":
     known_tpe = unpickle("sim(tpe)", 7000)
     known_tpe2 = unpickle("sim(tpe2xbudget)", 7000)
     # known_rand = unpickle("sim(random)", 7000)
+
+    print("TPE vs TPE 2xBUDGET:", ks_2samp(known_tpe, known_tpe2))
+    print("TPE 2xBUDGET vs HB", ks_2samp(known_tpe2, known_hb))
+    print("HB vs HB+TPE+ALL", ks_2samp(known_hb, known_hb_tpe_all))
+    print("HB+TPE+ALL vs HB+TPE+SAME", ks_2samp(known_hb_tpe_all, known_hb_tpe_same))
+    print("HB+TPE+SAME vs HB+TPE+NONE", ks_2samp(known_hb_tpe_same, known_hb_tpe_none))
+    print("HB+TPE+SURV vs HB+TPE+NONE", ks_2samp(known_hb_tpe_longest, known_hb_tpe_none))
 
     data = (
         known_hb,

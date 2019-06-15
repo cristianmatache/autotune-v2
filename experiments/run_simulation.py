@@ -19,16 +19,15 @@ OUTPUT_DIR = "D:/datasets/output"
 
 N_RESOURCES = 24
 MAX_TIME = None
-MAX_ITER = 24
+MAX_ITER = 81
 ETA = 3
 
-PROBLEM = "sim-branin"
-# METHOD = "sim(hb+tpe+transfer+all)"
-METHOD = "sim(tpe)"
+PROBLEM = "sim-rastrigin"
+METHOD = "sim(hb+tpe+transfer+same)"
 MIN_OR_MAX = "min"
 
 N_SIMULATIONS = 7000
-INIT_NOISE = 0
+INIT_NOISE = 10
 
 PLOT_EACH = False
 
@@ -38,21 +37,14 @@ families_of_shapes_egg = (
     ShapeFamily(None, 0.2, 4, 7, True, 0, 1000),  # non aggressive start, aggressive end
 )
 families_of_shapes_general = (
-    # ShapeFamily(None, 1.5, 10, 15, False),  # with aggressive start
-    # ShapeFamily(None, 0.5, 7, 10, False),  # with average aggressiveness at start and at the beginning
-    # ShapeFamily(None, 0.2, 4, 7, True),  # non aggressive start, aggressive end
+    ShapeFamily(None, 1.5, 10, 15, False),  # with aggressive start
+    ShapeFamily(None, 0.5, 7, 10, False),  # with average aggressiveness at start and at the beginning
+    ShapeFamily(None, 0.2, 4, 7, True),  # non aggressive start, aggressive end
+    ShapeFamily(None, 1.5, 10, 15, False, 200, 400),  # with aggressive start
+    ShapeFamily(None, 0.5, 7, 10, False, 200, 400),  # with average aggressiveness at start and at the beginning
+    ShapeFamily(None, 0.2, 4, 7, True, 200, 400),  # non aggressive start, aggressive end
 
-    ShapeFamily(None, 0, 1, 0, False, 0, 0),  # flat
-
-    # ShapeFamily(None, 1.5, 10, 15, False, 0, 200),  # with aggressive start
-    # ShapeFamily(None, 0.5, 7, 10, False, 0, 200),  # with average aggressiveness at start and at the beginning
-    # ShapeFamily(None, 0.2, 4, 7, True, 0, 200),  # non aggressive start, aggressive end
-    # ShapeFamily(None, 1.5, 10, 15, False, 150, 350),
-    # ShapeFamily(None, 0.5, 7, 10, False, 150, 350),
-    # ShapeFamily(None, 0.2, 4, 7, True, 150, 350),
-    # ShapeFamily(None, 1.5, 10, 15, False, 250, 450),
-    # ShapeFamily(None, 0.5, 7, 10, False, 250, 450),
-    # ShapeFamily(None, 0.2, 4, 7, True, 250, 450),
+    # ShapeFamily(None, 0, 1, 0, False, 0, 0),  # flat
 )
 
 SCHEDULING = "uniform"
