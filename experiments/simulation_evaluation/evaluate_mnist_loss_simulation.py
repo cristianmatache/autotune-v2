@@ -14,7 +14,7 @@ PROBLEM = "mnist"
 METHOD = "random"
 IS_SIMULATION = True
 IS_OVERALL_PROFILE = False
-UNDERLYING_OPT_FUNCTION = 'branin'
+UNDERLYING_OPT_FUNCTION = 'rastrigin'
 
 
 FILE_PATH = join_path(OUTPUT_DIR, f"results-{PROBLEM}-{METHOD}.pkl")
@@ -40,6 +40,9 @@ if __name__ == "__main__":
             ShapeFamily(None, 1.5, 10, 15, False),  # with aggressive start
             ShapeFamily(None, 0.5, 7, 10, False),  # with average aggressiveness at start and at the beginning
             ShapeFamily(None, 0.2, 4, 7, True),  # non aggressive start, aggressive end
+            ShapeFamily(None, 1.5, 10, 15, False, 200, 400),  # with aggressive start
+            ShapeFamily(None, 0.5, 7, 10, False, 200, 400),  # with average aggressiveness at start and at the beginning
+            ShapeFamily(None, 0.2, 4, 7, True, 200, 400),  # non aggressive start, aggressive end
 
             # ShapeFamily(None, 7, 2, 0.05, True, 750, 830),    # steep_start_early_flat - blue
             # ShapeFamily(None, 6, 5, 0, True, 400, 710),    # steep_start_late_flat - yellow
@@ -52,7 +55,7 @@ if __name__ == "__main__":
         )
 
         max_res = 81
-        init_noise = 5
+        init_noise = 10
 
         if IS_OVERALL_PROFILE:
             simulated_loss_functions = plot_simulated(func_name=UNDERLYING_OPT_FUNCTION,

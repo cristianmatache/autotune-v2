@@ -33,7 +33,7 @@ class MnistEvaluator(TorchEvaluator):
         :return: optimisation goals - metrics in terms of which we can perform optimisation
                  Eg. validation error, test error
         """
-        self.n_resources += n_resources
+        self.n_resources = n_resources
         arm = self.arm
 
         # Load model and optimiser from file to resume training
