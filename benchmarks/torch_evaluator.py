@@ -7,7 +7,7 @@ from torch.autograd import Variable
 from torch import cuda
 from typing import Tuple, Optional
 
-from core import Evaluator, OptimisationGoals
+from core import Evaluator, OptimisationGoals, Arm
 from benchmarks.torch_model_builders import ModelBuilder
 from datasets.image_dataset_loaders import ImageDatasetLoader
 
@@ -45,10 +45,10 @@ class TorchEvaluator(Evaluator):
         }, self.file_path)
         if os.path.exists(self.loss_progress_file):
             with open(self.loss_progress_file, "rb") as f:
-                assert self.loss_history == pickle.load(f)
+                assert self.loss_history == pickle.load(f)[0]
         self.loss_history.append(val_error)
         with open(self.loss_progress_file, "wb+") as f:
-            pickle.dump(self.loss_history, f)
+            pickle.dump((self.loss_history, self.arm), f)
 
     def _resume_from_checkpoint(self) -> int:
         """ Load model and optimiser from file to resume training
