@@ -85,8 +85,8 @@ class KnownFnProblem(HyperparameterOptimisationProblem, SimulationProblem):
 
 
 if __name__ == "__main__":
-    from benchmarks.branin_problem import BraninProblem
-    branin_problem = BraninProblem()
+    from benchmarks import OptFunctionProblem
+    branin_problem = OptFunctionProblem('branin')
     known_fns: Dict[Arm, List[float]] = {}
     for _ in range(10):
         evaluator = branin_problem.get_evaluator()

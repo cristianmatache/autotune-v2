@@ -12,7 +12,7 @@ from optimisers import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOp
 
 # Problems
 from core import HyperparameterOptimisationProblem, OptimisationGoals
-from benchmarks import MnistProblem, CifarProblem, SvhnProblem, MrbiProblem, BraninProblem
+from benchmarks import MnistProblem, CifarProblem, SvhnProblem, MrbiProblem, OptFunctionProblem
 
 # Set random seeds
 import random
@@ -38,7 +38,7 @@ def optimisation_func(opt_goals: OptimisationGoals) -> float:
     return opt_goals.validation_error
 
 
-def optimisation_func_branin(opt_goals: OptimisationGoals) -> float:
+def optimisation_func_opt_function(opt_goals: OptimisationGoals) -> float:
     """fval"""
     return opt_goals.fval
 
@@ -79,9 +79,9 @@ def get_problem(arguments: Namespace) -> HyperparameterOptimisationProblem:
         problem_instance = SvhnProblem(arguments.input_dir, arguments.output_dir)
     elif problem_name == "mrbi":
         problem_instance = MrbiProblem(arguments.input_dir, arguments.output_dir)
-    elif problem_name == "branin":
-        problem_instance = BraninProblem()
-        optimisation_func = optimisation_func_branin
+    elif problem_name in ("rastrigin", "wave", "rastrigin", "egg", "camel"):
+        problem_instance = OptFunctionProblem(problem_name)
+        optimisation_func = optimisation_func_opt_function
     else:
         raise ValueError(f"Supplied problem {problem_name} does not exist")
     problem_instance.print_domain()
