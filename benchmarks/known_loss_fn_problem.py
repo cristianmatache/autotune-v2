@@ -58,7 +58,8 @@ class KnownFnEvaluator(SimulationEvaluator):
             plt.xlabel("time/epoch/resources")
             plt.ylabel("error/loss")
 
-        return OptimisationGoals(fval=self.known_fs[min_sq_error_arm][time-1], test_error=-1, validation_error=-1)
+        return OptimisationGoals(fval=self.known_fs[min_sq_error_arm][time-1], test_error=-1, validation_error=-1,
+                                 fvals=self.known_fs[min_sq_error_arm])
 
 
 class KnownFnProblem(HyperparameterOptimisationProblem, SimulationProblem):

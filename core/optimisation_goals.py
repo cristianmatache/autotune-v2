@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, List, Union
 from types import SimpleNamespace
 
 from util.frozen_class import frozen_class
@@ -13,7 +13,7 @@ class OptimisationGoals(SimpleNamespace):
     an optimization function (optimisation_func).
     """
 
-    def __init__(self, **kwargs: float):
+    def __init__(self, **kwargs: Union[float, List[float]]):
         """
         :param validation_error: error on validation set
         :param test_error: error on test set

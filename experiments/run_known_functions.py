@@ -86,11 +86,11 @@ def get_real_problem(arguments: Namespace) -> HyperparameterOptimisationProblem:
     return problem_instance
 
 
-def get_known_functions(arguments: Namespace) -> Dict[Arm, List[float]]:
+def get_known_functions(arguments: Namespace, known_functions_dir: str = KNOWN_FUNCTIONS_DIR) -> Dict[Arm, List[float]]:
     problem_name = arguments.problem.lower()
     if problem_name == "cifar":
         arm_to_loss_function = {}
-        files = [join_path(KNOWN_FUNCTIONS_DIR, "cifar", f"best_loss_functions-{n}.pkl") for n in range(1, 2)]
+        files = [join_path(known_functions_dir, "cifar", f"best_loss_functions-{n}.pkl") for n in range(1, 2)]
         for file in files:
             with open(file, "rb") as f_:
                 data = pickle.load(f_)
@@ -102,9 +102,9 @@ def get_known_functions(arguments: Namespace) -> Dict[Arm, List[float]]:
         return arm_to_loss_function
     elif problem_name == "mnist":
         all_evaluators = []
-        files = [join_path(KNOWN_FUNCTIONS_DIR, "mnist", f"results-{PROBLEM}-random-{n}.pkl")
+        files = [join_path(known_functions_dir, "mnist", f"results-{PROBLEM}-random-{n}.pkl")
                  for n in (10, 20, 15, 19, 1, 100, 30)] + \
-                [join_path(KNOWN_FUNCTIONS_DIR, "mnist", f"results-{PROBLEM}-tpe-{n}.pkl") for n in (30, 200)]
+                [join_path(known_functions_dir, "mnist", f"results-{PROBLEM}-tpe-{n}.pkl") for n in (30, 200)]
         for file in files:
             with open(file, "rb") as f_:
                 _, eval_history, checkpoints = pickle.load(f_)
