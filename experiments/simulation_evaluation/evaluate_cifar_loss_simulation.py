@@ -3,7 +3,7 @@ import pickle
 from os.path import join as join_path
 
 from experiments.run_experiment import OUTPUT_DIR
-from core import Arm, ShapeFamily
+from core import ShapeFamily
 from experiments.simulation_evaluation.profiles import plot_profiles, plot_simulated, get_suplots_axes_layout
 
 

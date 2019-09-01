@@ -14,7 +14,8 @@ from optimisers import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOp
 
 # Problems
 from core import HyperparameterOptimisationProblem, OptimisationGoals
-from benchmarks import MnistProblem, CifarProblem, SvhnProblem, MrbiProblem, OptFunctionProblem, KnownFnProblem
+from benchmarks import MnistProblem, CifarProblem, SvhnProblem, MrbiProblem, OptFunctionProblem, KnownFnProblem, \
+    AVAILABLE_OPT_FUNCTIONS
 
 from util import flatten
 
@@ -76,7 +77,7 @@ def get_real_problem(arguments: Namespace) -> HyperparameterOptimisationProblem:
         problem_instance = SvhnProblem(arguments.input_dir, arguments.output_dir)
     elif problem_name == "mrbi":
         problem_instance = MrbiProblem(arguments.input_dir, arguments.output_dir)
-    elif problem_name in ("rastrigin", "wave", "rastrigin", "egg", "camel"):
+    elif problem_name in AVAILABLE_OPT_FUNCTIONS:
         problem_instance = OptFunctionProblem(problem_name)
         optimisation_func = optimisation_func_opt_function
     else:
@@ -113,8 +114,8 @@ def get_known_functions(arguments: Namespace) -> Dict[Arm, List[float]]:
         return {}
     elif problem_name == "mrbi":
         return {}
-    elif problem_name == "branin":
-        branin_problem = BraninProblem()
+    elif problem_name in AVAILABLE_OPT_FUNCTIONS:
+        branin_problem = OptFunctionProblem(problem_name)
         known_fs: Dict[Arm, List[float]] = {}
         for _ in range(1000):
             evaluator = branin_problem.get_evaluator()

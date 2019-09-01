@@ -8,6 +8,8 @@ from core import HyperparameterOptimisationProblem, Evaluator, Arm, Optimisation
 from core.params import *
 from util.io import print_evaluation
 
+AVAILABLE_OPT_FUNCTIONS = ("rastrigin", "wave", "branin", "egg", "camel")
+
 HYPERPARAMS_DOMAIN_EGGHOLDER = Domain(
     x=Param('x', -512, 512, distrib='uniform', scale='linear'),
     y=Param('y', -512, 512, distrib='uniform', scale='linear'))
