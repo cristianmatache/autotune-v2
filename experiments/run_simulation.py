@@ -80,7 +80,8 @@ def _get_args() -> Namespace:
 
 def get_problem(arguments: Namespace) -> HyperparameterOptimisationProblem:
     problem_name = arguments.problem.lower()
-    problem_instance = OptFunctionSimulationProblem(func_name={
+    problem_instance = OptFunctionSimulationProblem(
+        func_name={
             'sim-branin': 'branin',
             'sim-egg': 'egg',
             'sim-camel': 'camel',

@@ -4,8 +4,7 @@ from typing import Any, Tuple, Optional, Union
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-from core import HyperparameterOptimisationProblem, Evaluator, Arm, OptimisationGoals, ModelBuilder, Domain
-from core.params import *
+from core import HyperparameterOptimisationProblem, Evaluator, Arm, OptimisationGoals, ModelBuilder, Domain, Param
 from util.io import print_evaluation
 
 AVAILABLE_OPT_FUNCTIONS = ("rastrigin", "wave", "branin", "egg", "camel")

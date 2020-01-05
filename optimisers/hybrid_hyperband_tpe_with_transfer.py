@@ -207,5 +207,5 @@ class HybridHyperbandTpeTransferThresholdOptimiser(HybridHyperbandTpeWithTransfe
         self.n_res_transfer_threshold = n_res_transfer_threshold
 
     def _is_transferable(self, evaluator_n_evaluated_resources: int, bracket_n_resources: int) -> bool:
-        return evaluator_n_evaluated_resources >= self.n_res_transfer_threshold \
-               and evaluator_n_evaluated_resources >= bracket_n_resources  # Otherwise history would not be comparable
+        return (evaluator_n_evaluated_resources >= self.n_res_transfer_threshold and
+                evaluator_n_evaluated_resources >= bracket_n_resources)  # Otherwise history would not be comparable

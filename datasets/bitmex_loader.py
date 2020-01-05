@@ -29,13 +29,13 @@ class BitmexLoader(DatasetLoader):
         self.q('''
         if[not `trades in tables[];
             system "l D:/datasets/q-datasets/Bitcoin2/Bitcoin2/bitmexDb/bitmexDb"];
-        
+
         pivot:{[t]
             u:`$string asc distinct last f:flip key t;
             pf:{x#(`$string y)!z};
             p:?[t;();g!g:-1_ k;(pf;`u;last k:key f;last key flip value t)];
             p};
-            
+
         dates: exec distinct date from (select distinct date from trades) where date >= 2018.01.01;
         holdoutRatio: `train`validation`test!0.6 0.2 0.2;
         ''')

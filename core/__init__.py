@@ -10,3 +10,12 @@ from core.optimiser import Optimiser, optimisation_metric_user
 from core.shape_family_scheduler import ShapeFamilyScheduler, RoundRobinShapeFamilyScheduler, ShapeFamily, \
     EvaluatorParams, UniformShapeFamilyScheduler
 from core.simulation_evaluator import SimulationEvaluator
+
+__all__ = [
+    'HyperparameterOptimisationProblem', 'SimulationProblem',
+    'Param', 'PairParam', 'CategoricalParam',
+    'Arm', 'Domain',
+    'ModelBuilder', 'Evaluator', 'OptimisationGoals', 'Evaluation',
+    'Optimiser', 'optimisation_metric_user', 'ShapeFamilyScheduler', 'RoundRobinShapeFamilyScheduler', 'ShapeFamily',
+    'EvaluatorParams', 'UniformShapeFamilyScheduler', 'SimulationEvaluator'
+]

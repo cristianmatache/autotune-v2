@@ -7,7 +7,7 @@ from torch.autograd import Variable
 from torch import cuda
 from typing import Tuple, Optional
 
-from core import Evaluator, OptimisationGoals, Arm
+from core import Evaluator, OptimisationGoals
 from benchmarks.torch_model_builders import ModelBuilder
 from datasets.image_dataset_loaders import ImageDatasetLoader
 

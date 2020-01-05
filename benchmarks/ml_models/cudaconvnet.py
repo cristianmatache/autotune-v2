@@ -40,13 +40,13 @@ class LRN(nn.Module):
         super(LRN, self).__init__()
         self.ACROSS_CHANNELS = ACROSS_CHANNELS
         if ACROSS_CHANNELS:
-            self.average=nn.AvgPool3d(kernel_size=(local_size, 1, 1),
-                    stride=1,
-                    padding=(int((local_size-1.0)/2), 0, 0))
+            self.average = nn.AvgPool3d(kernel_size=(local_size, 1, 1),
+                                        stride=1,
+                                        padding=(int((local_size-1.0)/2), 0, 0))
         else:
-            self.average=nn.AvgPool2d(kernel_size=local_size,
-                    stride=1,
-                    padding=int((local_size-1.0)/2))
+            self.average = nn.AvgPool2d(kernel_size=local_size,
+                                        stride=1,
+                                        padding=int((local_size-1.0)/2))
         self.alpha = alpha
         self.beta = beta
 

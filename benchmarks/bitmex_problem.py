@@ -4,8 +4,7 @@ from statsmodels.tsa.ar_model import AR
 import numpy as np
 import matplotlib.pyplot as plt
 
-from core import HyperparameterOptimisationProblem, Evaluator, Arm, OptimisationGoals, ModelBuilder, Domain
-from core.params import *
+from core import HyperparameterOptimisationProblem, Evaluator, Arm, OptimisationGoals, ModelBuilder, Domain, Param
 from util.io import print_evaluation
 
 from datasets.bitmex_loader import BitmexLoader
@@ -128,5 +127,3 @@ if __name__ == "__main__":
     bitmex_evaluator = BitmexProblem().get_evaluator()
     bitmex_evaluator.evaluate(0)
     plt.show()
-
-

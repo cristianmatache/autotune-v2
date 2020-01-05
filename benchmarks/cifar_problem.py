@@ -1,8 +1,7 @@
 import numpy as np
 from typing import Tuple, Type, Optional
 
-from core import HyperparameterOptimisationProblem, Arm, OptimisationGoals, Domain
-from core.params import *
+from core import HyperparameterOptimisationProblem, Arm, OptimisationGoals, Domain, Param
 
 from datasets.image_dataset_loaders import CIFARLoader, ImageDatasetLoader
 from benchmarks.torch_evaluator import TorchEvaluator

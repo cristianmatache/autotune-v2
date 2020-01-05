@@ -2,8 +2,6 @@ from typing import Callable, Tuple
 from colorama import Fore, Style
 
 from core import OptimisationGoals, Evaluator
-from util.progress_bar import progress_bar
-
 
 EVALUATE_METHOD_TYPE = Callable[[Evaluator, int], OptimisationGoals]
 
@@ -39,13 +37,3 @@ def _print_accuracy(train_val_or_test: str, correct: int, total: int) -> None:
     accuracy = 100. * correct / total
     padding = ' ' * (len("validation") - len(train_val_or_test))
     print(f"{train_val_or_test} accuracy:{padding} {accuracy:.3f}% ({correct}/{total})")
-
-
-def _display_progress_bar(batch_idx: int, len_data_loader: int, correct: int, total: int, total_loss: int,
-                          disp_interval: int, train_val_or_test: str = None) -> None:
-    if train_val_or_test not in ["Train", "Validation", "Test", None]:
-        raise ValueError('train_val_or_test must be "Train", "Validation" or "Test"')
-
-    if batch_idx % disp_interval == 0 or batch_idx == len_data_loader:
-        progress_bar(batch_idx, len_data_loader, f'Loss: %.3f | {train_val_or_test} Acc: %.3f%% (%d/%d)'
-                     % (total_loss / batch_idx, 100. * correct / total, correct, total))

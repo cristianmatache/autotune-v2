@@ -49,7 +49,7 @@ def plot_epdf_ofe(data_: Tuple[List[float], ...], labels_: List[str],
         plt.show()
 
 
-def plot_histograms(data: Tuple[List[float], ...], labels: List[str], bins: List[float], 
+def plot_histograms(data: Tuple[List[float], ...], labels: List[str], bins: List[float],
                     *, font_size: int = 10) -> None:
     plt.hist(data, bins=bins, label=labels, cumulative=False, stacked=False, histtype='bar', density=True)
     plt.legend(prop={'size': font_size})

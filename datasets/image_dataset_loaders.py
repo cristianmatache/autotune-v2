@@ -85,11 +85,11 @@ class CIFARLoader(ImageDatasetLoader):
 
 class MNISTLoader(ImageDatasetLoader):
 
-    def __init__(self, data_dir,  mean_normalize=(0.1307,), std_normalize=(0.3081,)):
+    def __init__(self, data_dir, mean_normalize=(0.1307,), std_normalize=(0.3081,)):
         super().__init__(data_dir, mean_normalize, std_normalize)
 
     def _split_dataset(self):
-        from filelock import Timeout, FileLock
+        from filelock import FileLock
         from os.path import join as join_path
         lock = FileLock(join_path(self.data_dir, "download.lock"))
         with lock:

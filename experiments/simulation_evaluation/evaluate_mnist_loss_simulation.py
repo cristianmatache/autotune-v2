@@ -4,7 +4,7 @@ from typing import List
 from os.path import join as join_path
 
 from experiments.run_experiment import OUTPUT_DIR
-from core import Arm,  ShapeFamily
+from core import Arm, ShapeFamily
 from experiments.simulation_evaluation.profiles import plot_profiles, plot_simulated, get_suplots_axes_layout
 from util import flatten
 
@@ -97,7 +97,7 @@ if __name__ == "__main__":
         interval_len = 1 / (1 + len(families_indices))
         for i, fam in enumerate(families_indices):
             loss_functions_per_family = [all_evaluators[i].loss_history[1:] for i in fam]
-            plot_profiles(loss_functions_per_family,  ax1, ax2, ax4, interval_len * (i + 1), 10)
+            plot_profiles(loss_functions_per_family, ax1, ax2, ax4, interval_len * (i + 1), 10)
 
         labelled_indices = (steep_start_late_flat + steep_start_early_flat + low_steep_medium_late +
                             flat_slight_incline + medium_steep + jumpy_flat)

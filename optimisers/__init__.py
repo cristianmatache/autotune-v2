@@ -7,3 +7,12 @@ from optimisers.tpe_optimiser import TpeOptimiser
 from optimisers.hybrid_hyperband_tpe_with_transfer import HybridHyperbandTpeTransferAllOptimiser, \
     HybridHyperbandTpeTransferLongestOptimiser, HybridHyperbandTpeTransferThresholdOptimiser, \
     HybridHyperbandTpeNoTransferOptimiser, HybridHyperbandTpeTransferSameOptimiser
+
+__all__ = [
+    'HybridHyperbandTpeOptimiser', 'HybridHyperbandSigoptOptimiser', 'HyperbandOptimiser', 'RandomOptimiser',
+    'SigOptimiser', 'TpeOptimiser',
+
+    'HybridHyperbandTpeTransferAllOptimiser', 'HybridHyperbandTpeTransferLongestOptimiser',
+    'HybridHyperbandTpeTransferThresholdOptimiser', 'HybridHyperbandTpeNoTransferOptimiser',
+    'HybridHyperbandTpeTransferSameOptimiser'
+]
