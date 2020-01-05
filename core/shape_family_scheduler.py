@@ -3,7 +3,7 @@ from typing import Optional, Tuple, NamedTuple
 from abc import abstractmethod
 import random
 
-from core.arm import Arm
+from core import Arm
 
 
 class ShapeFamily(NamedTuple):
