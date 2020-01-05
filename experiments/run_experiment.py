@@ -19,8 +19,8 @@ import random
 import torch
 
 
-INPUT_DIR = "D:/datasets/"
-OUTPUT_DIR = "D:/datasets/output"
+INPUT_DIR = "D:/workspace/python/datasets/"
+OUTPUT_DIR = "D:/workspace/python/datasets/output"
 
 N_RESOURCES = 81
 MAX_TIME = None
