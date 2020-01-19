@@ -142,7 +142,7 @@ if __name__ == "__main__":
     args_ = _get_args()
     optimisation_id_ = str(pd.Timestamp.utcnow()).\
         replace(':', '-').replace(' ', '-').replace('.', '-').replace('+', '-')
-    output_dir_ = f'{args_.output_dir}/{args_.problem.lower()}/optimisation-{optimisation_id_}'
+    output_dir_ = f'{args_.output_dir}/{args_.problem.lower()}/seed-{args_.seed}/optimisation-{optimisation_id_}'
 
     # FIXME move framework specifics under corresponding problems
     random.seed(args_.seed)
