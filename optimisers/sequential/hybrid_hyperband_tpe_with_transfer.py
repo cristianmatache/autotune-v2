@@ -11,8 +11,8 @@ import mpmath
 from core import HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, Optimiser, ShapeFamilyScheduler, \
     optimisation_metric_user, Arm, Evaluator
 
-from optimisers.hyperband_optimiser import HyperbandOptimiser
-from optimisers.tpe_optimiser import TpeOptimiser
+from optimisers.sequential.hyperband_optimiser import HyperbandOptimiser
+from optimisers.sequential.tpe_optimiser import TpeOptimiser
 
 COL = Fore.MAGENTA
 END = Style.RESET_ALL

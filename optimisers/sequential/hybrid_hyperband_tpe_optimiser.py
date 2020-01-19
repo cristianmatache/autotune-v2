@@ -6,8 +6,8 @@ import mpmath
 from core import HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, Optimiser, ShapeFamilyScheduler, \
     optimisation_metric_user
 
-from optimisers.hyperband_optimiser import HyperbandOptimiser
-from optimisers.sigopt_optimiser import SigOptimiser
+from optimisers.sequential.hyperband_optimiser import HyperbandOptimiser
+from optimisers.sequential.tpe_optimiser import TpeOptimiser
 
 COL = Fore.MAGENTA
 END = Style.RESET_ALL
@@ -15,11 +15,10 @@ END = Style.RESET_ALL
 mpmath.mp.dps = 64
 
 
-class HybridHyperbandSigoptOptimiser(HyperbandOptimiser):
+class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
 
     """
-    Hybrid method Hyperband-SigOpt
-    TODO: print iteration number consecutively (now SigOpt starts from 0 and Hybrid also from 0)
+    Hybrid method Hyperband-TPE adapted from https://arxiv.org/pdf/1801.01596.pdf
     """
 
     def __init__(self, eta: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
@@ -66,19 +65,18 @@ class HybridHyperbandSigoptOptimiser(HyperbandOptimiser):
                 n_i = n*eta**(-i)  # evaluate n_i evaluators/configurations/arms
                 r_i = r*eta**i     # each with r_i resources
 
-                if i == 0:  # Generate first n_i arms/evaluators with SigOpt
-                    sig_optimiser = SigOptimiser(n_resources=r_i, max_iter=n_i,
+                if i == 0:  # Generate first n_i arms/evaluators with TPE
+                    tpe_optimiser = TpeOptimiser(n_resources=r_i, max_iter=n_i,
                                                  optimisation_func=self.optimisation_func, min_or_max=self.min_or_max,
                                                  is_simulation=self.is_simulation, scheduler=self.scheduler,
                                                  plot_simulation=self.plot_simulation)
-                    sig_optimiser.run_optimisation(problem, verbosity=True)
-                    self.num_iterations += sig_optimiser.num_iterations
+                    tpe_optimiser.run_optimisation(problem, verbosity=True)
 
-                    # evaluators = [h.evaluator for h in sig_optimiser.eval_history]
-                    evaluations = [Evaluation(h.evaluator, h.optimisation_goals) for h in sig_optimiser.eval_history]
+                    # evaluators = [h.evaluator for h in tpe_optimiser.eval_history]
+                    evaluations = [Evaluation(h.evaluator, h.optimisation_goals) for h in tpe_optimiser.eval_history]
 
-                    print(f"{COL}\n{'=' * 73}\n>> Generated {n} evaluators and evaluated with SigOpt for {r_i} "
-                          f"resources\n --- Starting halving ---{END}")
+                    print(f"{COL}\n{'=' * 73}\n>> Generated {n} evaluators and evaluated with TPE for {r_i} resources\n"
+                          f"--- Starting halving ---{END}")
 
                 else:        # Continue with halving as in Hyperband
                     evaluations = [Evaluation(evaluator, evaluator.evaluate(n_resources=r_i))
