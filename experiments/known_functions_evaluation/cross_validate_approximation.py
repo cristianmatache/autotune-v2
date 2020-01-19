@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import numpy as np
 
-from experiments.run_known_functions import get_known_functions, get_real_problem
+from experiments.run_closest_loss_fn_approximation import get_known_functions, get_real_problem
 from benchmarks import KnownFnProblem
 from core import Arm, HyperparameterOptimisationProblem
 

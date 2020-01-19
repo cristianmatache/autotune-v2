@@ -72,18 +72,16 @@ def _get_args() -> Namespace:
     return arguments
 
 
-def get_problem(arguments: Namespace) -> HyperparameterOptimisationProblem:
-    problem_name = arguments.problem.lower()
-    optimisation_id = str(pd.Timestamp.utcnow()).replace(':', '-').replace(' ', '-').replace('.', '-').replace('+', '-')
-    output_dir = f'{arguments.output_dir}/{problem_name}/optimisation-{optimisation_id}'
+def get_problem(problem_name: str, input_dir: str, output_dir: str) -> HyperparameterOptimisationProblem:
+    problem_name = problem_name.lower()
     if problem_name == "cifar":
-        problem_instance = CifarProblem(arguments.input_dir, output_dir)
+        problem_instance = CifarProblem(input_dir, output_dir)
     elif problem_name == "mnist":
-        problem_instance = MnistProblem(arguments.input_dir, output_dir)
+        problem_instance = MnistProblem(input_dir, output_dir)
     elif problem_name == "svhn":
-        problem_instance = SvhnProblem(arguments.input_dir, output_dir)
+        problem_instance = SvhnProblem(input_dir, output_dir)
     elif problem_name == "mrbi":
-        problem_instance = MrbiProblem(arguments.input_dir, output_dir)
+        problem_instance = MrbiProblem(input_dir, output_dir)
     elif problem_name in AVAILABLE_OPT_FUNCTIONS:
         problem_instance = OptFunctionProblem(problem_name)
         optimisation_func = optimisation_func_opt_function
@@ -142,12 +140,15 @@ def get_parallel_optimiser(args: Namespace) -> Optimiser:
 
 if __name__ == "__main__":
     args_ = _get_args()
+    optimisation_id_ = str(pd.Timestamp.utcnow()).\
+        replace(':', '-').replace(' ', '-').replace('.', '-').replace('+', '-')
+    output_dir_ = f'{args_.output_dir}/{args_.problem.lower()}/optimisation-{optimisation_id_}'
 
     # FIXME move framework specifics under corresponding problems
     random.seed(args_.seed)
     torch.manual_seed(args_.seed)
 
-    problem = get_problem(args_)
+    problem = get_problem(args_.problem, args_.input_dir, output_dir_)
     optimiser = get_sequential_optimiser(args_) if not args_.is_parallel else get_parallel_optimiser(args_)
 
     os.makedirs(args_.input_dir, exist_ok=True)
@@ -160,6 +161,6 @@ if __name__ == "__main__":
           f"  - {optimisation_func.__doc__}: {optimisation_func(optimum_evaluation.optimisation_goals)}\n"
           f"Total time:\n  - {optimiser.checkpoints[-1]} seconds")
 
-    output_file_path = join_path(args_.output_dir, f"results-{args_.problem}-{args_.method}.pkl")
+    output_file_path = join_path(output_dir_, f"results-{args_.problem}-{args_.method}.pkl")
     with open(output_file_path, 'wb') as f:
         pickle.dump((optimum_evaluation, optimiser.eval_history, optimiser.checkpoints), f)
