@@ -5,6 +5,7 @@ import numpy as np
 import pickle
 from os.path import join as join_path
 from typing import Dict, List
+import pandas as pd
 
 # Optimisers
 from core import Optimiser, Arm
@@ -20,8 +21,8 @@ from benchmarks import MnistProblem, CifarProblem, SvhnProblem, MrbiProblem, Opt
 from util import flatten
 
 KNOWN_FUNCTIONS_DIR = "../../loss_functions/"
-INPUT_DIR = "D:/datasets/"
-OUTPUT_DIR = "D:/datasets/output"
+INPUT_DIR = "D:/workspace/python/datasets/"
+OUTPUT_DIR = "D:/workspace/python/datasets/output"
 
 N_RESOURCES = 18
 MAX_TIME = None
@@ -69,14 +70,16 @@ def _get_args() -> Namespace:
 
 def get_real_problem(arguments: Namespace) -> HyperparameterOptimisationProblem:
     problem_name = arguments.problem.lower()
+    optimisation_id = str(pd.Timestamp.utcnow()).replace(':', '-').replace(' ', '-').replace('.', '-').replace('+', '-')
+    output_dir = f'{arguments.output_dir}/{problem_name}/{optimisation_id}'
     if problem_name == "cifar":
-        problem_instance = CifarProblem(arguments.input_dir, arguments.output_dir, dataset_loader=None)
+        problem_instance = CifarProblem(arguments.input_dir, output_dir, dataset_loader=None)
     elif problem_name == "mnist":
-        problem_instance = MnistProblem(arguments.input_dir, arguments.output_dir)
+        problem_instance = MnistProblem(arguments.input_dir, output_dir)
     elif problem_name == "svhn":
-        problem_instance = SvhnProblem(arguments.input_dir, arguments.output_dir)
+        problem_instance = SvhnProblem(arguments.input_dir, output_dir)
     elif problem_name == "mrbi":
-        problem_instance = MrbiProblem(arguments.input_dir, arguments.output_dir)
+        problem_instance = MrbiProblem(arguments.input_dir, output_dir)
     elif problem_name in AVAILABLE_OPT_FUNCTIONS:
         problem_instance = OptFunctionProblem(problem_name)
         optimisation_func = optimisation_func_opt_function

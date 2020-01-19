@@ -3,6 +3,7 @@ import argparse
 from argparse import Namespace
 import os
 from os.path import join as join_path
+import pandas as pd
 
 # Optimisers
 from core import Optimiser
@@ -28,7 +29,7 @@ MAX_ITER = 27
 ETA = 3
 
 PROBLEM = "mnist"
-METHOD = "hb+tpe+transfer+surv"
+METHOD = "hyperband"
 MIN_OR_MAX = "min"
 RANDOM_SEED = 70
 
@@ -71,14 +72,16 @@ def _get_args() -> Namespace:
 
 def get_problem(arguments: Namespace) -> HyperparameterOptimisationProblem:
     problem_name = arguments.problem.lower()
+    optimisation_id = str(pd.Timestamp.utcnow()).replace(':', '-').replace(' ', '-').replace('.', '-').replace('+', '-')
+    output_dir = f'{arguments.output_dir}/{problem_name}/optimisation-{optimisation_id}'
     if problem_name == "cifar":
-        problem_instance = CifarProblem(arguments.input_dir, arguments.output_dir)
+        problem_instance = CifarProblem(arguments.input_dir, output_dir)
     elif problem_name == "mnist":
-        problem_instance = MnistProblem(arguments.input_dir, arguments.output_dir)
+        problem_instance = MnistProblem(arguments.input_dir, output_dir)
     elif problem_name == "svhn":
-        problem_instance = SvhnProblem(arguments.input_dir, arguments.output_dir)
+        problem_instance = SvhnProblem(arguments.input_dir, output_dir)
     elif problem_name == "mrbi":
-        problem_instance = MrbiProblem(arguments.input_dir, arguments.output_dir)
+        problem_instance = MrbiProblem(arguments.input_dir, output_dir)
     elif problem_name in AVAILABLE_OPT_FUNCTIONS:
         problem_instance = OptFunctionProblem(problem_name)
         optimisation_func = optimisation_func_opt_function

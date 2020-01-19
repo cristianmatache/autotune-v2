@@ -1,7 +1,9 @@
 import os
 from os.path import join as join_path
 from abc import abstractmethod
-from typing import Any, Tuple, Optional, List
+from typing import Any, Tuple, Optional, List, Union
+from pathlib import Path
+import pandas as pd
 
 
 from core.model_builder import ModelBuilder
@@ -31,7 +33,8 @@ class Evaluator:
     __slots__ = ("model_builder", "output_dir", "file_name", "directory", "file_path", "arm", "n_resources",
                  "loss_progress_file", "loss_history")
 
-    def __init__(self, model_builder: ModelBuilder, output_dir: Optional[str] = None, file_name: str = "model.pth"):
+    def __init__(self, model_builder: ModelBuilder,
+                 output_dir: Optional[Union[str, Path]] = None, file_name: str = "model.pth"):
         """
         :param model_builder: builder of a machine learning model based on an arm
         :param output_dir: directory where to save the arms and their progress so far (as checkpoints)
@@ -39,9 +42,8 @@ class Evaluator:
         """
         self.output_dir = output_dir
         if self.output_dir is not None:
-            subdirectories = next(os.walk(output_dir))[1]
-            last_arm_number = len(subdirectories)
-            self.directory: str = ensure_dir(join_path(output_dir, f"arm{last_arm_number + 1}"))
+            arm_id = str(pd.Timestamp.utcnow()).replace(':', '-').replace(' ', '-').replace('.', '-').replace('+', '-')
+            self.directory: str = ensure_dir(join_path(output_dir, f'arm-{arm_id}'))
             self.file_path: str = join_path(self.directory, file_name)
             self.loss_progress_file: str = join_path(self.directory, f"loss_progress.{file_name}")
 

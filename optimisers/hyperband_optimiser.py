@@ -2,6 +2,7 @@ from math import ceil
 from typing import Callable, List, Optional
 from colorama import Style, Fore
 import mpmath
+import pandas as pd
 
 from core import Optimiser, Evaluation, Evaluator, HyperparameterOptimisationProblem, OptimisationGoals, \
     ShapeFamilyScheduler, optimisation_metric_user, SimulationProblem
@@ -75,6 +76,7 @@ class HyperbandOptimiser(Optimiser):
 
             if not self.is_simulation:
                 evaluators = [problem.get_evaluator() for _ in range(n)]
+                self._bracket_population_of_arms_to_csv(evaluators)
             else:  # is simulation
                 problem: SimulationProblem
                 evaluators = [problem.get_evaluator(*self.scheduler.get_family() if self.scheduler else (),
@@ -101,6 +103,9 @@ class HyperbandOptimiser(Optimiser):
                     self._print_evaluation(self.optimisation_func(best_evaluation_in_round.optimisation_goals))
 
         return self._get_best_evaluation()
+
+    def _bracket_population_of_arms_to_csv(self, evaluators: List[Evaluator]) -> None:
+        print(pd.DataFrame(evaluator.arm.__dict__ for evaluator in evaluators).to_csv())
 
     def __str__(self) -> str:
         return f"\n> Starting Hyperband optimisation\n" \
