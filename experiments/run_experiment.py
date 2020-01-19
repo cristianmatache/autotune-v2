@@ -7,9 +7,12 @@ import pandas as pd
 
 # Optimisers
 from core import Optimiser
-from optimisers import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, TpeOptimiser, \
-    HybridHyperbandSigoptOptimiser, HybridHyperbandTpeTransferAllOptimiser, HybridHyperbandTpeNoTransferOptimiser, \
-    HybridHyperbandTpeTransferLongestOptimiser, HybridHyperbandTpeTransferSameOptimiser
+from optimisers.sequential import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, \
+    TpeOptimiser, HybridHyperbandSigoptOptimiser, HybridHyperbandTpeTransferAllOptimiser, \
+    HybridHyperbandTpeNoTransferOptimiser, HybridHyperbandTpeTransferLongestOptimiser, \
+    HybridHyperbandTpeTransferSameOptimiser
+from optimisers.parallel import ParallelHyperbandOptimiser
+
 
 # Problems
 from core import HyperparameterOptimisationProblem, OptimisationGoals
@@ -22,7 +25,7 @@ import torch
 
 INPUT_DIR = "D:/workspace/python/datasets/"
 OUTPUT_DIR = "D:/workspace/python/datasets/output"
-IS_PARALLEL = False
+IS_PARALLEL = True
 
 N_RESOURCES = 81
 MAX_TIME = None
@@ -132,8 +135,8 @@ def get_parallel_optimiser(args: Namespace) -> Optimiser:
     min_or_max = min if args.min_or_max == 'min' else max
 
     if method == "hyperband":
-        return HyperbandOptimiser(eta=args.eta, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
-                                  optimisation_func=optimisation_func)
+        return ParallelHyperbandOptimiser(eta=args.eta, max_iter=args.max_iter, max_time=args.max_time,
+                                          min_or_max=min_or_max, optimisation_func=optimisation_func)
     else:
         raise ValueError(f"Supplied problem {method} does not exist in PARALLEL mode")
 

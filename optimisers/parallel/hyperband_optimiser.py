@@ -3,6 +3,7 @@ from typing import Callable, List, Optional
 from colorama import Style, Fore
 import mpmath
 import pandas as pd
+from os.path import join as path_join
 
 from core import Optimiser, Evaluation, Evaluator, HyperparameterOptimisationProblem, OptimisationGoals, \
     ShapeFamilyScheduler, optimisation_metric_user, SimulationProblem
@@ -12,7 +13,7 @@ COL = Fore.MAGENTA
 mpmath.mp.dps = 64
 
 
-class HyperbandOptimiser(Optimiser):
+class ParallelHyperbandOptimiser(Optimiser):
 
     """ Examples of resources:
     1 Resource  = 10 000 training examples
@@ -76,7 +77,7 @@ class HyperbandOptimiser(Optimiser):
 
             if not self.is_simulation:
                 evaluators = [problem.get_evaluator() for _ in range(n)]
-                self._bracket_population_of_arms_to_csv(evaluators)
+                self._bracket_population_of_arms_to_csv(evaluators, n)
             else:  # is simulation
                 problem: SimulationProblem
                 evaluators = [problem.get_evaluator(*self.scheduler.get_family() if self.scheduler else (),
@@ -104,8 +105,11 @@ class HyperbandOptimiser(Optimiser):
 
         return self._get_best_evaluation()
 
-    def _bracket_population_of_arms_to_csv(self, evaluators: List[Evaluator]) -> None:
-        print(pd.DataFrame(evaluator.arm.__dict__ for evaluator in evaluators).to_csv())
+    @staticmethod
+    def _bracket_population_of_arms_to_csv(evaluators: List[Evaluator], n_arms: int) -> None:
+        if evaluators:
+            file_path = path_join(evaluators[0].output_dir, f'bracket-with-{n_arms}-arms.csv')
+            pd.DataFrame(evaluator.arm.__dict__ for evaluator in evaluators).to_csv(file_path)
 
     def __str__(self) -> str:
         return f"\n> Starting Hyperband optimisation\n" \
