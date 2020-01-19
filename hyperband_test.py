@@ -7,7 +7,7 @@ from core import Param, Arm, HyperparameterOptimisationProblem, OptimisationGoal
 from benchmarks.torch_model_builders import LogisticRegressionBuilder
 from util.io import print_evaluation
 
-from optimisers.hyperband_optimiser import HyperbandOptimiser
+from optimisers.sequential.hyperband_optimiser import HyperbandOptimiser
 
 ETA = 3
 MAX_ITER = 243
