@@ -1,3 +1,7 @@
+"""
+Note this experiment is sequential only since it is really fast and hence there is no need for parallelization.
+"""
+
 import argparse
 from argparse import Namespace
 import matplotlib.pyplot as plt
@@ -23,7 +27,6 @@ from util import flatten
 KNOWN_FUNCTIONS_DIR = "../../loss_functions/"
 INPUT_DIR = "D:/workspace/python/datasets/"
 OUTPUT_DIR = "D:/workspace/python/datasets/output"
-IS_PARALLEL = False
 
 N_RESOURCES = 18
 MAX_TIME = None
@@ -53,7 +56,6 @@ def _get_args() -> Namespace:
     parser = argparse.ArgumentParser(description='Running optimisations')
     parser.add_argument('-i', '--input-dir', default=INPUT_DIR, type=str, help='input dir')
     parser.add_argument('-o', '--output-dir', default=OUTPUT_DIR, type=str, help='output dir')
-    parser.add_argument('-pll', '--is-parallel', default=IS_PARALLEL, type=bool, help='run in parallel mode')
     parser.add_argument('-time', '--max-time', default=MAX_TIME, type=int, help='max time (stop if exceeded)')
     parser.add_argument('-iter', '--max-iter', default=MAX_ITER, type=int, help='max iterations (stop if exceeded')
     parser.add_argument('-p', '--problem', default=PROBLEM, type=str, help='problem (eg. cifar, mnist, svhn)')
@@ -173,19 +175,6 @@ def get_sequential_optimiser(args: Namespace) -> Optimiser:
         raise ValueError(f"Supplied problem {method} does not exist in SEQUENTIAL mode")
 
 
-def get_parallel_optimiser(args: Namespace) -> Optimiser:
-    method = args.method.lower()
-    min_or_max = min if args.min_or_max == 'min' else max
-
-    # SIMULATIONS
-    if method == "sim(hb)":
-        return HyperbandOptimiser(
-            eta=args.eta, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
-            optimisation_func=optimisation_func, is_simulation=True, plot_simulation=PLOT_EACH)
-    else:
-        raise ValueError(f"Supplied problem {method} does not exist in PARALLEL mode")
-
-
 if __name__ == "__main__":
     args_ = _get_args()
     optimums = []
@@ -198,7 +187,7 @@ if __name__ == "__main__":
         print("********iteration:", _, "avg so far:", np.mean(optimums))
         real_problem = get_real_problem(args_)
         problem = KnownFnProblem(known_fs=known_fns, real_problem=real_problem)
-        optimiser = get_sequential_optimiser(args_) if not args_.is_parallel else get_parallel_optimiser(args_)
+        optimiser = get_sequential_optimiser(args_)
         optimum_evaluation = optimiser.run_optimisation(problem, verbosity=True)
         print(f"Best hyperparams:\n{optimum_evaluation.evaluator.arm}\n"
               f"with:\n"
