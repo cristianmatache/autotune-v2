@@ -1,7 +1,7 @@
 import pickle
 import argparse
 
-from optimisers.hyperband_optimiser import HyperbandOptimiser
+from optimisers.sequential.hyperband_optimiser import HyperbandOptimiser
 from benchmarks.dltk_problem import DLTKProblem
 import os
 

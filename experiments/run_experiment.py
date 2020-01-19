@@ -22,6 +22,7 @@ import torch
 
 INPUT_DIR = "D:/workspace/python/datasets/"
 OUTPUT_DIR = "D:/workspace/python/datasets/output"
+IS_PARALLEL = False
 
 N_RESOURCES = 81
 MAX_TIME = None
@@ -48,6 +49,7 @@ def _get_args() -> Namespace:
     parser = argparse.ArgumentParser(description='Running optimisations')
     parser.add_argument('-i', '--input-dir', default=INPUT_DIR, type=str, help='input dir')
     parser.add_argument('-o', '--output-dir', default=OUTPUT_DIR, type=str, help='output dir')
+    parser.add_argument('-pll', '--is-parallel', default=IS_PARALLEL, type=bool, help='run in parallel mode')
     parser.add_argument('-time', '--max-time', default=MAX_TIME, type=int, help='max time (stop if exceeded)')
     parser.add_argument('-iter', '--max-iter', default=MAX_ITER, type=int, help='max iterations (stop if exceeded')
     parser.add_argument('-p', '--problem', default=PROBLEM, type=str, help='problem (eg. cifar, mnist, svhn)')
@@ -91,7 +93,7 @@ def get_problem(arguments: Namespace) -> HyperparameterOptimisationProblem:
     return problem_instance
 
 
-def get_optimiser() -> Optimiser:
+def get_sequential_optimiser(args: Namespace) -> Optimiser:
     method = args.method.lower()
     min_or_max = min if args.min_or_max == 'min' else max
 
@@ -124,21 +126,32 @@ def get_optimiser() -> Optimiser:
             eta=args.eta, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
             optimisation_func=optimisation_func)
     else:
-        raise ValueError(f"Supplied problem {method} does not exist")
+        raise ValueError(f"Supplied problem {method} does not exist in SEQUENTIAL mode")
+
+
+def get_parallel_optimiser(args: Namespace) -> Optimiser:
+    method = args.method.lower()
+    min_or_max = min if args.min_or_max == 'min' else max
+
+    if method == "hyperband":
+        return HyperbandOptimiser(eta=args.eta, max_iter=args.max_iter, max_time=args.max_time, min_or_max=min_or_max,
+                                  optimisation_func=optimisation_func)
+    else:
+        raise ValueError(f"Supplied problem {method} does not exist in PARALLEL mode")
 
 
 if __name__ == "__main__":
-    args = _get_args()
+    args_ = _get_args()
 
     # FIXME move framework specifics under corresponding problems
-    random.seed(args.seed)
-    torch.manual_seed(args.seed)
+    random.seed(args_.seed)
+    torch.manual_seed(args_.seed)
 
-    problem = get_problem(args)
-    optimiser = get_optimiser()
+    problem = get_problem(args_)
+    optimiser = get_sequential_optimiser(args_) if not args_.is_parallel else get_parallel_optimiser(args_)
 
-    os.makedirs(args.input_dir, exist_ok=True)
-    os.makedirs(args.output_dir, exist_ok=True)
+    os.makedirs(args_.input_dir, exist_ok=True)
+    os.makedirs(args_.output_dir, exist_ok=True)
 
     print(optimiser)
     optimum_evaluation = optimiser.run_optimisation(problem, verbosity=True)
@@ -147,6 +160,6 @@ if __name__ == "__main__":
           f"  - {optimisation_func.__doc__}: {optimisation_func(optimum_evaluation.optimisation_goals)}\n"
           f"Total time:\n  - {optimiser.checkpoints[-1]} seconds")
 
-    output_file_path = join_path(args.output_dir, f"results-{args.problem}-{args.method}.pkl")
+    output_file_path = join_path(args_.output_dir, f"results-{args_.problem}-{args_.method}.pkl")
     with open(output_file_path, 'wb') as f:
         pickle.dump((optimum_evaluation, optimiser.eval_history, optimiser.checkpoints), f)
