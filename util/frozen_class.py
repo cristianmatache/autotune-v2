@@ -1,7 +1,9 @@
-from typing import Any
+from typing import Any, Type, TypeVar
+
+T = TypeVar('T')
 
 
-def frozen_class(cls: object) -> object:
+def frozen_class(cls: Type[T]) -> Type[T]:
     """ Allows setting attributes in the decorated class only in __init__
     :param cls: class that needs to be frozen
     :return: frozen class
