@@ -12,5 +12,5 @@ def frozen_class(cls: Type[T]) -> Type[T]:
     def __setattr__(self, name: str, val: Any) -> None:
         raise AttributeError(f"{type(self).__name__} is frozen, so you are not allowed to set attributes. "
                              f"You attempted to set {name} to {val}")
-    cls.__setattr__ = __setattr__
+    cls.__setattr__ = __setattr__  # type: ignore
     return cls

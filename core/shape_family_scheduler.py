@@ -63,7 +63,7 @@ class RoundRobinShapeFamilyScheduler(ShapeFamilyScheduler):
         default_arm, *rest_family = shape_family
         arm = arm if arm is not None else default_arm
         self.index += 1
-        return EvaluatorParams(arm, *rest_family, self.max_resources, self.init_noise)
+        return EvaluatorParams(arm, *rest_family, self.max_resources, self.init_noise)  # type: ignore
 
 
 class UniformShapeFamilyScheduler(ShapeFamilyScheduler):
@@ -78,4 +78,4 @@ class UniformShapeFamilyScheduler(ShapeFamilyScheduler):
         """
         default_arm, *rest_family = random.choice(self.shape_families)
         arm = arm if arm is not None else default_arm
-        return EvaluatorParams(arm, *rest_family, self.max_resources, self.init_noise)
+        return EvaluatorParams(arm, *rest_family, self.max_resources, self.init_noise)  # type: ignore

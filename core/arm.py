@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Tuple
+from typing import Tuple, cast
 from types import SimpleNamespace
 
 from core.hyperparams_domain import Domain
@@ -83,4 +83,4 @@ class Arm(SimpleNamespace):
         """ Allow dictionary-like access to attributes. That is:
         instead of getattr(arm, hyperparam_name), one can use arm[hyperparam_name]
         """
-        return getattr(self, hyperparam_name)
+        return cast(float, getattr(self, hyperparam_name))

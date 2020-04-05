@@ -39,7 +39,7 @@ def get_aggressiveness_from_gamma_distrib(time: int, n: int, k: int) -> float:
     shape = alpha_t
     scale = 1 / beta_t
 
-    aggresiveness = np.random.gamma(shape, scale)
+    aggresiveness: float = np.random.gamma(shape, scale)
     # x = np.linspace(0, 20, 200)
     # y = stats.gamma.pdf(x, a=shape, scale=scale)
     # plt.plot(x, y, "y-", label=r'$\alpha=29, \beta=3$')

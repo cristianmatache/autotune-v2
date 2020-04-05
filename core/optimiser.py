@@ -1,6 +1,6 @@
 from abc import abstractmethod
 import numpy as np
-from typing import Callable, List, Optional
+from typing import Callable, List, Optional, cast
 import time
 from colorama import Fore, Style
 
@@ -21,7 +21,7 @@ class Optimiser:
     @staticmethod
     def default_optimisation_func(opt_goals: OptimisationGoals) -> float:
         """validation_error (Default optimisation_func)"""
-        return opt_goals.validation_error
+        return cast(float, opt_goals.validation_error)
 
     def __init__(self, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
                  optimisation_func: Callable[[OptimisationGoals], float] = default_optimisation_func,
@@ -40,8 +40,8 @@ class Optimiser:
         # stop conditions
         if (max_iter is None) and (max_time is None):
             raise ValueError("max_iter and max_time cannot be None simultaneously")
-        self.max_time = np.inf if max_time is None else max_time
-        self.max_iter = np.inf if max_iter is None else max_iter
+        self.max_time: float = np.inf if max_time is None else max_time
+        self.max_iter: float = np.inf if max_iter is None else max_iter
 
         if min_or_max not in [min, max]:
             raise ValueError(f"optimization must be a built in function: min or max, instead {min_or_max} was supplied")
@@ -80,10 +80,10 @@ class Optimiser:
         Note that these metrics have a canonical update method _update_optimiser_metrics but can also be updated in a
         different way (for example in TPE)
         """
-        self.time_zero = time.time()  # start time of optimization
-        self.cum_time = 0             # cumulative time = time of last evaluation/iteration - start time
-        self.num_iterations = 0       #
-        self.checkpoints = []         # list of cum_times of successful evaluations/iterations so far
+        self.time_zero = time.time()        # start time of optimization
+        self.cum_time: float = 0            # cumulative time = time of last evaluation/iteration - start time
+        self.num_iterations = 0
+        self.checkpoints: List[float] = []  # list of cum_times of successful evaluations/iterations so far
 
     def _update_optimiser_metrics(self) -> None:
         self.cum_time = time.time() - self.time_zero
@@ -91,8 +91,8 @@ class Optimiser:
         self.checkpoints.append(self.cum_time)
 
     def _needs_to_stop(self) -> bool:
-        def _is_time_over(): return self.max_time <= self.cum_time
-        def _exceeded_iterations(): return self.max_iter <= self.num_iterations
+        def _is_time_over() -> bool: return self.max_time <= self.cum_time
+        def _exceeded_iterations() -> bool: return self.max_iter <= self.num_iterations
         if _is_time_over():
             print("\nFINISHED: Time limit exceeded")
         elif _exceeded_iterations():
@@ -136,6 +136,6 @@ def optimisation_metric_user(run_optimisation: RUN_OPTIMISATION_TYPE) -> RUN_OPT
         self._init_optimiser_metrics()
         if self.is_simulation and not isinstance(problem, SimulationProblem):
             raise ValueError("You are trying to run a simulation but you have not provided a shape family schedule")
-        problem: HyperparameterOptimisationProblem
+        # problem: HyperparameterOptimisationProblem
         return run_optimisation(self, problem, verbosity)
     return wrapper

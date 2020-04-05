@@ -1,10 +1,11 @@
-from typing import Union, KeysView
 from types import SimpleNamespace
+from typing import KeysView, cast
 
-from core.params import Param, PairParam, CategoricalParam
+from core.params import Param
 from util.frozen_class import frozen_class
 
-PARAM_TYPE = Union[Param, PairParam, CategoricalParam]
+# PARAM_TYPE = Union[Param, PairParam, CategoricalParam]
+PARAM_TYPE = Param
 
 
 @frozen_class
@@ -26,7 +27,7 @@ class Domain(SimpleNamespace):
         """ Allow dictionary-like access to attributes. That is:
         instead of getattr(domain, item), one can use domain[item]
         """
-        return getattr(self, item)
+        return cast(PARAM_TYPE, getattr(self, item))
 
     def hyperparams_names(self) -> KeysView[str]:
         """
