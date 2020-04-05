@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from queue import Queue
-from typing import Sequence, Type, List, Callable, Optional, Union, Generator
+from typing import Sequence, Type, List, Callable, Optional, Union
 
 import mpmath
 from colorama import Fore, Style
@@ -8,7 +8,6 @@ from colorama import Fore, Style
 from core import Optimiser, HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, ShapeFamilyScheduler, \
     ShapeFamily, UniformShapeFamilyScheduler
 from optimisers import TpeOptimiser, SigOptimiser, RandomOptimiser
-
 
 COL = Fore.MAGENTA
 END = Style.RESET_ALL
@@ -56,11 +55,10 @@ class Worker:
             )
             optimiser.run_optimisation(problem, verbosity=True)
             evaluations = optimiser.eval_history
-            print(f"{COL}\n{'=' * 73}\n>> Generated: {block} {END}")
         else:
             evaluations = [Evaluation(e.evaluator, e.evaluator.evaluate(n_resources=block.r_i))
                            for e in block.evaluations]
-            print(f"{COL}** Evaluated: {block} {END}")
+        print(f"{COL}** {'Generated' if block.evaluations is None else 'Evaluated'}: {block} {END}")
         return Block(
             bracket=block.bracket,
             i=block.i+1,
@@ -105,16 +103,18 @@ class Master:
         for s in reversed(range(s_min, s_max + 1)):
             n = int(mpmath.ceil(int(B / R / (s + 1)) * eta ** s))  # initial number of evaluators/configurations/arms
             r = R * eta ** (-s)  # initial resources allocated to each evaluator/arm
-            self._queue.put(Block(bracket=s, i=1, max_i=s, n_i=n, r_i=r))  # initial blocks
+            self._queue.put(Block(bracket=s, i=1, max_i=s+1, n_i=n, r_i=r))  # initial blocks
 
         worker = self._workers[0]
-        if not self._queue.empty():
+        while not self._queue.empty():
             block = self._queue.get()
             new_block = worker.consume_block(block, problem)
-            if new_block.i < new_block.max_i:
+            if new_block.i <= new_block.max_i:
                 self._queue.put(new_block)
             else:
-                print(self.min_or_max(new_block.evaluations, key=self._get_optimisation_func_val))
+                best_in_bracket = self.min_or_max(block.evaluations, key=self._get_optimisation_func_val)
+                print(f'Finished bracket {block.bracket}:\n{block}\n',
+                      best_in_bracket.evaluator.arm, best_in_bracket.optimisation_goals)
 
     def _get_optimisation_func_val(self, evaluation: Evaluation) -> float:
         return self.optimisation_func(evaluation.optimisation_goals)
