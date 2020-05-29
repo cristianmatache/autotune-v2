@@ -1,0 +1,7 @@
+[pylint]
+
+max-line-length=120
+
+disable=
+    missing-docstring,
+    invalid-name

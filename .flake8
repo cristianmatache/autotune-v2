@@ -1,0 +1,18 @@
+[flake8]
+ignore = E226, E704, W293, W504
+exclude =
+    # No need to traverse our git directory
+    .git,
+    # There's no value in checking cache directories
+    __pycache__,
+    # From old library
+    test,
+    autotune/util,
+    autotune/core/params.py,
+    autotune/benchmarks/dltk_problem.py,
+    autotune/benchmarks/deepmedic_problem.py,
+    autotune/experiments/hyperband_dltk.py,
+    # Experiments and scratch files
+    autotune/analysis
+
+max-line-length = 120
