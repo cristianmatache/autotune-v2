@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="79cefb44-b646-4217-b277-37514ac0d53c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/optimisers/parallel/block.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/optimisers/parallel/master_server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/torch_evaluator.py" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/torch_evaluator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/evaluator.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/evaluator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/optimisers/parallel/hyperband_optimiser.py" beforeDir="false" afterPath="$PROJECT_DIR$/optimisers/parallel/hyperband_optimiser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/optimisers/parallel/master-worker-block.py" beforeDir="false" afterPath="$PROJECT_DIR$/optimisers/parallel/master-worker-block.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/optimisers/parallel/worker_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/optimisers/parallel/worker_server.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1XGWR82Hi5amPewgrp3FqerSkrw" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../grpc-example" />
+    <property name="settings.editor.selected.configurable" value="preferences.updates" />
+  </component>
+  <component name="RunManager">
+    <configuration name="master-worker-block" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="autotune" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/optimisers/parallel" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="D:\workspace\python\src\autotune\autotune\optimisers\parallel\master-worker-block.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.master-worker-block" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="79cefb44-b646-4217-b277-37514ac0d53c" name="Default Changelist" comment="" />
+      <created>1580672900719</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1580672900719</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="447" y="63" key="#com.intellij.ide.util.MemberChooser" timestamp="1585390047772">
+      <screen x="0" y="0" width="1280" height="690" />
+    </state>
+    <state x="447" y="63" key="#com.intellij.ide.util.MemberChooser/0.0.1280.690@0.0.1280.690" timestamp="1585390047772" />
+    <state x="322" y="82" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1588107784674">
+      <screen x="0" y="0" width="1280" height="690" />
+    </state>
+    <state x="322" y="82" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1280.690@0.0.1280.690" timestamp="1588107784674" />
+    <state x="422" y="102" key="FileChooserDialogImpl" timestamp="1590615731631">
+      <screen x="0" y="0" width="1280" height="690" />
+    </state>
+    <state x="422" y="102" key="FileChooserDialogImpl/0.0.1280.690@0.0.1280.690" timestamp="1590615731631" />
+    <state width="1259" height="151" key="GridCell.Tab.0.bottom" timestamp="1590585323968">
+      <screen x="0" y="0" width="1280" height="690" />
+    </state>
+    <state width="1259" height="151" key="GridCell.Tab.0.bottom/0.0.1280.690@0.0.1280.690" timestamp="1590585323968" />
+    <state width="1259" height="151" key="GridCell.Tab.0.center" timestamp="1590585323968">
+      <screen x="0" y="0" width="1280" height="690" />
+    </state>
+    <state width="1259" height="151" key="GridCell.Tab.0.center/0.0.1280.690@0.0.1280.690" timestamp="1590585323968" />
+    <state width="1259" height="151" key="GridCell.Tab.0.left" timestamp="1590585323968">
+      <screen x="0" y="0" width="1280" height="690" />
+    </state>
+    <state width="1259" height="151" key="GridCell.Tab.0.left/0.0.1280.690@0.0.1280.690" timestamp="1590585323968" />
+    <state width="1259" height="151" key="GridCell.Tab.0.right" timestamp="1590585323968">
+      <screen x="0" y="0" width="1280" height="690" />
+    </state>
+    <state width="1259" height="151" key="GridCell.Tab.0.right/0.0.1280.690@0.0.1280.690" timestamp="1590585323968" />
+    <state width="1259" height="242" key="GridCell.Tab.1.bottom" timestamp="1586161959012">
+      <screen x="0" y="0" width="1280" height="690" />
+    </state>
+    <state width="1259" height="242" key="GridCell.Tab.1.bottom/0.0.1280.690@0.0.1280.690" timestamp="1586161959012" />
+    <state width="1259" height="242" key="GridCell.Tab.1.center" timestamp="1586161959012">
+      <screen x="0" y="0" width="1280" height="690" />
+    </state>
+    <state width="1259" height="242" key="GridCell.Tab.1.center/0.0.1280.690@0.0.1280.690" timestamp="1586161959012" />
+    <state width="1259" height="242" key="GridCell.Tab.1.left" timestamp="1586161959011">
+      <screen x="0" y="0" width="1280" height="690" />
+    </state>
+    <state width="1259" height="242" key="GridCell.Tab.1.left/0.0.1280.690@0.0.1280.690" timestamp="1586161959011" />
+    <state width="1259" height="242" key="GridCell.Tab.1.right" timestamp="1586161959012">
+      <screen x="0" y="0" width="1280" height="690" />
+    </state>
+    <state width="1259" height="242" key="GridCell.Tab.1.right/0.0.1280.690@0.0.1280.690" timestamp="1586161959012" />
+    <state x="150" y="0" key="SettingsEditor" timestamp="1582918949143">
+      <screen x="0" y="0" width="1280" height="690" />
+    </state>
+    <state x="150" y="0" key="SettingsEditor/0.0.1280.690@0.0.1280.690" timestamp="1582918949143" />
+    <state x="338" y="171" key="com.intellij.ide.util.TipDialog" timestamp="1588107772992">
+      <screen x="0" y="0" width="1280" height="690" />
+    </state>
+    <state x="338" y="171" key="com.intellij.ide.util.TipDialog/0.0.1280.690@0.0.1280.690" timestamp="1588107772992" />
+    <state x="334" y="77" width="611" height="536" key="find.popup" timestamp="1586533203909">
+      <screen x="0" y="0" width="1280" height="690" />
+    </state>
+    <state x="334" y="77" width="611" height="536" key="find.popup/0.0.1280.690@0.0.1280.690" timestamp="1586533203909" />
+    <state x="303" y="11" width="672" height="678" key="search.everywhere.popup" timestamp="1586110973237">
+      <screen x="0" y="0" width="1280" height="690" />
+    </state>
+    <state x="303" y="11" width="672" height="678" key="search.everywhere.popup/0.0.1280.690@0.0.1280.690" timestamp="1586110973237" />
+  </component>
+</project>
