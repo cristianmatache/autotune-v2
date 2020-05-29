@@ -43,7 +43,7 @@ class TorchEvaluator(Evaluator):
             'val_error': val_error,
             'test_error': test_error,
         }, self.file_path)
-        if os.path.exists(self.loss_progress_file):
+        if self.loss_progress_file.exists():
             with open(self.loss_progress_file, "rb") as f:
                 assert self.loss_history == pickle.load(f)[0]
         self.loss_history.append(val_error)

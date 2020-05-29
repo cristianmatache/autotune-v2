@@ -72,42 +72,51 @@ class ParallelHyperbandOptimiser(Optimiser):
 
         # Exploration-exploitation trade-off management outer loop
         for s in reversed(range(s_min, s_max + 1)):
-            n = int(ceil(int(B/R/(s+1))*eta**s))  # initial number of evaluators/configurations/arms
-            r = R*eta**(-s)                       # initial resources allocated to each evaluator/arm
-
-            if not self.is_simulation:
-                evaluators = [problem.get_evaluator() for _ in range(n)]
-                self._bracket_population_of_arms_to_csv(evaluators, n)
-            else:  # is simulation
-                problem: SimulationProblem
-                evaluators = [problem.get_evaluator(*self.scheduler.get_family() if self.scheduler else (),
-                                                    should_plot=self.plot_simulation)
-                              for _ in range(n)]
-
-            print(f"{COL}\n{'=' * 73}\n>> Generated {n} evaluators each with a random arm {Style.RESET_ALL}")
-
-            # Successive halving with rate eta - based on values of self.optimisation_func(opt goals of each evaluation)
-            for i in range(s+1):
-                n_i = n*eta**(-i)  # evaluate n_i evaluators/configurations/arms
-                r_i = r*eta**i     # each with r_i resources
-                evaluations = [Evaluation(evaluator, evaluator.evaluate(n_resources=r_i)) for evaluator in evaluators]
-                print(f"{COL}** Evaluated {int(n_i)} arms, each with {r_i:.2f} resources {Style.RESET_ALL}")
-
-                # Halving: keep best 1/eta of them, which will be allocated more resources/iterations
-                evaluators = self._get_best_n_evaluators(n=int(n_i/eta), evaluations=evaluations)
-
-                best_evaluation_in_round = self.min_or_max(evaluations, key=self._get_optimisation_func_val)
-                self._update_evaluation_history(*best_evaluation_in_round)
-
-                self._update_optimiser_metrics()
-                if verbosity:
-                    self._print_evaluation(self.optimisation_func(best_evaluation_in_round.optimisation_goals))
+            self._run_bracket(problem, B, R, eta, s, verbosity)
 
         return self._get_best_evaluation()
+
+    def _run_bracket(
+            self, problem: HyperparameterOptimisationProblem, B: int, R: int, eta: float, s: int, verbosity: bool
+    ) -> None:
+        n = int(ceil(int(B / R / (s + 1)) * eta ** s))  # initial number of evaluators/configurations/arms
+        r = R * eta ** (-s)  # initial resources allocated to each evaluator/arm
+
+        evaluators = self._get_arms_for_bracket(problem, n)
+
+        # Successive halving with rate eta - based on values of self.optimisation_func(opt goals of each evaluation)
+        for i in range(s + 1):
+            n_i = n * eta ** (-i)  # evaluate n_i evaluators/configurations/arms
+            r_i = r * eta ** i  # each with r_i resources
+            evaluations = [Evaluation(evaluator, evaluator.evaluate(n_resources=r_i)) for evaluator in evaluators]
+            print(f"{COL}** Evaluated {int(n_i)} arms, each with {r_i:.2f} resources {Style.RESET_ALL}")
+
+            # Halving: keep best 1/eta of them, which will be allocated more resources/iterations
+            evaluators = self._get_best_n_evaluators(n=int(n_i / eta), evaluations=evaluations)
+
+            best_evaluation_in_round = self.min_or_max(evaluations, key=self._get_optimisation_func_val)
+            self._update_evaluation_history(*best_evaluation_in_round)
+
+            self._update_optimiser_metrics()
+            if verbosity:
+                self._print_evaluation(self.optimisation_func(best_evaluation_in_round.optimisation_goals))
+
+    def _get_arms_for_bracket(self, problem: HyperparameterOptimisationProblem, n: int) -> List[Evaluator]:
+        if not self.is_simulation:
+            evaluators = [problem.get_evaluator() for _ in range(n)]
+            self._bracket_population_of_arms_to_csv(evaluators, n_arms=n)
+        else:  # is simulation
+            problem: SimulationProblem
+            evaluators = [problem.get_evaluator(*self.scheduler.get_family() if self.scheduler else (),
+                                                should_plot=self.plot_simulation)
+                          for _ in range(n)]
+        print(f"{COL}\n{'=' * 73}\n>> Generated {n} evaluators each with a random arm {Style.RESET_ALL}")
+        return evaluators
 
     @staticmethod
     def _bracket_population_of_arms_to_csv(evaluators: List[Evaluator], n_arms: int) -> None:
         if evaluators:
+            assert all(evaluator.output_dir == evaluators[0].output_dir for evaluator in evaluators)
             file_path = path_join(evaluators[0].output_dir, f'bracket-with-{n_arms}-arms.csv')
             pd.DataFrame(evaluator.arm.__dict__ for evaluator in evaluators).to_csv(file_path)
 

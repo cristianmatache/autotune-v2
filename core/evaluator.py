@@ -46,8 +46,8 @@ class Evaluator:
         if self.output_dir is not None:
             arm_id = str(pd.Timestamp.utcnow()).replace(':', '-').replace(' ', '-').replace('.', '-').replace('+', '-')
             self.directory: Path = ensure_dir(Path(self.output_dir) / f'arm-{arm_id}')
-            self.file_path: str = join_path(self.directory, file_name)
-            self.loss_progress_file: str = join_path(self.directory, f"loss_progress.{file_name}")
+            self.file_path: Path = self.directory / file_name
+            self.loss_progress_file: Path = self.directory / f"loss_progress.{file_name}"
 
         self.loss_history: List[float] = []
         self.arm: Arm = model_builder.arm
