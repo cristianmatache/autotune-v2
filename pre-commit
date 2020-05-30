@@ -1,0 +1,4 @@
+#!/bin/bash
+
+flake8 autotune/ --config=.flake8
+

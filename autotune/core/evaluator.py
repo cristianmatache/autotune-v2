@@ -1,14 +1,13 @@
 import os
-from os.path import join as join_path
 from abc import abstractmethod
-from typing import Any, Tuple, Optional, List, Union, TypeVar
 from pathlib import Path
+from typing import Any, Tuple, Optional, List, Union, TypeVar
+
 import pandas as pd
 
-
+from core.arm import Arm
 from core.model_builder import ModelBuilder
 from core.optimisation_goals import OptimisationGoals
-from core.arm import Arm
 
 TPath = TypeVar('TPath', str, Path)
 

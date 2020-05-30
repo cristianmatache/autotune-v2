@@ -1,14 +1,14 @@
-from abc import abstractmethod
-import torch
-import os
 import pickle
-from torch.nn import Module
-from torch.autograd import Variable
-from torch import cuda
+from abc import abstractmethod
 from typing import Tuple, Optional
 
-from core import Evaluator, OptimisationGoals
+import torch
+from torch import cuda
+from torch.autograd import Variable
+from torch.nn import Module
+
 from benchmarks.torch_model_builders import ModelBuilder
+from core import Evaluator, OptimisationGoals
 from datasets.image_dataset_loaders import ImageDatasetLoader
 
 

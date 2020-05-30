@@ -64,4 +64,7 @@ dkms.conf
 .ipynb_checkpoints
 
 # Loss functions
-loss_functions/*
+loss_functions
+
+# Caches
+.mypy_cache

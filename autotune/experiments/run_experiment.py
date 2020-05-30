@@ -87,7 +87,7 @@ def get_problem(problem_name: str, input_dir: str, output_dir: str) -> Hyperpara
         problem_instance = MrbiProblem(input_dir, output_dir)
     elif problem_name in AVAILABLE_OPT_FUNCTIONS:
         problem_instance = OptFunctionProblem(problem_name)
-        optimisation_func = optimisation_func_opt_function
+        optimisation_func = optimisation_func_opt_function  # noqa: F841
     else:
         raise ValueError(f"Supplied problem {problem_name} does not exist")
     problem_instance.print_domain()
