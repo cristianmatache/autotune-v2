@@ -68,8 +68,9 @@ We found that several Hyperband implementations suffer from a floating point ari
 #### 3. Testing optimizers: Gamma loss function simulations
 There is a clear need for more comprehensive testing of optimizers, especially for those that employ early stopping. 
 We propose a method based on **Gamma processes** to simulate the loss functions in negligible time in order to test optimizers in several cases.
-For illustrative purposes, we reproduced the loss function "landscape" of running logistic regresstion on MNIST.
-Real MNIST loss func-s | Simulated loss func-s
+For illustrative purposes, we reproduced the loss function "landscape" of running logistic regresstion on MNIST dataset.
+Real MNIST loss functions | Simulated loss functions
+-----------------------|----------------------
 <img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/mnist-real-profiles.png" width="300">|<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/mnist-sim-profiles.png" width="300">
 
 #### 3. Approximation: Closest loss function in terms of MSE
