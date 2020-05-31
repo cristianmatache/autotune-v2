@@ -35,20 +35,12 @@ https://www.imperial.ac.uk/media/imperial-college/faculty-of-engineering/computi
 - *Gamma Loss Functions: Enabling Instant Testing, Debugging and Monitoring of AutoML Methods* Cristian Matache, Dr. Jonathan Passerat-Palmbach, Dr. Juste Raimbault, Dr. Romain Reuillon, Dr. Daniel Rueckert
 TODO URL
 
-
-## Preliminaries
-#### 1. Gaussian processes
-![gaussian processes](https://github.com/cristianmatache/autotune-v2/blob/master/static/gaussian-processes.png)
-#### 2. Hyperband
-![hyperband table](https://github.com/cristianmatache/autotune-v2/blob/master/static/hyperband-table.png)
-
 ## Preview
 #### 1. Better optimizer metrics: EPDF-OFEs
-Example loss functions profiles:
-![lossfn profiles](https://github.com/cristianmatache/autotune-v2/blob/master/static/loss-function-profiles.png)
-
-Example optimal final error (OFE) of 3 loss functions - lowest final error of all loss functions:
-![OFEs](https://github.com/cristianmatache/autotune-v2/blob/master/static/best-result-metric.png)
+Example loss functions | Example optimal final error (OFE)
+--------------------------------|----------------------------------
+<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/loss-function-profiles.png" width="300"> | <img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/best-result-metric.png" width="300">
+Several profiles e.g. mean, std, order |  Lowest final error of all loss functions:
 
 We are therefore characterizing an optimizer by its estimated probability density function of optimal final errors (EPDF-OFE).
 This would give us more meaningful quantitative measures like statistical significance.
@@ -56,7 +48,7 @@ Example:
 
 Histogram of OFEs occurrences                                                                         |  Estimated PDFs
 :----------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------:
-![](https://github.com/cristianmatache/autotune-v2/blob/master/static/pdf-ofe-hb-tpe-2tpe-hist.png)   |  ![](https://github.com/cristianmatache/autotune-v2/blob/master/static/pdf-ofe-hb-tpe-2tpe-pdf-ofe.png) 
+<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/pdf-ofe-hb-tpe-2tpe-hist.png" width="300">|<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/pdf-ofe-hb-tpe-2tpe-pdf-ofe.png" width="300">
 
 *Problem:* One needs to run the optimizer several times to find its EPDF-OFE which is very time consuming (order of years) if done on the pure underlying ML model since 
 it requires retraining. *Solved later* 
@@ -92,3 +84,8 @@ TODO
 
 #### 4. Hyperband-TPE hybrids
 TODO
+
+## Preliminaries
+Gaussian processes| Hyperband
+------------------|----------
+<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/gaussian-processes.png" width="300">|<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/hyperband-table.PNG" width="300">
