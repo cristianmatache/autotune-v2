@@ -53,7 +53,7 @@ Histogram of OFEs occurrences                                                   
 *Problem:* One needs to run the optimizer several times to find its EPDF-OFE which is very time consuming (order of years) if done on the pure underlying ML model since 
 it requires retraining. *Solved later* 
 
-#### 2. Implementations of otimizers can be flawed
+#### 2. Implementations of optimizers can be flawed
 Testing optimizers is usually done on some known hard-to-optimize function like Rastrigin. 
 Testing on real ML models is much more difficult due to prolonged times of retraining the models several times for each optimization. 
 Hence, for hyperparameter optimizers that employ early stopping there is virtually no way of testing comprehensively. 
@@ -64,20 +64,13 @@ We found that several Hyperband implementations suffer from a floating point ari
 - Less exploration (up to an order of magnitude)
 - Wasting time and computing resources heavily
 
-**Some of the flawed Hyperband implementations:**
-1. https://homes.cs.washington.edu/~jamieson/hyperband.html used by Hyperband authors (Li et al., 2016)
-2. https://github.com/automl/HpBandSter/blob/367b6c4203a63ff8b395740995b22dab512dcfef/hpbandster/optimizers/hyperband.py#L60 used by BOHB (Falkner et al., 2018). 
-3. https://github.com/zygmuntz/hyperband/blob/master/hyperband.py#L18 
-4. https://gist.github.com/PetrochukM/2c5fae9daf0529ed589018c6353c9f7b#ﬁle-hyperband-py-L204 
-5. https://github.com/electricbrainio/hypermax/blob/master/hypermax/algorithms/adaptive_bayesian_hyperband_optimizer.py#L26
-6. https://github.com/polyaxon/polyaxon/blob/ee3fe8a191d96fc8ba3c1affd13f7ed5e7b471c7/core/polyaxon/polytune/search_managers/hyperband/manager.py#L75
-7. https://github.com/thuijskens/scikit-hyperband/blob/master/hyperband/search.py#L346
-
 
 #### 3. Testing optimizers: Gamma loss function simulations
 There is a clear need for more comprehensive testing of optimizers, especially for those that employ early stopping. 
 We propose a method based on **Gamma processes** to simulate the loss functions in negligible time in order to test optimizers in several cases.
-TODO
+For illustrative purposes, we reproduced the loss function "landscape" of running logistic regresstion on MNIST.
+Real MNIST loss func-s | Simulated loss func-s
+<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/mnist-real-profiles.png" width="300">|<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/mnist-sim-profiles.png" width="300">
 
 #### 3. Approximation: Closest loss function in terms of MSE
 TODO
@@ -85,7 +78,17 @@ TODO
 #### 4. Hyperband-TPE hybrids
 TODO
 
-## Preliminaries
+## Appendix
+#### 1. Preliminaries
 Gaussian processes| Hyperband
 ------------------|----------
 <img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/gaussian-processes.png" width="300">|<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/hyperband-table.PNG" width="300">
+
+#### 2. Some of the flawed Hyperband implementations:
+1. https://homes.cs.washington.edu/~jamieson/hyperband.html used by Hyperband authors (Li et al., 2016)
+2. https://github.com/automl/HpBandSter/blob/367b6c4203a63ff8b395740995b22dab512dcfef/hpbandster/optimizers/hyperband.py#L60 used by BOHB (Falkner et al., 2018). 
+3. https://github.com/zygmuntz/hyperband/blob/master/hyperband.py#L18 
+4. https://gist.github.com/PetrochukM/2c5fae9daf0529ed589018c6353c9f7b#ﬁle-hyperband-py-L204 
+5. https://github.com/electricbrainio/hypermax/blob/master/hypermax/algorithms/adaptive_bayesian_hyperband_optimizer.py#L26
+6. https://github.com/polyaxon/polyaxon/blob/ee3fe8a191d96fc8ba3c1affd13f7ed5e7b471c7/core/polyaxon/polytune/search_managers/hyperband/manager.py#L75
+7. https://github.com/thuijskens/scikit-hyperband/blob/master/hyperband/search.py#L346
