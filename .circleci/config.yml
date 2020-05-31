@@ -11,12 +11,12 @@ jobs:
       - python/load-cache
       - python/install-deps
       - python/save-cache
-#      - run:
-#          name: PEP8 Syntax - flake8
-#          command: flake8 autotune/ --config=.flake8
+      - run:
+          name: PEP8 Syntax - flake8
+          command: python -m flake8 autotune/ --config=.flake8
       - run:
           name: Type Check - mypy
-          command: mypy autotune/benchmarks/ autotune/core/ autotune/datasets/ autotune/util/
+          command: python -m mypy autotune/benchmarks/ autotune/core/ autotune/datasets/ autotune/util/
 
 workflows:
   main:
