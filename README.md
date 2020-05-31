@@ -79,13 +79,17 @@ TODO
 #### 4. Hyperband-TPE hybrids
 TODO
 
+
 ## Appendix
-#### 1. Preliminaries
+#### 1. Optimizers heat map
+<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/heatmap.png" width="300">
+
+#### 2. Preliminaries
 Gaussian processes| Hyperband
 ------------------|----------
 <img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/gaussian-processes.png" width="300">|<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/hyperband-table.PNG" width="300">
 
-#### 2. Some of the flawed Hyperband implementations:
+#### 3. Some of the flawed Hyperband implementations:
 1. https://homes.cs.washington.edu/~jamieson/hyperband.html used by Hyperband authors (Li et al., 2016)
 2. https://github.com/automl/HpBandSter/blob/367b6c4203a63ff8b395740995b22dab512dcfef/hpbandster/optimizers/hyperband.py#L60 used by BOHB (Falkner et al., 2018). 
 3. https://github.com/zygmuntz/hyperband/blob/master/hyperband.py#L18 
