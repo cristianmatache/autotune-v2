@@ -5,7 +5,7 @@ import mpmath
 import pandas as pd
 from os.path import join as path_join
 
-from core import Optimiser, Evaluation, Evaluator, HyperparameterOptimisationProblem, OptimisationGoals, \
+from autotune.core import Optimiser, Evaluation, Evaluator, HyperparameterOptimisationProblem, OptimisationGoals, \
     ShapeFamilyScheduler, optimisation_metric_user, SimulationProblem
 
 COL = Fore.MAGENTA

@@ -1,10 +1,11 @@
-from os.path import join as join_path
 import pickle
+from os.path import join as join_path
 from typing import List
-from scipy .stats import ks_2samp
 
-from util import flatten
-from experiments.simulation_evaluation.plot_results import plot_epdf_ofe, plot_histograms
+from scipy.stats import ks_2samp
+
+from autotune.experiments.simulation_evaluation.plot_results import plot_epdf_ofe, plot_histograms
+from autotune.util.datastructures import flatten
 
 OUTPUT_DIR = "../../../epdf-ofes/closest-known-loss-fn-mnist/"
 

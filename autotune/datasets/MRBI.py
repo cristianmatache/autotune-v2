@@ -1,7 +1,11 @@
-import numpy as np
-from torch.utils.data import Dataset
 import os
+from pathlib import Path
+from typing import Dict, List, Tuple, Any, Union
+
+import numpy as np
 from PIL import Image
+from torch.utils.data import Dataset
+from typing_extensions import Final
 
 
 class MRBI(Dataset):
@@ -12,7 +16,7 @@ class MRBI(Dataset):
     unzip it and rename the directory to "mrbi"
     """
 
-    split_list = {
+    SPLIT_LIST: Final[Dict[str, List[str]]] = {
         'train': ["url_placeholder", "mrbi/mnist_all_background_images_rotation_normalized_train_valid.amat"],
         'test': ["url_placeholder", "mrbi/mnist_all_background_images_rotation_normalized_test.amat"]
     }
@@ -22,14 +26,14 @@ class MRBI(Dataset):
         self.transform = transform
         self.split = split  # training set or test set or extra set
 
-        if self.split not in self.split_list:
+        if self.split not in self.SPLIT_LIST:
             raise ValueError('Wrong split entered! Please use split="train" or split="extra" or split="test"')
 
-        self.filename = self.split_list[split][1]
+        self.filename = self.SPLIT_LIST[split][1]
         # reading (loading) amat file as array
         self.data, self.labels = self._get_data(os.path.join(self.root, self.filename))
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> Tuple[Any, int]:
         """
         Args:
             index (int): Index
@@ -49,19 +53,18 @@ class MRBI(Dataset):
 
         return img, target
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.data)
 
-    def __repr__(self):
-        fmt_str = 'Dataset ' + self.__class__.__name__ + '\n'
-        fmt_str += '    Number of data points: {}\n'.format(self.__len__())
-        fmt_str += '    Split: {}\n'.format(self.split)
-        fmt_str += '    Root Location: {}\n'.format(self.root)
-        tmp = '    Transforms (if any): '
-        fmt_str += '{0}{1}\n'.format(tmp, self.transform.__repr__().replace('\n', '\n' + ' ' * len(tmp)))
+    def __repr__(self) -> str:
+        return f'Dataset {self.__class__.__name__} \n' \
+               f'    Number of data points: {len(self)}\n' \
+               f'    Split: {self.split}\n' \
+               f'    Root Location: {self.root}\n' \
+               f'    Transforms (if any):\n{self.transform}'
 
     @staticmethod
-    def _parseline(line):
+    def _parseline(line: str):
         data = np.array([float(i) for i in line.split()])
         x = data[:-1].reshape((28, 28), order='F')
         x = np.array(x*255, dtype=np.uint8)
@@ -69,7 +72,7 @@ class MRBI(Dataset):
         y = data[-1]
         return x, y
 
-    def _get_data(self, filename):
+    def _get_data(self, filename: Union[str, Path]) -> Tuple[np.ndarray, np.ndarray]:
         print("Processing MRBI dataset")
         with open(filename) as file:
             data, labels = list(zip(*[self._parseline(line) for line in file]))

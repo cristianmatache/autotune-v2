@@ -1,12 +1,15 @@
+import abc
+from pathlib import Path
+from typing import Tuple
+
+from filelock import FileLock
+from torch.utils.data import DataLoader
+from torch.utils.data.dataset import Dataset
 from torchvision import transforms
 from torchvision.datasets import CIFAR10, MNIST, SVHN
-import abc
-from typing import Tuple
-from torch.utils.data.dataset import Dataset
-from torch.utils.data import DataLoader
 
-from datasets.dataset_loader import DatasetLoader
-from datasets.MRBI import MRBI
+from autotune.datasets.MRBI import MRBI
+from autotune.datasets.dataset_loader import DatasetLoader
 
 
 class ImageDatasetLoader(DatasetLoader):
@@ -16,7 +19,6 @@ class ImageDatasetLoader(DatasetLoader):
         """
         :return: train_data, validation_data, test_data
         """
-        pass
 
     def __init__(self, data_dir: str,
                  mean_normalize: Tuple[float, ...] = (), std_normalize: Tuple[float, ...] = (),
@@ -61,7 +63,7 @@ class CIFARLoader(ImageDatasetLoader):
         self.augment = augment
         super().__init__(data_dir, mean_normalize, std_normalize)
 
-    def _split_dataset(self):
+    def _split_dataset(self) -> Tuple[Dataset, Dataset, Dataset]:
         """
         :return: train_data, validation_data, test_data
         """
@@ -88,10 +90,8 @@ class MNISTLoader(ImageDatasetLoader):
     def __init__(self, data_dir, mean_normalize=(0.1307,), std_normalize=(0.3081,)):
         super().__init__(data_dir, mean_normalize, std_normalize)
 
-    def _split_dataset(self):
-        from filelock import FileLock
-        from os.path import join as join_path
-        lock = FileLock(join_path(self.data_dir, "download.lock"))
+    def _split_dataset(self) -> Tuple[Dataset, Dataset, Dataset]:
+        lock = FileLock(Path(self.data_dir) / 'download.lock')
         with lock:
             train_data = MNIST(root=self.data_dir, train=True, download=True, transform=self.def_transform)
         with lock:
@@ -107,7 +107,7 @@ class SVHNLoader(ImageDatasetLoader):
     def __init__(self, data_dir, mean_normalize=(0.4377, 0.4438, 0.4728), std_normalize=(0.1201, 0.1231, 0.1052)):
         super().__init__(data_dir, mean_normalize, std_normalize)
 
-    def _split_dataset(self):
+    def _split_dataset(self) -> Tuple[Dataset, Dataset, Dataset]:
         train_data = SVHN(root=self.data_dir, split='train', download=True, transform=self.def_transform)
         val_data = SVHN(root=self.data_dir, split='train', download=True, transform=self.def_transform)
         test_data = SVHN(root=self.data_dir, split='test', download=True, transform=self.def_transform)
@@ -120,7 +120,7 @@ class MRBILoader(ImageDatasetLoader):
     def __init__(self, data_dir, mean_normalize=(0.5406,), std_normalize=(0.2318,)):
         super().__init__(data_dir, mean_normalize, std_normalize)
 
-    def _split_dataset(self):
+    def _split_dataset(self) -> Tuple[Dataset, Dataset, Dataset]:
         train_data = MRBI(root=self.data_dir, split="train", transform=self.def_transform)
         val_data = MRBI(root=self.data_dir, split="train", transform=self.def_transform)
         test_data = MRBI(root=self.data_dir, split="test", transform=self.def_transform)

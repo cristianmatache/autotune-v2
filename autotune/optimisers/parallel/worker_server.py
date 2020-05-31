@@ -5,9 +5,9 @@ from colorama import Fore, Style
 from flask import Flask
 import dill
 
-from core import HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, ShapeFamilyScheduler
-from optimisers import TpeOptimiser, SigOptimiser, RandomOptimiser
-from optimisers.parallel.block import Block
+from autotune.core import HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, ShapeFamilyScheduler
+from autotune.optimisers import TpeOptimiser, SigOptimiser, RandomOptimiser
+from autotune.optimisers.parallel.block import Block
 
 COL = Fore.MAGENTA
 END = Style.RESET_ALL

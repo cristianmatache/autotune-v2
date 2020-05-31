@@ -2,13 +2,13 @@ import argparse
 
 # from ..benchmarks.mnist_problem import MnistProblem
 # from ..benchmarks.cifar_problem import CifarProblem
-from benchmarks.svhn_problem import SvhnProblem
+from autotune.benchmarks.svhn_problem import SvhnProblem
 
 
 class ProblemTest(object):
     def __init__(self, data_dir, output_dir):
         self.problem = SvhnProblem(data_dir, output_dir)
-        self.problem.print_domain()
+        self.problem.log_domain()
 
     def generate_arms(self, n_arms):
         arms = self.problem.generate_arms(n_arms, self.problem.hps)

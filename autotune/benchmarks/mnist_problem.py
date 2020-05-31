@@ -1,13 +1,12 @@
-import numpy as np
 from typing import Tuple
 
-from core import HyperparameterOptimisationProblem, Arm, OptimisationGoals, Domain, Param
+import numpy as np
 
-from datasets.image_dataset_loaders import MNISTLoader
-from benchmarks.torch_evaluator import TorchEvaluator
-from benchmarks.torch_model_builders import LogisticRegressionBuilder
-from util.io import print_evaluation
-
+from autotune.benchmarks.torch_evaluator import TorchEvaluator
+from autotune.benchmarks.torch_model_builders import LogisticRegressionBuilder
+from autotune.core import HyperparameterOptimisationProblem, Arm, OptimisationGoals, Domain, Param
+from autotune.datasets.image_dataset_loaders import MNISTLoader
+from autotune.util.io import print_evaluation
 
 LEARNING_RATE = Param('learning_rate', np.log(10 ** -6), np.log(10 ** 0), distrib='uniform', scale='log')
 WEIGHT_DECAY = Param('weight_decay', np.log(10 ** -6), np.log(10 ** -1), distrib='uniform', scale='log')
@@ -24,7 +23,8 @@ class MnistEvaluator(TorchEvaluator):
 
     @print_evaluation(verbose=True, goals_to_print=("test_correct", "validation_error"))
     def evaluate(self, n_resources: int) -> OptimisationGoals:
-        """ Aggregate the steps:
+        """
+        Aggregate the steps:
             - train model (available through self._train)
             - evaluate model with respect to the test/validation set(s) (available through self._test)
             - report performance
@@ -65,10 +65,10 @@ class MnistEvaluator(TorchEvaluator):
 
 
 class MnistProblem(HyperparameterOptimisationProblem):
-
     """
     Classification on MNIST dataset with logistic regression
     """
+    dataset_loader: MNISTLoader
 
     def __init__(self, data_dir: str, output_dir: str,
                  hyperparams_domain: Domain = HYPERPARAMS_DOMAIN, hyperparams_to_opt: Tuple[str, ...] = ()):
@@ -91,4 +91,5 @@ class MnistProblem(HyperparameterOptimisationProblem):
             arm = Arm()
             arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)
         model_builder = LogisticRegressionBuilder(arm)
+        assert self.output_dir is not None
         return MnistEvaluator(model_builder, self.dataset_loader, output_dir=self.output_dir)

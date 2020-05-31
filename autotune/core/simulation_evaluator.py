@@ -1,8 +1,9 @@
+from typing import List
+
+import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats as stats
 from scipy.signal import savgol_filter
-import matplotlib.pyplot as plt
-from typing import List
 
 
 def _plot_gamma_process_distribs(n: int, k: int) -> None:
@@ -48,9 +49,6 @@ def get_aggressiveness_from_gamma_distrib(time: int, n: int, k: int) -> float:
 
 class SimulationEvaluator:
 
-    """
-    """
-
     def __init__(self, ml_aggressiveness: float, necessary_aggressiveness: float, up_spikiness: float,
                  max_resources: int, is_smooth: bool = True):
         """
@@ -78,13 +76,13 @@ class SimulationEvaluator:
     def fs(self) -> List[float]:
         if not self.is_smooth:
             return self.non_smooth_fs
-        else:
-            window = int(0.17 * self.max_resources + 6)
-            window += 1 if window % 2 == 0 else 0
-            return list(savgol_filter(self.non_smooth_fs, window, 3))  # throws FutureWarning: Using a non-tuple ...
+        window = int(0.17 * self.max_resources + 6)
+        window += 1 if window % 2 == 0 else 0
+        return list(savgol_filter(self.non_smooth_fs, window, 3))  # Throws FutureWarning: Using a non-tuple ...
 
     def simulate(self, time: int, n: int, f_n: float) -> None:
-        """ X is time/any other resources, Y is f(X) - simulated function at time X. Note that this function can
+        """
+        X is time/any other resources, Y is f(X) - simulated function at time X. Note that this function can
         simulate any type of resource not only time but for simplicity in naming we use time for resource. This method,
         will simulate Ys up to the given time. If the function was already evaluated at some times, it will continue
         from there.

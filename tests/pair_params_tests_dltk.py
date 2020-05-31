@@ -2,15 +2,15 @@ import argparse
 
 # from ..benchmarks.mnist_problem import MnistProblem
 # from ..benchmarks.cifar_problem import CifarProblem
-from benchmarks.dltk_problem import DLTKProblem
-from util.io import print_arms
+from autotune.benchmarks.dltk_problem import DLTKProblem
+from autotune.util.io import print_arms
 import os
 
 
 class ProblemTest(object):
     def __init__(self, data_dir, output_dir):
         self.problem = DLTKProblem(data_dir, output_dir)
-        self.problem.print_domain()
+        self.problem.log_domain()
 
     def generate_arms(self, n_arms):
         arms = self.problem.generate_arms(n_arms, self.problem.hps)

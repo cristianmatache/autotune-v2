@@ -3,26 +3,27 @@ Note this experiment is sequential only since it is really fast and hence there 
 """
 
 import argparse
-from argparse import Namespace
-import matplotlib.pyplot as plt
-import numpy as np
 import pickle
+from argparse import Namespace
 from os.path import join as join_path
 from typing import Dict, List
+
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 
 # Optimisers
-from core import Optimiser, Arm
-from optimisers import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, TpeOptimiser, \
-    HybridHyperbandSigoptOptimiser, HybridHyperbandTpeTransferAllOptimiser, HybridHyperbandTpeNoTransferOptimiser, \
-    HybridHyperbandTpeTransferLongestOptimiser, HybridHyperbandTpeTransferSameOptimiser
+from autotune.core import Optimiser, Arm
+from autotune.optimisers import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, \
+    TpeOptimiser, HybridHyperbandSigoptOptimiser, HybridHyperbandTpeTransferAllOptimiser, \
+    HybridHyperbandTpeNoTransferOptimiser, HybridHyperbandTpeTransferLongestOptimiser, \
+    HybridHyperbandTpeTransferSameOptimiser
 
 # Problems
-from core import HyperparameterOptimisationProblem, OptimisationGoals
-from benchmarks import MnistProblem, CifarProblem, SvhnProblem, MrbiProblem, OptFunctionProblem, KnownFnProblem, \
-    AVAILABLE_OPT_FUNCTIONS
-
-from util import flatten
+from autotune.core import HyperparameterOptimisationProblem, OptimisationGoals
+from autotune.benchmarks import MnistProblem, CifarProblem, SvhnProblem, MrbiProblem, OptFunctionProblem, \
+    KnownFnProblem, AVAILABLE_OPT_FUNCTIONS
+from autotune.util.datastructures import flatten
 
 KNOWN_FUNCTIONS_DIR = "../../loss_functions/"
 INPUT_DIR = "D:/workspace/python/datasets/"
@@ -89,7 +90,7 @@ def get_real_problem(arguments: Namespace) -> HyperparameterOptimisationProblem:
         optimisation_func = optimisation_func_opt_function  # noqa: F841
     else:
         raise ValueError(f"Supplied problem {problem_name} does not exist")
-    problem_instance.print_domain()
+    problem_instance.log_domain()
     return problem_instance
 
 

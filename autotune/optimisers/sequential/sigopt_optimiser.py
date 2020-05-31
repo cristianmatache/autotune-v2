@@ -3,7 +3,7 @@ from sigopt import Connection
 from sigopt.objects import Assignments
 from typing import Callable, Tuple, Optional
 
-from core import Optimiser, Evaluation, HyperparameterOptimisationProblem, Arm, OptimisationGoals, Evaluator, \
+from autotune.core import Optimiser, Evaluation, HyperparameterOptimisationProblem, Arm, OptimisationGoals, Evaluator, \
     ShapeFamilyScheduler, optimisation_metric_user, SimulationProblem
 
 SIGOPT_API_KEY = "RAGFJSAISOJGFQOXCAVIVQRNNGOQNYGDEYISHTETQZCNWJNA"

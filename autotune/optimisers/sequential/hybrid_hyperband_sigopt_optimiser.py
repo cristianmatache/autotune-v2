@@ -3,11 +3,11 @@ from typing import Callable, Optional
 from colorama import Style, Fore
 import mpmath
 
-from core import HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, Optimiser, ShapeFamilyScheduler, \
-    optimisation_metric_user
+from autotune.core import HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, Optimiser, \
+    ShapeFamilyScheduler, optimisation_metric_user
 
-from optimisers.sequential.hyperband_optimiser import HyperbandOptimiser
-from optimisers.sequential.sigopt_optimiser import SigOptimiser
+from autotune.optimisers.sequential.hyperband_optimiser import HyperbandOptimiser
+from autotune.optimisers.sequential.sigopt_optimiser import SigOptimiser
 
 COL = Fore.MAGENTA
 END = Style.RESET_ALL

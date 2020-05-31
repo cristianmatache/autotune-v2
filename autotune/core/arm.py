@@ -1,13 +1,14 @@
 from __future__ import annotations
-from typing import Tuple, cast
-from types import SimpleNamespace
 
-from core.hyperparams_domain import Domain
+from types import SimpleNamespace
+from typing import Tuple, cast
+
+from autotune.core.hyperparams_domain import Domain
 
 
 class Arm(SimpleNamespace):
-
-    """ Records hyperparameters and random/default values for each
+    """
+    Records hyperparameters and random/default values for each
     Example:
     arm.batch_size = 100
     arm.learning_rate = 0.123
@@ -15,8 +16,9 @@ class Arm(SimpleNamespace):
     from this class and to set the hyperparameters as None attributes (Eg. CNNArm, LogisticRegressionArm)
     """
 
-    def __init__(self, **kwargs: float):
-        """ If a custom arm is needed, the hyperparameter values can be set from a dictionary. For example, for all
+    def __init__(self, **kwargs: float):  # pylint: disable=useless-super-delegation  # Used for type hints only
+        """
+        If a custom arm is needed, the hyperparameter values can be set from a dictionary. For example, for all
         informed optimisation methods creating Arm this way is required. If one needs random values for each hyperparam,
         please use draw_hp_val.
         :param kwargs: {"hyperparameter_name": hyperparameter value}
@@ -24,7 +26,8 @@ class Arm(SimpleNamespace):
         super().__init__(**kwargs)
 
     def set_default_values(self, *, domain: Domain, hyperparams_to_opt: Tuple[str, ...]) -> None:
-        """ Sets the hyperparameters that appear in the domain but we don't want to optimise to their default values
+        """
+        Sets the hyperparameters that appear in the domain but we don't want to optimise to their default values
         if they are not already set
         :param domain: domain of hyperparameters with names, ranges, distributions etc
                        Eg. Domain(momentum=Param(...), learning_rate=Param(...))
@@ -39,7 +42,8 @@ class Arm(SimpleNamespace):
                 setattr(self, hp_name, hp_val)
 
     def draw_hp_val(self, *, domain: Domain, hyperparams_to_opt: Tuple[str, ...]) -> None:
-        """ Draws random values for the hyperparameters that we want to optimise
+        """
+        Draws random values for the hyperparameters that we want to optimise
         :param domain: domain of hyperparameters with names, ranges, distributions etc
                        Eg. Domain(momentum=Param(...), learning_rate=Param(...))
         :param hyperparams_to_opt: hyperparameters to optimise
@@ -52,7 +56,8 @@ class Arm(SimpleNamespace):
 
     @staticmethod
     def normalize(arm: Arm, *, domain: Domain) -> Arm:
-        """ Normalizes values of an arm as specified by the given domain
+        """
+        Normalizes values of an arm as specified by the given domain
         :param arm: arm to be normalized
         :param domain: domain of hyperparameters with names, ranges, distributions etc
                        Eg. Domain(momentum=Param(...), learning_rate=Param(...))
@@ -68,7 +73,7 @@ class Arm(SimpleNamespace):
         """
         :return: human readable string representation of an Arm
         """
-        longest_hp = max([len(hp_name) for hp_name in self.__dict__.keys()])
+        longest_hp = max([len(hp_name) for hp_name in self.__dict__])
 
         def padding(hp_name: str) -> int:
             return longest_hp - len(hp_name) + 1
@@ -77,7 +82,7 @@ class Arm(SimpleNamespace):
             [f"   - {hp_name}:{' '*padding(hp_name)}{hp_val}" for hp_name, hp_val in self.__dict__.items()])
 
     def __hash__(self) -> int:
-        return hash(self.__str__())
+        return hash(str(self))
 
     def __getitem__(self, hyperparam_name: str) -> float:
         """ Allow dictionary-like access to attributes. That is:

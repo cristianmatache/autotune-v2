@@ -1,14 +1,16 @@
 # Code excerpt taken from Hyperband experiments, L. Li 2016
 # parameter representation module
+# pylint: disable=all
+
+import copy
+import random
 
 import numpy
-import random
-import copy
 
 
-class Param(object):
+class Param:
     """
-    define different properties and helper functions
+    Define different properties and helper functions
     """
 
     def __init__(self, name, min_val, max_val, init_val=None,
@@ -50,12 +52,11 @@ class Param(object):
         if self.distrib == 'normal':
             print('not implemented')
             return None
-        else:
-            val = x
-            if self.scale == "log":
-                val = self.logbase**x
-            if self.interval:
-                val = (numpy.floor(val / self.interval) * self.interval).astype(int)
+        val = x
+        if self.scale == "log":
+            val = self.logbase**x
+        if self.interval:
+            val = (numpy.floor(val / self.interval) * self.interval).astype(int)
         return val
 
     def get_min(self):
@@ -87,7 +88,7 @@ class IntParam(Param):
         return range(self.min_val, self.max_val+1, max(1, (self.max_val-self.min_val)/num_vals))
 
 
-class CategoricalParam(object):
+class CategoricalParam:
     """
     categorical parameters
     """
@@ -104,12 +105,11 @@ class CategoricalParam(object):
             return random_combinations(self.val_list, num_vals)
         if num_vals >= self.num_vals:
             return self.val_list
-        else:
-            # return random subset, but include default value
-            tmp = list(self.val_list)
-            tmp.remove(self.default)
-            random.shuffle(tmp)
-            return [self.default] + tmp[0:num_vals-1]
+        # Return random subset, but include default value
+        tmp = list(self.val_list)
+        tmp.remove(self.default)
+        random.shuffle(tmp)
+        return [self.default] + tmp[0:num_vals-1]
 
 
 def random_indices(high, size):
@@ -125,7 +125,7 @@ def random_combinations(val_list, num_vals, unique=True):
     return [val_list[i] for i in indices]
 
 
-def random_power_of_2(upper_bound, values=[2]):
+def random_power_of_2(upper_bound, values=(2,)):
     """
     Generate power of 2 up to upper bound (included)
     :param upper_bound: greatest power of 2 to generate
@@ -136,17 +136,16 @@ def random_power_of_2(upper_bound, values=[2]):
     if (values_count > 0) and (values[-1] > upper_bound):
         rand_idx = random_indices(values_count - 1, 1)[0]
         return values[rand_idx]
-    else:
-        new_power2 = pow(2, values_count + 1)
-        values.append(new_power2)
-        return random_power_of_2(upper_bound, values)
+    new_power2 = pow(2, values_count + 1)
+    values.append(new_power2)
+    return random_power_of_2(upper_bound, values)
 
 
-class DenseCategoricalParam(object):
+class DenseCategoricalParam:
     """
     Similar to CategoricalParam, but draws with replacement
     """
-    def __init__(self, name, val_list, mandatory_elements = []):
+    def __init__(self, name, val_list, mandatory_elements=()):
         self.name = name
         self.val_list = val_list
         self.mandatory_elements = mandatory_elements
@@ -158,11 +157,10 @@ class DenseCategoricalParam(object):
             # return random subset, but include mandatory values in place
             values = random_combinations(self.val_list, num_vals - 1, unique=False)
             return self.mandatory_elements + values
-        else:
-            return (self.mandatory_elements + self.val_list)[:num_vals]
+        return (self.mandatory_elements + self.val_list)[:num_vals]
 
 
-class PairParam(object):
+class PairParam:
     """
     parameters composed of two sub-parameters (keys, values)
     """
@@ -188,7 +186,7 @@ class PairParam(object):
         return (vals_p2, val_p1)
 
 
-class ConditionalParam(object):
+class ConditionalParam:
     """
     draws a parameter with a constrained condition
     """
@@ -207,7 +205,7 @@ class ConditionalParam(object):
         return None
 
 
-class FactoredParam(object):
+class FactoredParam:
     """
     Parameters created by this class are linked by a multiplier to their predecessor
     """

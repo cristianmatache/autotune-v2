@@ -1,8 +1,9 @@
 from __future__ import annotations
-from qpython.qconnection import QConnection
-import pandas as pd
 
-from datasets.dataset_loader import DatasetLoader
+import pandas as pd
+from qpython.qconnection import QConnection
+
+from autotune.datasets.dataset_loader import DatasetLoader
 
 
 class BitmexLoader(DatasetLoader):

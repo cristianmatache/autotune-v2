@@ -1,13 +1,12 @@
 import tempfile
+from typing import Tuple, Any, Optional
+
 import numpy as np
-from typing import Tuple, Any
 
-
-from core import Param, Arm, HyperparameterOptimisationProblem, OptimisationGoals, Evaluator, Domain, Optimiser
-from benchmarks.torch_model_builders import LogisticRegressionBuilder
-from util.io import print_evaluation
-
-from optimisers.sequential.hyperband_optimiser import HyperbandOptimiser
+from autotune.benchmarks.torch_model_builders import LogisticRegressionBuilder
+from autotune.core import Param, Arm, HyperparameterOptimisationProblem, OptimisationGoals, Evaluator, Domain, Optimiser
+from autotune.optimisers.sequential.hyperband_optimiser import HyperbandOptimiser
+from autotune.util.io import print_evaluation
 
 ETA = 3
 MAX_ITER = 243
@@ -46,7 +45,7 @@ class HyperbandTestProblem(HyperparameterOptimisationProblem):
         super().__init__(hyperparams_domain, hyperparams_to_opt)
         self.output_dir = output_dir
 
-    def get_evaluator(self, arm: Arm = None) -> HyperbandTestEvaluator:
+    def get_evaluator(self, arm: Optional[Arm] = None) -> HyperbandTestEvaluator:
         if arm is None:  # if no arm is provided, generate a random arm
             arm = Arm()
             arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)

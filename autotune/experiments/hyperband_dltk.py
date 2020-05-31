@@ -1,8 +1,8 @@
 import pickle
 import argparse
 
-from optimisers.sequential.hyperband_optimiser import HyperbandOptimiser
-from benchmarks.dltk_problem import DLTKProblem
+from autotune.optimisers.sequential.hyperband_optimiser import HyperbandOptimiser
+from autotune.benchmarks.dltk_problem import DLTKProblem
 import os
 
 data_dir = '/home/jopasserat/postdoc/openmole/hyperparam-tuning/datasets'
@@ -26,7 +26,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = args.cuda_devices
 n_resources = args.n_resources
 
 problem = DLTKProblem(args.input_dir, args.output_dir)
-problem.print_domain()
+problem.log_domain()
 
 # Run hyperband
 hyperband_opt = HyperbandOptimiser()

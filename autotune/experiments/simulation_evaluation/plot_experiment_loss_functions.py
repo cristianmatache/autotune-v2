@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import pickle
 from os.path import join as join_path
-from experiments.run_experiment import OUTPUT_DIR
+from autotune.experiments.run_experiment import OUTPUT_DIR
 
 # This will fetch the latest experiment on the following problem with the following optimization method
 PROBLEM = "mnist"

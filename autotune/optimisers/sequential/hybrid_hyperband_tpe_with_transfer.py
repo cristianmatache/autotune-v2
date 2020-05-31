@@ -8,11 +8,11 @@ import time
 from abc import abstractmethod
 import mpmath
 
-from core import HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, Optimiser, ShapeFamilyScheduler, \
-    optimisation_metric_user, Arm, Evaluator
+from autotune.core import HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, Optimiser, \
+    ShapeFamilyScheduler, optimisation_metric_user, Arm, Evaluator
 
-from optimisers.sequential.hyperband_optimiser import HyperbandOptimiser
-from optimisers.sequential.tpe_optimiser import TpeOptimiser
+from autotune.optimisers.sequential.hyperband_optimiser import HyperbandOptimiser
+from autotune.optimisers.sequential.tpe_optimiser import TpeOptimiser
 
 COL = Fore.MAGENTA
 END = Style.RESET_ALL

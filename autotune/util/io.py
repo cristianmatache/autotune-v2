@@ -1,13 +1,18 @@
-from typing import Callable, Tuple
+from __future__ import annotations
+
+from typing import Callable, Tuple, TypeVar, cast, TYPE_CHECKING
+
 from colorama import Fore, Style
 
-from core import OptimisationGoals, Evaluator
+if TYPE_CHECKING:
+    from autotune.core import OptimisationGoals, TEvaluator
 
-EVALUATE_METHOD_TYPE = Callable[[Evaluator, int], OptimisationGoals]
+FEvaluate = TypeVar('FEvaluate', bound=Callable[..., 'OptimisationGoals'])
 
 
-def print_evaluation(verbose: bool = False, goals_to_print: Tuple[str] = ()) \
-        -> Callable[[EVALUATE_METHOD_TYPE], EVALUATE_METHOD_TYPE]:
+def print_evaluation(
+        verbose: bool = False, goals_to_print: Tuple[str, ...] = ()
+) -> Callable[[FEvaluate], FEvaluate]:
     """ If verbose:
     Before evaluation - prints the arm that will be evaluated
     After  evaluation - prints the OptimisationGoals (the results) for example, that includes validation_error in
@@ -17,19 +22,19 @@ def print_evaluation(verbose: bool = False, goals_to_print: Tuple[str] = ()) \
                            can be too verbose). Set to () if you want to see all optimisation goals/
     :return: decorated Evaluator.evaluate method
     """
-    def decorator(evaluate_method: EVALUATE_METHOD_TYPE) -> EVALUATE_METHOD_TYPE:
-        def wrapper(self: Evaluator, n_resources: int) -> OptimisationGoals:
+    def decorator(evaluate_method: FEvaluate) -> FEvaluate:
+        def wrapper(self: 'TEvaluator', n_resources: int) -> OptimisationGoals:
             if verbose:
                 print(f"\n\n\n{Fore.CYAN}{'-' * 20} Evaluating model on arm {'-' * 20}\n{self.arm}{Style.RESET_ALL}")
             opt_goal = evaluate_method(self, n_resources)
             if verbose:
                 print("\n" + opt_goal.goals_to_str(goals_to_print))
-                if hasattr(opt_goal, "val_correct") and hasattr(opt_goal, "val_total"):
-                    _print_accuracy("Validation", opt_goal.val_correct, opt_goal.val_total)
-                if hasattr(opt_goal, "test_correct") and hasattr(opt_goal, "test_total"):
-                    _print_accuracy("Test", opt_goal.test_correct, opt_goal.test_total)
+                if hasattr(opt_goal, 'val_correct') and hasattr(opt_goal, 'val_total'):
+                    _print_accuracy('Validation', opt_goal.val_correct, opt_goal.val_total)
+                if hasattr(opt_goal, 'test_correct') and hasattr(opt_goal, 'test_total'):
+                    _print_accuracy('Test', opt_goal.test_correct, opt_goal.test_total)
             return opt_goal
-        return wrapper
+        return cast(FEvaluate, wrapper)
     return decorator
 
 

@@ -1,24 +1,24 @@
 import pickle
 from abc import abstractmethod
-from typing import Tuple, Optional
+from typing import Tuple, Optional, cast
 
 import torch
 from torch import cuda
 from torch.autograd import Variable
 from torch.nn import Module
 
-from benchmarks.torch_model_builders import ModelBuilder
-from core import Evaluator, OptimisationGoals
-from datasets.image_dataset_loaders import ImageDatasetLoader
+from autotune.benchmarks.torch_model_builders import ModelBuilder, TModule, TOptimizer
+from autotune.core import Evaluator, OptimisationGoals
+from autotune.datasets.image_dataset_loaders import ImageDatasetLoader
+from autotune.util.logging import Logger
 
 
-class TorchEvaluator(Evaluator):
-
+class TorchEvaluator(Evaluator, Logger):
     """
     Framework for evaluators based on pytorch models
     """
 
-    def __init__(self, model_builder: ModelBuilder, dataset_loader: ImageDatasetLoader,
+    def __init__(self, model_builder: ModelBuilder[TModule, TOptimizer], dataset_loader: ImageDatasetLoader,
                  criterion: Module = torch.nn.CrossEntropyLoss(), output_dir: str = ".", file_name: str = "model.pth"):
         """
         :param model_builder: builder of a machine learning model based on an arm
@@ -28,7 +28,9 @@ class TorchEvaluator(Evaluator):
         :param file_name: file (at output_dir/arm<i>/file_name) which stores the progress of the evaluation of an arm
         """
         super().__init__(model_builder, output_dir, file_name)
-        self.ml_model, self.optimiser = model_builder.construct_model()
+        model_construction = model_builder.construct_model()
+        assert model_construction is not None
+        self.ml_model, self.optimiser = model_construction
         self.criterion = criterion
         self.dataset_loader = dataset_loader
 
@@ -44,11 +46,13 @@ class TorchEvaluator(Evaluator):
             'test_error': test_error,
         }, self.file_path)
         if self.loss_progress_file.exists():
-            with open(self.loss_progress_file, "rb") as f:
-                assert self.loss_history == pickle.load(f)[0]
+            # noinspection PyTypeChecker
+            with open(self.loss_progress_file, 'rb') as file:  # False negative of PyCharm type checker, rely on mypy
+                assert self.loss_history == pickle.load(file)[0]
         self.loss_history.append(val_error)
-        with open(self.loss_progress_file, "wb+") as f:
-            pickle.dump((self.loss_history, self.arm), f)
+        # noinspection PyTypeChecker
+        with open(self.loss_progress_file, 'wb+') as file:  # False negative of PyCharm type checker, rely on mypy
+            pickle.dump((self.loss_history, self.arm), file)
 
     def _resume_from_checkpoint(self) -> int:
         """ Load model and optimiser from file to resume training
@@ -58,7 +62,7 @@ class TorchEvaluator(Evaluator):
         start_epoch = checkpoint['epoch']
         self.ml_model = checkpoint['model']
         self.optimiser = checkpoint['optimiser']
-        return start_epoch
+        return cast(int, start_epoch)
 
     def _train(self, epoch: int, max_batches: int, batch_size: int = 100) -> float:
         """ Train for one epoch
@@ -69,7 +73,7 @@ class TorchEvaluator(Evaluator):
         """
         loader = self.dataset_loader.train_loader(batch_size=batch_size)
 
-        print('\nEpoch: %d' % epoch)
+        self._log_info('\nEpoch: %d' % epoch)
         self.ml_model.train()
 
         train_loss, correct, total = 0, 0, 0
@@ -88,7 +92,7 @@ class TorchEvaluator(Evaluator):
             self.optimiser.step()
 
             train_loss += loss.data.item()
-            _, predicted = torch.max(outputs.data, 1)
+            _, predicted = torch.max(outputs.data, 1)  # pylint: disable=no-member  # False negative
             total += targets.size(0)
             correct += predicted.eq(targets.data).cpu().sum()
 
@@ -104,7 +108,7 @@ class TorchEvaluator(Evaluator):
         self.ml_model.eval()
         test_loss, correct, total = 0, 0, 0
 
-        for batch_idx, (inputs, targets) in enumerate(loader, start=1):
+        for _, (inputs, targets) in enumerate(loader, start=1):  # Using enumerate for consistency with _train
             if cuda.is_available():
                 inputs, targets = inputs.cuda(), targets.cuda()
 
@@ -113,7 +117,7 @@ class TorchEvaluator(Evaluator):
             loss = self.criterion(outputs, targets)
 
             test_loss += loss.data.item()
-            _, predicted = torch.max(outputs.data, 1)
+            _, predicted = torch.max(outputs.data, 1)  # pylint: disable=no-member  # False negative
             total += targets.size(0)
             correct += predicted.eq(targets.data).cpu().sum().item()
 
@@ -129,4 +133,3 @@ class TorchEvaluator(Evaluator):
         :return: optimisation goals - metrics in terms of which we can perform optimisation
                  Eg. validation error, test error
         """
-        pass

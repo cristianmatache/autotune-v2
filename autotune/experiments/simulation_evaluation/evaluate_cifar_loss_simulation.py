@@ -2,9 +2,9 @@ import matplotlib.pyplot as plt
 import pickle
 from os.path import join as join_path
 
-from experiments.run_experiment import OUTPUT_DIR
-from core import ShapeFamily
-from experiments.simulation_evaluation.profiles import plot_profiles, plot_simulated, get_suplots_axes_layout
+from autotune.experiments.run_experiment import OUTPUT_DIR
+from autotune.core import ShapeFamily
+from autotune.experiments.simulation_evaluation.profiles import plot_profiles, plot_simulated, get_suplots_axes_layout
 
 
 # This will fetch the latest experiment on the following problem with the following optimization method

@@ -1,20 +1,23 @@
+# pylint: disable=assigning-non-slot  # Probably a pylint bug
 from abc import abstractmethod
 from pprint import PrettyPrinter
 from typing import Dict, Tuple, List, Union, Optional
+
+import numpy as np
 from hyperopt import hp
 from hyperopt.pyll import Apply
-import numpy as np
 
-from datasets.dataset_loader import DatasetLoader
-from core.evaluator import Evaluator
-from core.params import Param
-from core.arm import Arm
-from core.hyperparams_domain import Domain
+from autotune.core.arm import Arm
+from autotune.core.evaluator import Evaluator
+from autotune.core.hyperparams_domain import Domain
+from autotune.core.params import Param
+from autotune.datasets.dataset_loader import DatasetLoader
+from autotune.util.logging import Logger
 
 
-class HyperparameterOptimisationProblem:
+class HyperparameterOptimisationProblem(Logger):
 
-    __slots__ = ("domain", "hyperparams_to_opt", "dataset_loader", "output_dir")
+    __slots__ = 'domain', 'hyperparams_to_opt', 'dataset_loader', 'output_dir'
 
     def __init__(self, hyperparams_domain: Domain, hyperparams_to_opt: Tuple[str, ...] = (),
                  dataset_loader: Optional[DatasetLoader] = None, output_dir: Optional[str] = None):
@@ -36,15 +39,15 @@ class HyperparameterOptimisationProblem:
         self.dataset_loader = dataset_loader
         self.output_dir = output_dir
 
-    def print_domain(self) -> None:
-        """ Pretty prints the domain of the problem
-        """
-        print(f"\n> Problem {type(self).__name__} hyperparameters domain:")
-        PrettyPrinter(indent=4).pprint(self.domain.__dict__)
+    def log_domain(self) -> None:
+        """Pretty prints the domain of the problem"""
+        self._log_info(f"\n> Problem {type(self).__name__} hyperparameters domain:")
+        self._log_info(PrettyPrinter(indent=4).pformat(self.domain.__dict__))
 
     @abstractmethod
     def get_evaluator(self, arm: Optional[Arm] = None) -> Evaluator:
-        """ An evaluator must:
+        """
+        An evaluator must:
         - generate random arm(s) if None is given
         - build the model based on this arm
         - train it
@@ -52,7 +55,6 @@ class HyperparameterOptimisationProblem:
         :param arm: arm which the evaluator will build a model upon and evaluate
         :return: evaluator
         """
-        pass
 
     def get_hyperopt_space_from_hyperparams_to_opt(self) -> Dict[str, Apply]:
         """ Converts the problem's domain to hyperopt format
@@ -60,6 +62,7 @@ class HyperparameterOptimisationProblem:
         """
 
         def convert_to_hyperopt(param: Param) -> Apply:
+            # pylint: disable=no-else-return  # It would be too hard to follow (needs refactoring)
             if param.scale == "log":
                 assert param.logbase == np.e
                 if param.interval:

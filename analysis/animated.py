@@ -1,10 +1,9 @@
-from benchmarks.opt_function_simulation_problem import OptFunctionSimulationProblem
-from core import ShapeFamily, RoundRobinShapeFamilyScheduler
-
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 import numpy as np
+from matplotlib.animation import FuncAnimation
 
+from autotune.benchmarks.opt_function_simulation_problem import OptFunctionSimulationProblem
+from autotune.core import ShapeFamily, RoundRobinShapeFamilyScheduler
 
 MAX_EPOCH = 20
 

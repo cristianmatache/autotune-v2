@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import ks_2samp
 
-from experiments.simulation_evaluation.profiles import plot_profiles, get_suplots_axes_layout
+from autotune.experiments.simulation_evaluation.profiles import plot_profiles, get_suplots_axes_layout
 
 FILE = '../../../opt_lfns_mnist.pkl'
 FILES_J = {

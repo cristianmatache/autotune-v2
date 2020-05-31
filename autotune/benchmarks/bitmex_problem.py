@@ -1,13 +1,15 @@
 from __future__ import division
-from typing import Any, Tuple, Optional, Dict
-from statsmodels.tsa.ar_model import AR
-import numpy as np
+
+from typing import Any, Tuple, Optional, Dict, cast
+
 import matplotlib.pyplot as plt
+import numpy as np
+from statsmodels.tsa.ar_model import AR
 
-from core import HyperparameterOptimisationProblem, Evaluator, Arm, OptimisationGoals, ModelBuilder, Domain, Param
-from util.io import print_evaluation
-
-from datasets.bitmex_loader import BitmexLoader
+from autotune.core import HyperparameterOptimisationProblem, Evaluator, Arm, OptimisationGoals, ModelBuilder, Domain, \
+    Param
+from autotune.datasets.bitmex_loader import BitmexLoader
+from autotune.util.io import print_evaluation
 
 HYPERPARAMS_DOMAIN = Domain(
     x=Param('x', -5, 10, distrib='uniform', scale='linear'),
@@ -64,10 +66,12 @@ class BitmexEvaluator(Evaluator):
         # return OptimisationGoals(test_error=test_error, validation_error=val_error)
         return OptimisationGoals(test_error=1, validation_error=val_error)
 
-    def _train(self, time_bin_i: int) -> None:
+    def _train(self, epoch: int, max_batches: int, batch_size: int) -> float:
         pass
 
-    def _test(self, n_bins: int, n_seen: int, bin_predictors: Dict[int, AR], is_validation: bool) -> float:
+    def _test(  # type: ignore # pylint: disable=arguments-differ  # noqa # Not used
+            self, n_bins: int, n_seen: int, bin_predictors: Dict[int, AR], is_validation: bool
+    ) -> float:
         with BitmexLoader() as loader:
             val_set = loader.val_set
             n_predictions, _ = val_set.shape
@@ -89,14 +93,13 @@ class BitmexEvaluator(Evaluator):
             errors.append(error)
         print(np.sqrt(errors))
         res_error = np.sqrt(np.mean(errors))
-        return res_error
+        return cast(float, res_error)
 
     def _save_checkpoint(self, epoch: int, val_error: float, test_error: float) -> None:
         pass
 
 
 class BitmexProblem(HyperparameterOptimisationProblem):
-
     """
     Predicting Bitcoin trade volumes based on data from BitMEX exchange
     """
@@ -120,10 +123,11 @@ class BitmexProblem(HyperparameterOptimisationProblem):
             arm = Arm()
             arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)
         model_builder = BitmexBuilder(arm)
-        return BitmexEvaluator(model_builder, self.output_dir)
+        assert self.output_dir is not None
+        return BitmexEvaluator(model_builder, dataset_loader=BitmexLoader(), output_dir=self.output_dir)
 
 
 if __name__ == "__main__":
     bitmex_evaluator = BitmexProblem().get_evaluator()
-    bitmex_evaluator.evaluate(0)
+    bitmex_evaluator.evaluate(n_resources=0)
     plt.show()

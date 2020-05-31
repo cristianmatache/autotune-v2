@@ -1,18 +1,18 @@
 """LeNet in PyTorch."""
-import torch.nn as nn
-from torch.nn import functional
+from torch.nn import functional, Module, Conv2d, Linear
 
 
-class LeNet(nn.Module):
-    def __init__(self):
-        super(LeNet, self).__init__()
-        self.conv1 = nn.Conv2d(3, 6, 5)
-        self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16*5*5, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 10)
+class LeNet(Module):
 
-    def forward(self, x):
+    def __init__(self) -> None:
+        super().__init__()
+        self.conv1 = Conv2d(3, 6, 5)
+        self.conv2 = Conv2d(6, 16, 5)
+        self.fc1 = Linear(16*5*5, 120)
+        self.fc2 = Linear(120, 84)
+        self.fc3 = Linear(84, 10)
+
+    def forward(self, x):  # pylint: disable=arguments-differ  # pytorch uses a bad name "inputs"
         out = functional.relu(self.conv1(x))
         out = functional.max_pool2d(out, 2)
         out = functional.relu(self.conv2(out))

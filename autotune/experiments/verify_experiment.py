@@ -2,8 +2,8 @@ import pickle
 import argparse
 from os.path import join as join_path
 
-from experiments.run_experiment import get_problem
-from core import Arm
+from autotune.experiments.run_experiment import get_problem
+from autotune.core import Arm
 
 INPUT_DIR = "D:/datasets/"
 OUTPUT_DIR = "D:/datasets/output"

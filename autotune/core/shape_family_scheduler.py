@@ -3,7 +3,7 @@ from typing import Optional, Tuple, NamedTuple
 from abc import abstractmethod
 import random
 
-from core import Arm
+from autotune.core import Arm
 
 
 class ShapeFamily(NamedTuple):
@@ -67,9 +67,6 @@ class RoundRobinShapeFamilyScheduler(ShapeFamilyScheduler):
 
 
 class UniformShapeFamilyScheduler(ShapeFamilyScheduler):
-
-    def __init__(self, shape_families: Tuple[ShapeFamily, ...], max_resources: int, init_noise: float):
-        super().__init__(shape_families, max_resources, init_noise)
 
     def get_family(self, arm: Optional[Arm] = None) -> EvaluatorParams:
         """

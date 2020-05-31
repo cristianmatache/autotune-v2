@@ -1,32 +1,40 @@
-from abc import abstractmethod
-import numpy as np
-from typing import Callable, List, Optional, cast
 import time
+from abc import abstractmethod
+from typing import Callable, List, Optional, cast, Union
+
+import numpy as np
 from colorama import Fore, Style
 
-from core.problem_def import HyperparameterOptimisationProblem, SimulationProblem
-from core.optimisation_goals import OptimisationGoals
-from core.evaluator import Evaluator
-from core.evaluation import Evaluation
-from core.shape_family_scheduler import ShapeFamilyScheduler
+from autotune.core.evaluation import Evaluation
+from autotune.core.evaluator import Evaluator
+from autotune.core.optimisation_goals import OptimisationGoals
+from autotune.core.problem_def import HyperparameterOptimisationProblem, SimulationProblem
+from autotune.core.shape_family_scheduler import ShapeFamilyScheduler
+from autotune.util.typing import MinOrMax
 
 
 class Optimiser:
-
     """
     Base class for all optimisers, results of evaluations should be stored in self.eval_history which is used to
     find the optimum arm in terms of min/max self.optimisation_func(evaluation) for each evaluation in self.eval_history
     """
+    time_zero: float     # Start time of optimization
+    cum_time: float      # Cumulative time = time of last evaluation/iteration - start time
+    num_iterations: int  # Number of iterations
+    checkpoints: List[float] = []  # List of cum_times of successful evaluations/iterations so far
 
     @staticmethod
     def default_optimisation_func(opt_goals: OptimisationGoals) -> float:
         """validation_error (Default optimisation_func)"""
         return cast(float, opt_goals.validation_error)
 
-    def __init__(self, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
-                 optimisation_func: Callable[[OptimisationGoals], float] = default_optimisation_func,
-                 is_simulation: bool = False, scheduler: Optional[ShapeFamilyScheduler] = None,
-                 plot_simulation: bool = False):
+    def __init__(
+            self, max_iter: Optional[int] = None, max_time: Optional[int] = None,
+            min_or_max: MinOrMax = cast(MinOrMax, min),
+            optimisation_func: Callable[[OptimisationGoals], float] = default_optimisation_func,
+            is_simulation: bool = False, scheduler: Optional[ShapeFamilyScheduler] = None,
+            plot_simulation: bool = False
+    ):
         """
         :param max_iter: max iteration (considered infinity if None) - stopping condition
         :param max_time: max time a user is willing to wait for (considered infinity if None) - stopping condition
@@ -40,8 +48,8 @@ class Optimiser:
         # stop conditions
         if (max_iter is None) and (max_time is None):
             raise ValueError("max_iter and max_time cannot be None simultaneously")
-        self.max_time: float = np.inf if max_time is None else max_time
-        self.max_iter: float = np.inf if max_iter is None else max_iter
+        self.max_time: int = np.inf if max_time is None else max_time
+        self.max_iter: int = np.inf if max_iter is None else max_iter
 
         if min_or_max not in [min, max]:
             raise ValueError(f"optimization must be a built in function: min or max, instead {min_or_max} was supplied")
@@ -68,9 +76,8 @@ class Optimiser:
         :param verbosity: whether to print the results of every single evaluation/iteration
         :return: Evaluation of best arm (evaluator, optimization_goals)
         """
-        pass
 
-    def _init_optimiser_metrics(self) -> None:
+    def init_optimiser_metrics(self) -> None:
         """
         Optimizer metrics are:
         - time when the optimization started
@@ -91,8 +98,12 @@ class Optimiser:
         self.checkpoints.append(self.cum_time)
 
     def _needs_to_stop(self) -> bool:
-        def _is_time_over() -> bool: return self.max_time <= self.cum_time
-        def _exceeded_iterations() -> bool: return self.max_iter <= self.num_iterations
+        def _is_time_over() -> bool:
+            return self.max_time <= self.cum_time
+
+        def _exceeded_iterations() -> bool:
+            return self.max_iter <= self.num_iterations
+
         if _is_time_over():
             print("\nFINISHED: Time limit exceeded")
         elif _exceeded_iterations():
@@ -128,14 +139,14 @@ class Optimiser:
               f"{Style.RESET_ALL}")
 
 
-RUN_OPTIMISATION_TYPE = Callable[[Optimiser, HyperparameterOptimisationProblem, bool], Evaluation]
+Problem = Union[HyperparameterOptimisationProblem, SimulationProblem]
+RunOptimisationType = Callable[[Optimiser, Problem, bool], Evaluation]
 
 
-def optimisation_metric_user(run_optimisation: RUN_OPTIMISATION_TYPE) -> RUN_OPTIMISATION_TYPE:
-    def wrapper(self: Optimiser, problem: HyperparameterOptimisationProblem, verbosity: bool) -> Evaluation:
-        self._init_optimiser_metrics()
+def optimisation_metric_user(run_optimisation: RunOptimisationType) -> RunOptimisationType:
+    def wrapper(self: Optimiser, problem: Problem, verbosity: bool) -> Evaluation:
+        self.init_optimiser_metrics()
         if self.is_simulation and not isinstance(problem, SimulationProblem):
             raise ValueError("You are trying to run a simulation but you have not provided a shape family schedule")
-        # problem: HyperparameterOptimisationProblem
         return run_optimisation(self, problem, verbosity)
     return wrapper

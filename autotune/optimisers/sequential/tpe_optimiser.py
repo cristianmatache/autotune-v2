@@ -3,7 +3,7 @@ from functools import partial
 from hyperopt import fmin, tpe, Trials, STATUS_OK
 from typing import Callable, Dict, Union, Optional
 
-from core import Optimiser, Evaluation, Arm, HyperparameterOptimisationProblem, Evaluator, OptimisationGoals, \
+from autotune.core import Optimiser, Evaluation, Arm, HyperparameterOptimisationProblem, Evaluator, OptimisationGoals, \
     ShapeFamilyScheduler, optimisation_metric_user, SimulationProblem
 
 

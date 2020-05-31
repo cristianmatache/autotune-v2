@@ -1,7 +1,7 @@
+# pylint: disable=all  # Inherited file
 import SimpleITK as sitk
-import tensorflow as tf
 import numpy as np
-
+import tensorflow as tf
 from dltk.io.augmentation import extract_class_balanced_example_array
 
 
@@ -56,5 +56,3 @@ def read_fn(file_references, mode, params=None):
             else:
                 yield {'features': {'x': images}, 'labels': {'y': lbl},
                        'img_name': img_name, 'sitk': img_sitk}
-
-    return

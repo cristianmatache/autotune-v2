@@ -1,8 +1,8 @@
 from typing import Tuple
 
-from benchmarks.cifar_problem import CifarProblem, HYPERPARAMS_DOMAIN, HYPERPARAMETERS_TO_OPTIMIZE
-from core import Domain
-from datasets.image_dataset_loaders import SVHNLoader
+from autotune.benchmarks.cifar_problem import CifarProblem, HYPERPARAMS_DOMAIN, HYPERPARAMETERS_TO_OPTIMIZE
+from autotune.core import Domain
+from autotune.datasets.image_dataset_loaders import SVHNLoader
 
 
 class SvhnProblem(CifarProblem):

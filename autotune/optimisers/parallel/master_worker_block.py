@@ -5,9 +5,9 @@ from typing import Sequence, Type, List, Callable, Optional, Union
 import mpmath
 from colorama import Fore, Style
 
-from core import Optimiser, HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, ShapeFamilyScheduler, \
-    ShapeFamily, UniformShapeFamilyScheduler
-from optimisers import TpeOptimiser, SigOptimiser, RandomOptimiser
+from autotune.core import Optimiser, HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, \
+    ShapeFamilyScheduler, ShapeFamily, UniformShapeFamilyScheduler
+from autotune.optimisers import TpeOptimiser, SigOptimiser, RandomOptimiser
 
 COL = Fore.MAGENTA
 END = Style.RESET_ALL
@@ -123,10 +123,10 @@ class Master:
 if __name__ == '__main__':
     # INPUT_DIR = "D:/workspace/python/datasets/"
     # OUTPUT_DIR = "D:/workspace/python/datasets/output"
-    # from benchmarks import MnistProblem
+    # from autotune.benchmarks import MnistProblem
     # PROBLEM = MnistProblem(INPUT_DIR, OUTPUT_DIR)
 
-    from benchmarks import OptFunctionSimulationProblem
+    from autotune.benchmarks import OptFunctionSimulationProblem
     PROBLEM = OptFunctionSimulationProblem('rastrigin')
     families_of_shapes_general = (
         ShapeFamily(None, 1.5, 10, 15, False),  # with aggressive start

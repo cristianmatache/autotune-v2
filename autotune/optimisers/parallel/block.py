@@ -3,7 +3,7 @@ from typing import Sequence, Optional
 
 from colorama import Fore, Style
 
-from core import Evaluation
+from autotune.core import Evaluation
 
 COL = Fore.MAGENTA
 END = Style.RESET_ALL

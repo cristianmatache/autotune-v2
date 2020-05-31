@@ -1,19 +1,21 @@
 import argparse
-from argparse import Namespace
-import matplotlib.pyplot as plt
-import numpy as np
 import pickle
+from argparse import Namespace
 from os.path import join as join_path
 
+import matplotlib.pyplot as plt
+import numpy as np
+
 # Optimisers
-from core import Optimiser, RoundRobinShapeFamilyScheduler, ShapeFamily, UniformShapeFamilyScheduler
-from optimisers import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, TpeOptimiser, \
-    HybridHyperbandSigoptOptimiser, HybridHyperbandTpeTransferAllOptimiser, HybridHyperbandTpeNoTransferOptimiser, \
-    HybridHyperbandTpeTransferLongestOptimiser, HybridHyperbandTpeTransferSameOptimiser
+from autotune.core import Optimiser, RoundRobinShapeFamilyScheduler, ShapeFamily, UniformShapeFamilyScheduler
+from autotune.optimisers import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, \
+    TpeOptimiser, HybridHyperbandSigoptOptimiser, HybridHyperbandTpeTransferAllOptimiser, \
+    HybridHyperbandTpeNoTransferOptimiser, HybridHyperbandTpeTransferLongestOptimiser, \
+    HybridHyperbandTpeTransferSameOptimiser
 
 # Problems
-from core import HyperparameterOptimisationProblem, OptimisationGoals
-from benchmarks import OptFunctionSimulationProblem
+from autotune.core import HyperparameterOptimisationProblem, OptimisationGoals
+from autotune.benchmarks import OptFunctionSimulationProblem
 
 OUTPUT_DIR = "D:/datasets/output"
 
@@ -88,7 +90,7 @@ def get_problem(arguments: Namespace) -> HyperparameterOptimisationProblem:
             'sim-wave': 'wave',
             'sim-rastrigin': 'rastrigin',
         }[problem_name])
-    problem_instance.print_domain()
+    problem_instance.log_domain()
     return problem_instance
 
 

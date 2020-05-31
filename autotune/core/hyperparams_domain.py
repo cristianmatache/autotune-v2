@@ -1,14 +1,14 @@
+from dataclasses import dataclass
 from types import SimpleNamespace
 from typing import KeysView, cast
 
-from core.params import Param
-from util.frozen_class import frozen_class
+from autotune.core.params import Param
 
-# PARAM_TYPE = Union[Param, PairParam, CategoricalParam]
-PARAM_TYPE = Param
+# ParamType = Union[Param, PairParam, CategoricalParam]
+ParamType = Param
 
 
-@frozen_class
+@dataclass(init=False, frozen=True)
 class Domain(SimpleNamespace):
 
     """
@@ -16,18 +16,18 @@ class Domain(SimpleNamespace):
     self.momentum = Param('momentum', 0.3, 0.999, distrib='uniform', scale='linear')
     """
 
-    def __init__(self, **kwargs: PARAM_TYPE):
+    def __init__(self, **kwargs: ParamType):  # pylint: disable=useless-super-delegation  # Used for type hints only
         """
         :param kwargs: domain of hyperparameters with names, ranges, distributions etc
                        Eg. {'momentum': Param(...), 'learning_rate': Param(...)}
         """
         super().__init__(**kwargs)
 
-    def __getitem__(self, item: str) -> PARAM_TYPE:
+    def __getitem__(self, item: str) -> ParamType:
         """ Allow dictionary-like access to attributes. That is:
         instead of getattr(domain, item), one can use domain[item]
         """
-        return cast(PARAM_TYPE, getattr(self, item))
+        return cast(ParamType, getattr(self, item))
 
     def hyperparams_names(self) -> KeysView[str]:
         """

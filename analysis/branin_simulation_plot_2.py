@@ -4,7 +4,7 @@ import numpy as np
 from typing import Union
 
 
-from core import Domain, Param
+from autotune.core import Domain, Param
 
 PLOT_SURFACE = False
 HYPERPARAMS_DOMAIN = Domain(

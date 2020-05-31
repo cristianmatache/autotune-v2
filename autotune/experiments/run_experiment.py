@@ -1,26 +1,27 @@
-import pickle
 import argparse
-from argparse import Namespace
 import os
+import pickle
+import random
+from argparse import Namespace
 from os.path import join as join_path
+
 import pandas as pd
+import torch
+
 
 # Optimisers
-from core import Optimiser
-from optimisers.sequential import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, \
-    TpeOptimiser, HybridHyperbandSigoptOptimiser, HybridHyperbandTpeTransferAllOptimiser, \
+from autotune.core import Optimiser
+from autotune.optimisers.sequential import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, \
+    SigOptimiser, TpeOptimiser, HybridHyperbandSigoptOptimiser, HybridHyperbandTpeTransferAllOptimiser, \
     HybridHyperbandTpeNoTransferOptimiser, HybridHyperbandTpeTransferLongestOptimiser, \
     HybridHyperbandTpeTransferSameOptimiser
-from optimisers.parallel import ParallelHyperbandOptimiser
+from autotune.optimisers.parallel import ParallelHyperbandOptimiser
 
 
 # Problems
-from core import HyperparameterOptimisationProblem, OptimisationGoals
-from benchmarks import MnistProblem, CifarProblem, SvhnProblem, MrbiProblem, OptFunctionProblem, AVAILABLE_OPT_FUNCTIONS
-
-# Set random seeds
-import random
-import torch
+from autotune.core import HyperparameterOptimisationProblem, OptimisationGoals
+from autotune.benchmarks import MnistProblem, CifarProblem, SvhnProblem, MrbiProblem, OptFunctionProblem, \
+    AVAILABLE_OPT_FUNCTIONS
 
 
 INPUT_DIR = "D:/workspace/python/datasets/"
@@ -90,7 +91,7 @@ def get_problem(problem_name: str, input_dir: str, output_dir: str) -> Hyperpara
         optimisation_func = optimisation_func_opt_function  # noqa: F841
     else:
         raise ValueError(f"Supplied problem {problem_name} does not exist")
-    problem_instance.print_domain()
+    problem_instance.log_domain()
     return problem_instance
 
 

@@ -6,13 +6,13 @@ import mpmath
 from colorama import Fore, Style
 from flask import Flask
 
-from core import Optimiser, HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, ShapeFamilyScheduler, \
-    ShapeFamily, UniformShapeFamilyScheduler
-from optimisers.sequential.tpe_optimiser import TpeOptimiser
-from optimisers.sequential.sigopt_optimiser import SigOptimiser
-from optimisers.sequential.random_optimiser import RandomOptimiser
-from optimisers.parallel.block import Block
-from optimisers.parallel.worker_server import Worker
+from autotune.core import Optimiser, HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, \
+    ShapeFamilyScheduler, ShapeFamily, UniformShapeFamilyScheduler
+from autotune.optimisers.sequential.tpe_optimiser import TpeOptimiser
+from autotune.optimisers.sequential.sigopt_optimiser import SigOptimiser
+from autotune.optimisers.sequential.random_optimiser import RandomOptimiser
+from autotune.optimisers.parallel.block import Block
+from autotune.optimisers.parallel.worker_server import Worker
 
 COL = Fore.MAGENTA
 END = Style.RESET_ALL
@@ -23,8 +23,8 @@ class Master:
     n_workers: int
     eta: int
     sampler: Type[Union[TpeOptimiser, SigOptimiser, RandomOptimiser]]
-    max_iter: int = None
-    max_time: int = None
+    max_iter: Optional[int] = None
+    max_time: Optional[int] = None
     min_or_max: Callable = min
     optimisation_func: Callable[[OptimisationGoals], float] = Optimiser.default_optimisation_func
     is_simulation: bool = False
@@ -78,7 +78,7 @@ PROBLEM: HyperparameterOptimisationProblem
 
 @app.route('/set-master/n-workers=<n_workers>/eta=<eta>/max-iter=<max_iter>/sampler=<sampler>')
 def set_master(n_workers: str = '2', eta: str = '3', max_iter: str = '81', _: str = ...) -> None:
-    from benchmarks import OptFunctionSimulationProblem
+    from autotune.benchmarks import OptFunctionSimulationProblem
     global PROBLEM
     PROBLEM = OptFunctionSimulationProblem('rastrigin')
     families_of_shapes_general = (
@@ -100,7 +100,7 @@ def set_master(n_workers: str = '2', eta: str = '3', max_iter: str = '81', _: st
 if __name__ == '__main__':
     INPUT_DIR = "D:/workspace/python/datasets/"
     OUTPUT_DIR = "D:/workspace/python/datasets/output"
-    from benchmarks import MnistProblem
+    from autotune.benchmarks import MnistProblem
     PROBLEM = MnistProblem(INPUT_DIR, OUTPUT_DIR)
 
     MASTER.run_optimisation(PROBLEM)

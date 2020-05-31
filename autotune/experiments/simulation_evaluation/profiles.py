@@ -4,8 +4,9 @@ from matplotlib.axes import Axes
 from typing import List, Optional, Tuple, Type
 import numpy as np
 
-from benchmarks.opt_function_simulation_problem import OptFunctionSimulationProblem, OptFunctionSimulationEvaluator
-from core import Arm, RoundRobinShapeFamilyScheduler, ShapeFamily, Evaluator, ShapeFamilyScheduler
+from autotune.benchmarks.opt_function_simulation_problem import OptFunctionSimulationProblem, \
+    OptFunctionSimulationEvaluator
+from autotune.core import Arm, RoundRobinShapeFamilyScheduler, ShapeFamily, Evaluator, ShapeFamilyScheduler
 
 
 def get_evaluator_by_arm(arm: Arm, evaluators: List[Evaluator]) -> Evaluator:

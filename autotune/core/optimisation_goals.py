@@ -1,12 +1,10 @@
-from typing import Tuple, List, Union
+from dataclasses import dataclass
 from types import SimpleNamespace
+from typing import Tuple, List, Union
 
-from util.frozen_class import frozen_class
 
-
-@frozen_class
+@dataclass(init=False, frozen=True)
 class OptimisationGoals(SimpleNamespace):
-
     """
     Metrics in terms of which we can perform optimization (individually or by aggregation). That is, the optimizers will
     minimize/maximize one of their attributes or even aggregations (Eg. weighted sum) of attributes, as indicated by
@@ -33,7 +31,10 @@ class OptimisationGoals(SimpleNamespace):
         goals = {g: self.__dict__[g] for g in goals_to_print if g in self.__dict__}
         try:
             max_len = max([len(g) for g in goals.keys()]) + 1
-            def padding(word) -> int: return max_len - len(word)
+
+            def padding(word) -> int:
+                return max_len - len(word)
+
             goals_strings = [f"  {g}:{padding(g) * ' '}{val}" for g, val in goals.items()]
             return "\n".join(["> Optimization goals:", *goals_strings])
         except ValueError:

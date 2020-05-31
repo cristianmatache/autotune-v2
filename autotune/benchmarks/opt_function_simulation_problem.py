@@ -1,21 +1,23 @@
 from __future__ import division
-import numpy as np
+
 from typing import Optional, Tuple
+
 import matplotlib.pyplot as plt
+import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 
-from core import Arm, OptimisationGoals, ModelBuilder, RoundRobinShapeFamilyScheduler, ShapeFamily, \
+from autotune.benchmarks.opt_function_problem import OptFunctionBuilder, OptFunctionEvaluator, OptFunctionProblem, \
+    OPT_FUNCTIONS
+from autotune.core import Arm, OptimisationGoals, ModelBuilder, RoundRobinShapeFamilyScheduler, ShapeFamily, \
     SimulationProblem, SimulationEvaluator
-from util.io import print_evaluation
-from benchmarks.opt_function_problem import OptFunctionBuilder, OptFunctionEvaluator, OptFunctionProblem, OPT_FUNCTIONS
+from autotune.util.io import print_evaluation
 
 
 class OptFunctionSimulationEvaluator(OptFunctionEvaluator, SimulationEvaluator):
-
     EPSILON = 0.0001
 
     def __init__(self, func_name: str,
-                 model_builder: ModelBuilder, output_dir: Optional[str] = None, file_name: str = "model.pth",
+                 model_builder: ModelBuilder,
                  ml_aggressiveness: float = 0,
                  necessary_aggressiveness: float = 0,
                  up_spikiness: float = 0,
@@ -27,8 +29,6 @@ class OptFunctionSimulationEvaluator(OptFunctionEvaluator, SimulationEvaluator):
                  should_plot: bool = False):
         """
         :param model_builder:
-        :param output_dir:
-        :param file_name:
         :param ml_aggressiveness:
         :param necessary_aggressiveness:
         :param up_spikiness:
@@ -39,8 +39,7 @@ class OptFunctionSimulationEvaluator(OptFunctionEvaluator, SimulationEvaluator):
         :param init_noise:
         :param should_plot:
         """
-        OptFunctionEvaluator.__init__(self, func_name=func_name, model_builder=model_builder,
-                                      output_dir=output_dir, file_name=file_name)
+        OptFunctionEvaluator.__init__(self, func_name=func_name, model_builder=model_builder)
         SimulationEvaluator.__init__(self, ml_aggressiveness, necessary_aggressiveness, up_spikiness, max_resources,
                                      is_smooth)
         self.init_noise = init_noise
@@ -49,7 +48,8 @@ class OptFunctionSimulationEvaluator(OptFunctionEvaluator, SimulationEvaluator):
 
     @print_evaluation(verbose=False, goals_to_print=())
     def evaluate(self, n_resources: int) -> OptimisationGoals:
-        """ Given an arm (draw of hyperparameter values), evaluate the Branin simulation function on it
+        """
+        Given an arm (draw of hyperparameter values), evaluate the Branin simulation function on it
         :param n_resources: this parameter is not used in this function but all optimisers require this parameter
         :return: the function value for the current arm can be found in OptimisationGoals.fval, Note that test_error and
         validation_error attributes are mandatory for OptimisationGoals objects but Branin has no machine learning model
@@ -87,18 +87,12 @@ class OptFunctionSimulationEvaluator(OptFunctionEvaluator, SimulationEvaluator):
 
 class OptFunctionSimulationProblem(OptFunctionProblem, SimulationProblem):
 
-    """
-    """
-
-    def get_evaluator(self, arm: Optional[Arm] = None,
-                      ml_aggressiveness: float = 0.9,
-                      necessary_aggressiveness: float = 10,
-                      up_spikiness: float = 0.1,
-                      is_smooth: bool = False,
-                      start_shift: int = 0, end_shift: int = 200,
-                      max_resources: int = 81,
-                      init_noise: int = 0,
-                      should_plot: bool = False) -> OptFunctionSimulationEvaluator:
+    def get_evaluator(  # type: ignore # pylint: disable=arguments-differ  # FIXME
+            self, arm: Optional[Arm] = None,
+            ml_aggressiveness: float = 0.9, necessary_aggressiveness: float = 10, up_spikiness: float = 0.1,
+            is_smooth: bool = False, start_shift: int = 0, end_shift: int = 200,
+            max_resources: int = 81, init_noise: int = 0, should_plot: bool = False
+    ) -> OptFunctionSimulationEvaluator:
         """
         :param arm: a combination of hyperparameters and their values
         :param ml_aggressiveness:
@@ -116,17 +110,17 @@ class OptFunctionSimulationProblem(OptFunctionProblem, SimulationProblem):
             arm = Arm()
             arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)
         model_builder = OptFunctionBuilder(arm)
-        return OptFunctionSimulationEvaluator(func_name=self.func_name, model_builder=model_builder,
-                                              ml_aggressiveness=ml_aggressiveness,
-                                              necessary_aggressiveness=necessary_aggressiveness,
-                                              up_spikiness=up_spikiness,
-                                              is_smooth=is_smooth, start_shift=start_shift, end_shift=end_shift,
-                                              max_resources=max_resources, init_noise=init_noise,
-                                              should_plot=should_plot)
+        return OptFunctionSimulationEvaluator(
+            func_name=self.func_name, model_builder=model_builder, ml_aggressiveness=ml_aggressiveness,
+            necessary_aggressiveness=necessary_aggressiveness, up_spikiness=up_spikiness, is_smooth=is_smooth,
+            start_shift=start_shift, end_shift=end_shift, max_resources=max_resources, init_noise=init_noise,
+            should_plot=should_plot)
 
-    def plot_surface(self, n_simulations: int, max_resources: int = 81, n_resources: Optional[int] = None,
-                     shape_families: Tuple[ShapeFamily, ...] = (ShapeFamily(None, 0.9, 10, 0.1),),
-                     init_noise: float = 0) -> None:
+    def plot_surface(  # pylint: disable=arguments-differ
+            self, n_simulations: int, max_resources: int = 81, n_resources: Optional[int] = None,
+            shape_families: Tuple[ShapeFamily, ...] = (ShapeFamily(None, 0.9, 10, 0.1),),
+            init_noise: float = 0
+    ) -> None:
         """ plots the surface of the values of simulated loss functions at n_resources, by default is plot the losses
         at max resources, in which case their values would be 200-branin (if necessary aggressiveness is not disabled)
         :param n_simulations: number of simulations
@@ -142,8 +136,8 @@ class OptFunctionSimulationProblem(OptFunctionProblem, SimulationProblem):
         scheduler = RoundRobinShapeFamilyScheduler(shape_families, max_resources, init_noise)
 
         xs, ys, zs = [], [], []
-        for i in range(n_simulations):
-            evaluator = self.get_evaluator(*scheduler.get_family(), should_plot=True)
+        for _ in range(n_simulations):
+            evaluator = self.get_evaluator(*scheduler.get_family(), should_plot=True)  # type: ignore  # FIXME
             xs.append(evaluator.arm.x)
             ys.append(evaluator.arm.y)
             z = evaluator.evaluate(n_resources=n_resources).fval

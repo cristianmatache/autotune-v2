@@ -1,13 +1,12 @@
-import numpy as np
 from typing import Tuple, Type, Optional
 
-from core import HyperparameterOptimisationProblem, Arm, OptimisationGoals, Domain, Param
+import numpy as np
 
-from datasets.image_dataset_loaders import CIFARLoader, ImageDatasetLoader
-from benchmarks.torch_evaluator import TorchEvaluator
-from benchmarks.torch_model_builders import CNNBuilder
-from util.io import print_evaluation
-
+from autotune.benchmarks.torch_evaluator import TorchEvaluator
+from autotune.benchmarks.torch_model_builders import CNNBuilder
+from autotune.core import HyperparameterOptimisationProblem, Arm, OptimisationGoals, Domain, Param
+from autotune.datasets.image_dataset_loaders import CIFARLoader, ImageDatasetLoader
+from autotune.util.io import print_evaluation
 
 LEARNING_RATE = Param('learning_rate', np.log(10 ** -6), np.log(10 ** 0), distrib='uniform', scale='log')
 N_UNITS_1 = Param('n_units_1', np.log(2 ** 4), np.log(2 ** 8), distrib='uniform', scale='log', interval=1)
@@ -94,10 +93,15 @@ class CifarProblem(HyperparameterOptimisationProblem):
     """
     Classification on CIFAR-10 dataset with a CNN
     """
+    dataset_loader: ImageDatasetLoader   # Used by SVHN and MRBI as well
 
-    def __init__(self, data_dir: str, output_dir: str, dataset_loader: Optional[Type[ImageDatasetLoader]] = CIFARLoader,
-                 hyperparams_domain: Domain = HYPERPARAMS_DOMAIN,
-                 hyperparams_to_opt: Tuple[str, ...] = HYPERPARAMETERS_TO_OPTIMIZE, in_channels: int = 3):
+    def __init__(
+            self, data_dir: str, output_dir: str,
+            dataset_loader: Type[ImageDatasetLoader] = CIFARLoader,
+            hyperparams_domain: Domain = HYPERPARAMS_DOMAIN,
+            hyperparams_to_opt: Tuple[str, ...] = HYPERPARAMETERS_TO_OPTIMIZE,
+            in_channels: int = 3
+    ) -> None:
         """
         :param data_dir: directory where the dataset is stored (or will be downloaded to if not already)
         :param output_dir: directory where to save the arms and their evaluation progress so far (as checkpoints)
@@ -107,9 +111,8 @@ class CifarProblem(HyperparameterOptimisationProblem):
         :param hyperparams_to_opt: names of hyperparameters to be optimised, if () all params from domain are optimised
         :param in_channels: in_channels of CNNBuilder (for CudaConvNet2)
         """
-        if dataset_loader is not None:
-            dataset_loader = dataset_loader(data_dir)
-        super().__init__(hyperparams_domain, hyperparams_to_opt, dataset_loader, output_dir)
+        dataset_loader_ = dataset_loader(data_dir)
+        super().__init__(hyperparams_domain, hyperparams_to_opt, dataset_loader_, output_dir)
         self.in_channels = in_channels
 
     def get_evaluator(self, arm: Optional[Arm] = None) -> CifarEvaluator:
@@ -121,4 +124,5 @@ class CifarProblem(HyperparameterOptimisationProblem):
             arm = Arm()
             arm.draw_hp_val(domain=self.domain, hyperparams_to_opt=self.hyperparams_to_opt)
         model_builder = CNNBuilder(arm, in_channels=self.in_channels)
+        assert self.output_dir is not None
         return CifarEvaluator(model_builder, self.dataset_loader, output_dir=self.output_dir)

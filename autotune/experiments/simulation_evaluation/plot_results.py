@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from typing import List, Tuple
 
-from experiments.simulation_evaluation.profiles import get_dynamic_order_profile
+from autotune.experiments.simulation_evaluation.profiles import get_dynamic_order_profile
 
 
 def plot_smooth(x: List[float], start: float, end: float, bandwidth: float = 0.5) -> np.ndarray:
