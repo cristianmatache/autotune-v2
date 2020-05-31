@@ -2,7 +2,7 @@
 
 [![<ORG_NAME>](https://circleci.com/gh/cristianmatache/autotune-v2.svg?style=svg)](https://circleci.com/gh/cristianmatache/autotune-v2)
 
-### Abstract
+## Abstract
 Performance of machine learning models relies heavily on finding a good combination of hyperparameters. We aim to design the most efficient hybrid between two best-in-class hyperparameter
 optimizers, Hyperband and TPE. On the way there, we identified and solved a few problems:
 
@@ -40,7 +40,7 @@ TODO URL
 Example loss functions | Example optimal final error (OFE)
 --------------------------------|----------------------------------
 <img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/loss-function-profiles.png" width="300"> | <img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/best-result-metric.png" width="300">
-Several profiles e.g. mean, std, order |  Lowest final error of all loss functions:
+Several profiles e.g. mean, std, order |  Lowest final error of all loss functions
 
 We are therefore characterizing an optimizer by its estimated probability density function of optimal final errors (EPDF-OFE).
 This would give us more meaningful quantitative measures like statistical significance.
@@ -65,12 +65,12 @@ We found that several Hyperband implementations suffer from a floating point ari
 - Wasting time and computing resources heavily
 
 **Some of the flawed Hyperband implementations as of Sep 2019:**
-1. https://homes.cs.washington.edu/˜jamieson/hyperband .html used by Hyperband authors (Li et al., 2016)
-2. https://github.com/automl/HpBandSter/blob/367b6c42 03a63ff8b395740995b22dab512dcfef/hpbandster/ optimizers/hyperband.py#L60usedbyBOHB (Falkner et al., 2018). 
-3. https://github.com/zygmuntz/hyperband/blob/master/ hyperband.py#L18 
+1. https://homes.cs.washington.edu/˜jamieson/hyperband.html used by Hyperband authors (Li et al., 2016)
+2. https://github.com/automl/HpBandSter/blob/367b6c42 03a63ff8b395740995b22dab512dcfef/hpbandster/optimizers/hyperband.py#L60usedbyBOHB (Falkner et al., 2018). 
+3. https://github.com/zygmuntz/hyperband/blob/master/hyperband.py#L18 
 4. https://gist.github.com/PetrochukM/2c5fae9daf0529ed 589018c6353c9f7b#ﬁle-hyperband-py-L204 
-5. https://github.com/electricbrainio/hypermax/blob/mast er/hypermax/algorithms/adaptive bayesian hyperband optimizer.py#L26 
-6. https://github.com/polyaxon/polyaxon/blob/c8bc14e92 b45579ecc19f2e51ae161f84d35d817/polyaxon/hpsearc h/search managers/hyperband.py#L58 
+5. https://github.com/electricbrainio/hypermax/blob/master/hypermax/algorithms/adaptivebayesianhyperbandoptimizer.py#L26 
+6. https://github.com/polyaxon/polyaxon/blob/c8bc14e92 b45579ecc19f2e51ae161f84d35d817/polyaxon/hpsearch/search managers/hyperband.py#L58 
 7. https://github.com/thuijskens/scikithyperband/blob/master/hyperband/search.py#L346
 
 
