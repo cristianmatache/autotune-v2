@@ -8,7 +8,6 @@ from os.path import join as join_path
 import pandas as pd
 import torch
 
-
 # Optimisers
 from autotune.core import Optimiser
 from autotune.optimisers.sequential import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, \
@@ -16,7 +15,6 @@ from autotune.optimisers.sequential import HybridHyperbandTpeOptimiser, Hyperban
     HybridHyperbandTpeNoTransferOptimiser, HybridHyperbandTpeTransferLongestOptimiser, \
     HybridHyperbandTpeTransferSameOptimiser
 from autotune.optimisers.parallel import ParallelHyperbandOptimiser
-
 
 # Problems
 from autotune.core import HyperparameterOptimisationProblem, OptimisationGoals
