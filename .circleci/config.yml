@@ -13,14 +13,10 @@ jobs:
       - python/save-cache
       - run:
           name: PEP8 Syntax - flake8
-          command: |
-            . venv/bin/activate
-            flake8 autotune/ --config=.flake8
+          command: flake8 autotune/ --config=.flake8
       - run:
           name: Type Check - mypy
-          command: |
-            . venv/bin/activate
-            mypy autotune/benchmarks/ autotune/core/ autotune/datasets/ autotune/util/
+          command: mypy autotune/benchmarks/ autotune/core/ autotune/datasets/ autotune/util/
 
 workflows:
   main:
