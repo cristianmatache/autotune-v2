@@ -1,6 +1,6 @@
-# Autotune-v3
+# Autotune-v2
 
-[![<ORG_NAME>](https://circleci.com/gh/cristianmatache/autotune-v3.svg?style=svg)](https://circleci.com/gh/cristianmatache/autotune-v3)
+[![<ORG_NAME>](https://circleci.com/gh/cristianmatache/autotune-v2.svg?style=svg)](https://circleci.com/gh/cristianmatache/autotune-v2)
 
 #### Associated works
 - *Efficient design of Machine Learning hyperparameter optimizers.* Cristian Matache, Dr. Jonathan Passerat-Palmbach, Dr. Bernhard Kainz. Imperial College London 2019 
