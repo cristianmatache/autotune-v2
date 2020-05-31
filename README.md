@@ -38,21 +38,28 @@ TODO URL
 
 ## Preliminaries
 #### 1. Gaussian processes
-![gaussian processes](https://drive.google.com/open?id=1FJ2DQvyEiNNYnfuzfWLQ_NLmN2SJjydk)
+![gaussian processes](https://github.com/cristianmatache/autotune-v2/blob/master/static/gaussian-processes.png)
 #### 2. Hyperband
+![hyperband table](https://github.com/cristianmatache/autotune-v2/blob/master/static/hyperband-table.png)
 
 ## Preview
-#### 1. Better metrics: EPDF-OFEs
-Estimated probability density function of optimal final errors. 
-
+#### 1. Better optimizer metrics: EPDF-OFEs
 Example loss functions profiles:
-![lossfn profiles](https://drive.google.com/file/d/1-vEBhyy0IbGxMTOrQ1bR7cq18kQ8x4mE/view?usp=sharing)
+![lossfn profiles](https://github.com/cristianmatache/autotune-v2/blob/master/static/loss-function-profiles.png)
 
-Optimal final errors of loss functions:
+Example optimal final error (OFE) of 3 loss functions - lowest final error of all loss functions:
+![OFEs](https://github.com/cristianmatache/autotune-v2/blob/master/static/best-result-metric.png)
 
+We are therefore characterizing an optimizer by its estimated probability density function of optimal final errors (EPDF-OFE).
+This would give us more meaningful quantitative measures like statistical significance.
+Example:
 
-Problem: One needs to run the optimizer several times to find its EPDF-OFE which is very time consuming (order of years) if done on the pure underlying ML model since 
-it requires retraining.
+Histogram of OFEs occurrences                                                                         |  Estimated PDFs
+:----------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------:
+![](https://github.com/cristianmatache/autotune-v2/blob/master/static/pdf-ofe-hb-tpe-2tpe-hist.png)   |  ![](https://github.com/cristianmatache/autotune-v2/blob/master/static/pdf-ofe-hb-tpe-2tpe-pdf-ofe.png) 
+
+*Problem:* One needs to run the optimizer several times to find its EPDF-OFE which is very time consuming (order of years) if done on the pure underlying ML model since 
+it requires retraining. *Solved later* 
 
 #### 2. Implementations of otimizers can be flawed
 Testing optimizers is usually done on some known hard-to-optimize function like Rastrigin. 
