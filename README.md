@@ -64,14 +64,14 @@ We found that several Hyperband implementations suffer from a floating point ari
 - Less exploration (up to an order of magnitude)
 - Wasting time and computing resources heavily
 
-**Some of the flawed Hyperband implementations as of Sep 2019:**
-1. https://homes.cs.washington.edu/˜jamieson/hyperband.html used by Hyperband authors (Li et al., 2016)
+**Some of the flawed Hyperband implementations:**
+1. https://homes.cs.washington.edu/~jamieson/hyperband.html used by Hyperband authors (Li et al., 2016)
 2. https://github.com/automl/HpBandSter/blob/367b6c4203a63ff8b395740995b22dab512dcfef/hpbandster/optimizers/hyperband.py#L60 used by BOHB (Falkner et al., 2018). 
 3. https://github.com/zygmuntz/hyperband/blob/master/hyperband.py#L18 
 4. https://gist.github.com/PetrochukM/2c5fae9daf0529ed589018c6353c9f7b#ﬁle-hyperband-py-L204 
-5. https://github.com/electricbrainio/hypermax/blob/master/hypermax/algorithms/adaptivebayesianhyperbandoptimizer.py#L26 
-6. https://github.com/polyaxon/polyaxon/blob/c8bc14e92b45579ecc19f2e51ae161f84d35d817/polyaxon/hpsearch/searchmanagers/hyperband.py#L58 
-7. https://github.com/thuijskens/scikithyperband/blob/master/hyperband/search.py#L346
+5. https://github.com/electricbrainio/hypermax/blob/master/hypermax/algorithms/adaptive_bayesian_hyperband_optimizer.py#L26
+6. https://github.com/polyaxon/polyaxon/blob/ee3fe8a191d96fc8ba3c1affd13f7ed5e7b471c7/core/polyaxon/polytune/search_managers/hyperband/manager.py#L75
+7. https://github.com/thuijskens/scikit-hyperband/blob/master/hyperband/search.py#L346
 
 
 #### 3. Testing optimizers: Gamma loss function simulations
