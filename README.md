@@ -110,4 +110,4 @@ Gaussian processes| Hyperband
 8. At the time of writing, before June 2019, ray (https://ray.readthedocs.io) also had the same issue but was since resolved.
 
 In 2020, we discovered that Microsoft's nni has independently fixed the same issue around the same time with us in 2019:
-https://github.com/microsoft/nni/commit/c6b7cc8931042f318693d5ddcd1cc430d7734144
+https://github.com/microsoft/nni/commit/c6b7cc8931042f318693d5ddcd1cc430d7734144 but no way of testing has been provided.
