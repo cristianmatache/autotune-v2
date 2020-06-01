@@ -97,7 +97,7 @@ Gaussian processes| Hyperband
 5. https://github.com/electricbrainio/hypermax/blob/master/hypermax/algorithms/adaptive_bayesian_hyperband_optimizer.py#L26
 6. https://github.com/polyaxon/polyaxon/blob/ee3fe8a191d96fc8ba3c1affd13f7ed5e7b471c7/core/polyaxon/polytune/search_managers/hyperband/manager.py#L75
 7. https://github.com/thuijskens/scikit-hyperband/blob/master/hyperband/search.py#L346
-At the time of writing, before June 2019, ray (https://ray.readthedocs.io) also had the same issue but was since resolved.
+8. At the time of writing, before June 2019, ray (https://ray.readthedocs.io) also had the same issue but was since resolved.
 
 In 2020, we discovered that Microsoft's nni has independently fixed the same issue around the same time with us in 2019:
 https://github.com/microsoft/nni/commit/c6b7cc8931042f318693d5ddcd1cc430d7734144
