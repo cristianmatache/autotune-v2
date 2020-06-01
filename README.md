@@ -53,11 +53,11 @@ Histogram of OFEs occurrences                                                   
 *Problem:* One needs to run the optimizer several times to find its EPDF-OFE which is very time consuming (order of years) if done on the pure underlying ML model since 
 it requires retraining. *Solved later* 
 
-#### 2. Implementations of optimizers can be flawed
+#### 2. Need for testing: optimizer implementations can be flawed
 Testing optimizers is usually done on some known hard-to-optimize function like Rastrigin. 
 Testing on real ML models is much more difficult due to prolonged times of retraining the models several times for each optimization. 
 Hence, for hyperparameter optimizers that employ early stopping there is virtually no way of testing comprehensively. 
-This is problematic since **popular optimizers have flawed implementations**.
+This is problematic since popular optimizers have flawed implementations.
 
 **Example flaw - Hyperband:**
 We found that several Hyperband implementations suffer from a floating point arithmetic bug. This minor bug has impactful consequences:
@@ -65,7 +65,7 @@ We found that several Hyperband implementations suffer from a floating point ari
 - Wasting time and computing resources heavily
 
 
-#### 3. Testing optimizers: Gamma loss function simulations
+#### 3. Testing solved: Gamma loss function simulations
 There is a clear need for more comprehensive testing of optimizers, especially for those that employ early stopping. 
 We propose a method based on **Gamma processes** to simulate the loss functions in negligible time in order to test optimizers in several cases.
 For illustrative purposes, we reproduced the loss function "landscape" of running logistic regresstion on MNIST dataset.
@@ -82,7 +82,7 @@ TODO
 
 ## Appendix
 #### 1. Optimizers heat map
-<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/heatmap.png" width="300">
+<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/heatmap.PNG" width="400">
 
 #### 2. Preliminaries
 Gaussian processes| Hyperband
@@ -97,7 +97,7 @@ Gaussian processes| Hyperband
 5. https://github.com/electricbrainio/hypermax/blob/master/hypermax/algorithms/adaptive_bayesian_hyperband_optimizer.py#L26
 6. https://github.com/polyaxon/polyaxon/blob/ee3fe8a191d96fc8ba3c1affd13f7ed5e7b471c7/core/polyaxon/polytune/search_managers/hyperband/manager.py#L75
 7. https://github.com/thuijskens/scikit-hyperband/blob/master/hyperband/search.py#L346
-At the time of writing, before June 2019, ray (https://ray.readthedocs.io) also had the same issue but was since resolved.
+8. At the time of writing, before June 2019, ray (https://ray.readthedocs.io) also had the same issue but was since resolved.
 
 In 2020, we discovered that Microsoft's nni has independently fixed the same issue around the same time with us in 2019:
 https://github.com/microsoft/nni/commit/c6b7cc8931042f318693d5ddcd1cc430d7734144
