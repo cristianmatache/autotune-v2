@@ -67,7 +67,7 @@ We found that several Hyperband implementations suffer from a floating point ari
 
 #### 3. Testing solved: Gamma loss function simulations
 There is a clear need for more comprehensive testing of optimizers, especially for those that employ early stopping. 
-We propose a method based on **Gamma processes** to simulate the loss functions in negligible time in order to test optimizers in several cases.
+We propose a method based on Gamma processes to simulate the loss functions in negligible time in order to test optimizers in several cases.
 For illustrative purposes, we reproduced the loss function "landscape" of running logistic regresstion on MNIST dataset.
 Real MNIST loss functions | Simulated loss functions 
 --------------------------|--------------------------
@@ -79,8 +79,12 @@ Gamma distribution at step `t` | Rastrigin function
 -------------------------------|-------------------
 <img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/gamma.png" width="300">|<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/rastrigin-surface.png" width="300">
 
-#### 3. Approximation: Closest loss function in terms of MSE
-TODO
+#### 3. Approximation: Closest known loss function (in terms of MSE)
+The ﬁrst step of Closest-known-function approximation is collecting data (complete loss functions) for a given machine learning model on a given dataset. By complete loss function we mean that they have a representative length (convergence is clearly observable) and that they have not been "trimmed" by any early stopping method. Every loss function corresponds to a combination of hyperparameters so we store this mapping in a database.
+
+Next, when an optimizer "proposes" a combination of hyperparameters (called an "arm") for its next iteration, instead of retraining the ML model with the proposed arm (to find the corresponding loss function), we look up the database and return the loss function corresponding to the arm that is closest in terms of mean square error (MSE) of the normalized hyperparameters. We approximate the behaviour of the real ML model in negligible time and use it to generate EPDF-OFEs. 
+
+Database sharing brings a comparable metric to optimizer designers. The more loss functions are collected the better the results of the approximation. Because we are interested in ﬁnding the best loss function, it is important to have some density of functions around the optimal one. Similarly, to Bayesian optimizers it assumes some smoothness of the true objective function.
 
 #### 4. Hyperband-TPE hybrids
 TODO
