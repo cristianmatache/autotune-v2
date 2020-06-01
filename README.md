@@ -82,7 +82,7 @@ TODO
 
 ## Appendix
 #### 1. Optimizers heat map
-<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/heatmap.png" width="300">
+<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/heatmap.PNG" width="400">
 
 #### 2. Preliminaries
 Gaussian processes| Hyperband
