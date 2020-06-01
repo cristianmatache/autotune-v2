@@ -53,7 +53,7 @@ Histogram of OFEs occurrences                                                   
 *Problem:* One needs to run the optimizer several times to find its EPDF-OFE which is very time consuming (order of years) if done on the pure underlying ML model since 
 it requires retraining. *Solved later* 
 
-#### 2. Implementations of optimizers can be flawed
+#### 2. Need for testing: optimizer implementations can be flawed
 Testing optimizers is usually done on some known hard-to-optimize function like Rastrigin. 
 Testing on real ML models is much more difficult due to prolonged times of retraining the models several times for each optimization. 
 Hence, for hyperparameter optimizers that employ early stopping there is virtually no way of testing comprehensively. 
@@ -65,7 +65,7 @@ We found that several Hyperband implementations suffer from a floating point ari
 - Wasting time and computing resources heavily
 
 
-#### 3. Testing optimizers: Gamma loss function simulations
+#### 3. Testing solved: Gamma loss function simulations
 There is a clear need for more comprehensive testing of optimizers, especially for those that employ early stopping. 
 We propose a method based on **Gamma processes** to simulate the loss functions in negligible time in order to test optimizers in several cases.
 For illustrative purposes, we reproduced the loss function "landscape" of running logistic regresstion on MNIST dataset.
