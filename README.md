@@ -73,7 +73,7 @@ Real MNIST loss functions | Simulated loss functions
 --------------------------|--------------------------
 <img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/mnist-real-profiles.png" width="300">|<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/mnist-sim-profiles.png" width="300">
 
-The simulation above is using a Gamma process whose distribution at time ```t``` is shown below and the Rastrigin function.
+The simulation above is using a Gamma process whose distribution at time ```t``` is shown below and the Rastrigin function (however, the simulation is general enough to support any hard-to-optimize function as base e.g. Branin, Drop-wave, Egg-holder).
 
 Gamma distribution at step `t` | Rastrigin function
 -------------------------------|-------------------
