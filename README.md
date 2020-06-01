@@ -38,7 +38,7 @@ TODO URL
 ## Preview
 #### 1. Better optimizer metrics: EPDF-OFEs
 Example loss functions | Example optimal final error (OFE)
---------------------------------|----------------------------------
+-----------------------|----------------------------------
 <img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/loss-function-profiles.png" width="300"> | <img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/best-result-metric.png" width="300">
 Several profiles e.g. mean, std, order |  Lowest final error of all loss functions
 
@@ -46,8 +46,8 @@ We are therefore characterizing an optimizer by its estimated probability densit
 This would give us more meaningful quantitative measures like statistical significance.
 Example:
 
-Histogram of OFEs occurrences                                                                         |  Estimated PDFs
-:----------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------------:
+Histogram of OFEs occurrences |  Estimated PDFs
+------------------------------|----------------
 <img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/pdf-ofe-hb-tpe-2tpe-hist.png" width="300">|<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/pdf-ofe-hb-tpe-2tpe-pdf-ofe.png" width="300">
 
 *Problem:* One needs to run the optimizer several times to find its EPDF-OFE which is very time consuming (order of years) if done on the pure underlying ML model since 
@@ -69,9 +69,15 @@ We found that several Hyperband implementations suffer from a floating point ari
 There is a clear need for more comprehensive testing of optimizers, especially for those that employ early stopping. 
 We propose a method based on **Gamma processes** to simulate the loss functions in negligible time in order to test optimizers in several cases.
 For illustrative purposes, we reproduced the loss function "landscape" of running logistic regresstion on MNIST dataset.
-Real MNIST loss functions | Simulated loss functions
------------------------|----------------------
+Real MNIST loss functions | Simulated loss functions 
+--------------------------|--------------------------
 <img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/mnist-real-profiles.png" width="300">|<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/mnist-sim-profiles.png" width="300">
+
+The simulation above is using a Gamma process whose distribution at time ```t``` is shown below and the Rastrigin function.
+
+Gamma distribution at step `t` | Rastrigin function
+-------------------------------|-------------------
+<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/gamma.png" width="300">|<img src="https://github.com/cristianmatache/autotune-v2/blob/master/static/rastrigin-surface.png" width="300">
 
 #### 3. Approximation: Closest loss function in terms of MSE
 TODO
