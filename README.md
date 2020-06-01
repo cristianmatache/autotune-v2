@@ -57,7 +57,7 @@ it requires retraining. *Solved later*
 Testing optimizers is usually done on some known hard-to-optimize function like Rastrigin. 
 Testing on real ML models is much more difficult due to prolonged times of retraining the models several times for each optimization. 
 Hence, for hyperparameter optimizers that employ early stopping there is virtually no way of testing comprehensively. 
-This is problematic since **popular optimizers have flawed implementations**.
+This is problematic since popular optimizers have flawed implementations.
 
 **Example flaw - Hyperband:**
 We found that several Hyperband implementations suffer from a floating point arithmetic bug. This minor bug has impactful consequences:
