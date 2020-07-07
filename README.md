@@ -2,6 +2,8 @@
 
 [![Autotune-ICL](https://circleci.com/gh/cristianmatache/autotune-v2.svg?style=svg)](https://circleci.com/gh/cristianmatache/autotune-v2)
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
+[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
+
 
 ## Abstract
 Performance of machine learning models relies heavily on finding a good combination of hyperparameters. We aim to design the most efficient hybrid between two best-in-class hyperparameter
