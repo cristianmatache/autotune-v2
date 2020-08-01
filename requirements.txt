@@ -7,7 +7,7 @@ mpmath
 scipy
 Pillow
 sigopt==4.0.0
-hyperopt==0.1.2
+hyperopt==0.2.4
 matplotlib
 colorama
 numpy==1.19.1
