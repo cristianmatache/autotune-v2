@@ -91,7 +91,7 @@ class MNISTLoader(ImageDatasetLoader):
         super().__init__(data_dir, mean_normalize, std_normalize)
 
     def _split_dataset(self) -> Tuple[Dataset, Dataset, Dataset]:
-        lock = FileLock(Path(self.data_dir) / 'download.lock')
+        lock = FileLock(str(Path(self.data_dir) / 'download.lock'))
         with lock:
             train_data = MNIST(root=self.data_dir, train=True, download=True, transform=self.def_transform)
         with lock:
