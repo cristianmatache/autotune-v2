@@ -3,6 +3,7 @@
 [![Autotune-ICL](https://circleci.com/gh/cristianmatache/autotune-v2.svg?style=svg)](https://circleci.com/gh/cristianmatache/autotune-v2)
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
 [![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=cristianmatache/autotune-v2)](https://dependabot.com)
 
 
 ## Abstract
