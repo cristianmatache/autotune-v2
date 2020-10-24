@@ -4,31 +4,31 @@
 
 # FORMAT ---------------------------------------------------------------------------------------------------------------
 docformatter:
-	docformatter -r . --in-place --wrap-summaries=120 --wrap-descriptions=120
+	python -m docformatter -r . --in-place --wrap-summaries=120 --wrap-descriptions=120
 
 isort:
-	isort -rc autotune/  -m 4 -l 120
+	python -m isort -rc autotune/  -m 4 -l 120
 
 fmt: docformatter isort
 
 # LINT -----------------------------------------------------------------------------------------------------------------
 docformatter-check:
-	docformatter -r . --check --wrap-summaries=120 --wrap-descriptions=120
+	python -m docformatter -r . --check --wrap-summaries=120 --wrap-descriptions=120
 
 isort-check:
-	isort --check-only -rc numfun/ tests/ -m 4 -l 120
+	python -m isort --check-only -rc autotune/ -m 4 -l 120
 
 flake8:
-	flake8 . --config=build-support/.flake8
+	python -m flake8 autotune/ --config=build-support/.flake8
 
 pylint:
-	pylint autotune/ --rcfile=build-support/.pylintrc
+	python -m pylint autotune/ --rcfile=build-support/.pylintrc
 
 lint: flake8 docformatter-check # isort-check # pylint
 
 # TYPE CHECK -----------------------------------------------------------------------------------------------------------
 mypy:
-	mypy autotune/benchmarks/ autotune/core/ autotune/datasets/ autotune/util/ --config-file build-support/mypy.ini
+	python -m mypy autotune/benchmarks/ autotune/core/ autotune/datasets/ autotune/util/ --config-file build-support/mypy.ini
 
 # CLEAN ----------------------------------------------------------------------------------------------------------------
 clean-pyc:

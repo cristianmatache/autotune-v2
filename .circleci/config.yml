@@ -13,12 +13,15 @@ jobs:
       - python/install-packages:
           pip-dependency-file: requirements.txt
           pkg-manager: pip
+      - python/install-packages:
+          pip-dependency-file: dev_requirements.txt
+          pkg-manager: pip
       - run:
-          name: PEP8 Syntax - flake8
-          command: python -m flake8 autotune/ --config=.flake8
+          name: Lint
+          command: make flake8
       - run:
-          name: Type Check - mypy
-          command: python -m mypy autotune/benchmarks/ autotune/core/ autotune/datasets/ autotune/util/
+          name: Type Check
+          command: make mypy
 
 workflows:
   main:
