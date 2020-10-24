@@ -9,7 +9,6 @@ from typing_extensions import Final
 
 
 class MRBI(Dataset):
-
     """Please download the new MRBI manually from:
     http://www.iro.umontreal.ca/~lisa/icml2007data/mnist_rotation_back_image_new.zip unzip it and rename the directory
     to "mrbi"."""

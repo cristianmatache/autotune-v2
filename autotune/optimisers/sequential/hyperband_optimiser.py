@@ -14,7 +14,6 @@ mpmath.mp.dps = 64
 
 
 class HyperbandOptimiser(Optimiser):
-
     """ Examples of resources:
     1 Resource  = 10 000 training examples
     1 Resources = 1 epoch
