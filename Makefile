@@ -7,7 +7,7 @@ docformatter:
 	python -m docformatter -r . --in-place --wrap-summaries=120 --wrap-descriptions=120
 
 isort:
-	python -m isort -rc autotune/  -m 4 -l 120
+	python -m isort autotune/  -m 4 -l 120
 
 fmt: docformatter isort
 
@@ -16,7 +16,7 @@ docformatter-check:
 	python -m docformatter -r . --check --wrap-summaries=120 --wrap-descriptions=120
 
 isort-check:
-	python -m isort --check-only -rc autotune/ -m 4 -l 120
+	python -m isort --check-only autotune/ -m 4 -l 120
 
 flake8:
 	python -m flake8 . --config=build-support/.flake8
@@ -24,7 +24,7 @@ flake8:
 pylint:
 	python -m pylint autotune/ --rcfile=build-support/.pylintrc
 
-lint: flake8 isort-check docformatter-check # isort-check # pylint
+lint: flake8 isort-check docformatter-check  # pylint
 
 # TYPE CHECK -----------------------------------------------------------------------------------------------------------
 mypy:
@@ -43,4 +43,4 @@ clean-build:
 # OTHERS  --------------------------------------------------------------------------------------------------------------
 pre-commit: mypy flake8 isort docformatter
 
-check-all: mypy lint isort-check
+check-all: mypy lint
