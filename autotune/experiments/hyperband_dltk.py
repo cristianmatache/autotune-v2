@@ -35,8 +35,7 @@ hyperband_opt.run_optimisation(problem, max_iter=n_resources, verbosity=True)
 print("Optimal arm: "
       "parameters = {}"
       "top losses = {}"
-      "opt res = {}".format(hyperband_opt.arm_opt, hyperband_opt.Y_best, hyperband_opt.fx_opt)
-)
+      "opt res = {}".format(hyperband_opt.arm_opt, hyperband_opt.Y_best, hyperband_opt.fx_opt))
 
 # Constrain random optimisation to the same time budget
 time_budget = hyperband_opt.checkpoints[-1]

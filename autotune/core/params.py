@@ -83,7 +83,7 @@ class IntParam(Param):
         # If num_vals greater than range of integer param then constrain to the range and if stochastic param results in
         # duplicates, only keep unique entries
         if stochastic:
-            return numpy.unique(int( numpy.random.rand(num_vals)*(1 + self.max_val - self.min_val) + self.min_val ))
+            return numpy.unique(int(numpy.random.rand(num_vals)*(1 + self.max_val - self.min_val) + self.min_val))
 
         return range(self.min_val, self.max_val+1, max(1, (self.max_val-self.min_val)/num_vals))
 

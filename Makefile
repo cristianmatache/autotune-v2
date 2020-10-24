@@ -19,7 +19,7 @@ isort-check:
 	python -m isort --check-only -rc autotune/ -m 4 -l 120
 
 flake8:
-	python -m flake8 autotune/ --config=build-support/.flake8
+	python -m flake8 . --config=build-support/.flake8
 
 pylint:
 	python -m pylint autotune/ --rcfile=build-support/.pylintrc

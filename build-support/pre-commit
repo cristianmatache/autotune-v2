@@ -1,4 +1,3 @@
 #!/bin/bash
 
-flake8 autotune/ --config=.flake8
-mypy autotune/benchmarks/ autotune/core/ autotune/datasets/ autotune/util/
+make -j2 pre-commitm
