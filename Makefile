@@ -4,7 +4,8 @@
 
 # FORMAT ---------------------------------------------------------------------------------------------------------------
 docformatter:
-	python -m docformatter -r . --in-place --wrap-summaries=120 --wrap-descriptions=120
+	python -m docformatter -r . --in-place --wrap-summaries=120 --wrap-descriptions=120 ||
+	python -m docformatter -r . --wrap-summaries=120 --wrap-descriptions=120
 
 isort:
 	python -m isort autotune/  -m 4 -l 120
