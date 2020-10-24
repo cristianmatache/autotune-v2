@@ -4,8 +4,7 @@
 
 # FORMAT ---------------------------------------------------------------------------------------------------------------
 docformatter:
-	python -m docformatter -r . --in-place --wrap-summaries=120 --wrap-descriptions=120 ||
-	python -m docformatter -r . --wrap-summaries=120 --wrap-descriptions=120
+	python -m docformatter -r . --in-place --wrap-summaries=120 --wrap-descriptions=120
 
 isort:
 	python -m isort autotune/  -m 4 -l 120
@@ -14,10 +13,13 @@ fmt: docformatter isort
 
 # LINT -----------------------------------------------------------------------------------------------------------------
 docformatter-check:
-	python -m docformatter -r . --check --wrap-summaries=120 --wrap-descriptions=120
+	python -m docformatter -r . --check --wrap-summaries=120 --wrap-descriptions=120 || \
+	python -m docformatter -r . --color --wrap-summaries=120 --wrap-descriptions=120  # Show diff if check failed
 
 isort-check:
-	python -m isort --check-only autotune/ -m 4 -l 120
+	python -m isort --check-only autotune/ -m 4 -l 120 || \
+	python -m isort --diff autotune/ -m 4 -l 120  # Show diff if check failed
+
 
 flake8:
 	python -m flake8 . --config=build-support/.flake8
