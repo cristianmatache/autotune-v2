@@ -13,12 +13,12 @@ fmt: docformatter isort
 
 # LINT -----------------------------------------------------------------------------------------------------------------
 docformatter-check:
-	python -m docformatter -r . --check --wrap-summaries=120 --wrap-descriptions=120 || \
-	python -m docformatter -r . --wrap-summaries=120 --wrap-descriptions=120 && exit 1 # Show diff if check failed
+	python -m docformatter -r . --wrap-summaries=120 --wrap-descriptions=120 && \
+	python -m docformatter -r . --check --wrap-summaries=120 --wrap-descriptions=120 \
 
 isort-check:
-	python -m isort --check-only autotune/ -m 4 -l 120 || \
-	python -m isort --diff --color autotune/ -m 4 -l 120 && exit 1 # Show diff if check failed
+	python -m isort --diff --color autotune/ -m 4 -l 120 && \
+	python -m isort --check-only autotune/ -m 4 -l 120
 
 
 flake8:
