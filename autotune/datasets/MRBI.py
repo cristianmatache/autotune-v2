@@ -10,8 +10,10 @@ from typing_extensions import Final
 
 class MRBI(Dataset):
     """Please download the new MRBI manually from:
+
     http://www.iro.umontreal.ca/~lisa/icml2007data/mnist_rotation_back_image_new.zip unzip it and rename the directory
-    to "mrbi"."""
+    to "mrbi".
+    """
 
     SPLIT_LIST: Final[Dict[str, List[str]]] = {
         'train': ["url_placeholder", "mrbi/mnist_all_background_images_rotation_normalized_train_valid.amat"],
