@@ -1,16 +1,17 @@
-from math import ceil
-from typing import Callable, Optional, Dict, Tuple
-from colorama import Style, Fore
-from hyperopt import Trials
-import hyperopt
-import pandas as pd
 import time
 from abc import abstractmethod
+from math import ceil
+from typing import Callable, Dict, Optional, Tuple
+
+import hyperopt
 import mpmath
+import pandas as pd
+from colorama import Fore, Style
+from hyperopt import Trials
 
-from autotune.core import HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, Optimiser, \
-    ShapeFamilyScheduler, optimisation_metric_user, Arm, Evaluator
-
+from autotune.core import (
+    Arm, Evaluation, Evaluator, HyperparameterOptimisationProblem, OptimisationGoals, Optimiser, ShapeFamilyScheduler,
+    optimisation_metric_user)
 from autotune.optimisers.sequential.hyperband_optimiser import HyperbandOptimiser
 from autotune.optimisers.sequential.tpe_optimiser import TpeOptimiser
 

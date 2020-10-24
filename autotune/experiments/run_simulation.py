@@ -6,16 +6,16 @@ from os.path import join as join_path
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Optimisers
-from autotune.core import Optimiser, RoundRobinShapeFamilyScheduler, ShapeFamily, UniformShapeFamilyScheduler
-from autotune.optimisers import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, \
-    TpeOptimiser, HybridHyperbandSigoptOptimiser, HybridHyperbandTpeTransferAllOptimiser, \
-    HybridHyperbandTpeNoTransferOptimiser, HybridHyperbandTpeTransferLongestOptimiser, \
-    HybridHyperbandTpeTransferSameOptimiser
-
-# Problems
-from autotune.core import HyperparameterOptimisationProblem, OptimisationGoals
 from autotune.benchmarks import OptFunctionSimulationProblem
+# Problems
+# Optimisers
+from autotune.core import (
+    HyperparameterOptimisationProblem, OptimisationGoals, Optimiser, RoundRobinShapeFamilyScheduler, ShapeFamily,
+    UniformShapeFamilyScheduler)
+from autotune.optimisers import (
+    HybridHyperbandSigoptOptimiser, HybridHyperbandTpeNoTransferOptimiser, HybridHyperbandTpeOptimiser,
+    HybridHyperbandTpeTransferAllOptimiser, HybridHyperbandTpeTransferLongestOptimiser,
+    HybridHyperbandTpeTransferSameOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, TpeOptimiser)
 
 OUTPUT_DIR = "D:/datasets/output"
 

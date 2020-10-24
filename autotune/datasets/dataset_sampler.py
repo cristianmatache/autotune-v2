@@ -1,11 +1,9 @@
+import matplotlib.pyplot as plt
+import numpy as np
 import torchvision
 from torch.utils.data import DataLoader
-import numpy as np
-import matplotlib.pyplot as plt
 
-
-from autotune.datasets.image_dataset_loaders import CIFARLoader, SVHNLoader, MRBILoader
-
+from autotune.datasets.image_dataset_loaders import CIFARLoader, MRBILoader, SVHNLoader
 
 DATA_DIR = "D:/datasets/"
 PROBLEM = 'mrbi'

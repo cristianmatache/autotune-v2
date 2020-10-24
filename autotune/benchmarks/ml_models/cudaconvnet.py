@@ -1,4 +1,4 @@
-from torch.nn import functional, Module, Conv2d, Linear, AvgPool2d, AvgPool3d
+from torch.nn import AvgPool2d, AvgPool3d, Conv2d, Linear, Module, functional
 
 
 class CudaConvNet(Module):

@@ -1,5 +1,5 @@
 # pylint: disable=pointless-statement,multiple-statements,function-redefined
-from typing import Callable, TypeVar, Iterable, Any, overload, Union
+from typing import Any, Callable, Iterable, TypeVar, Union, overload
 
 from typing_extensions import Protocol
 

@@ -1,11 +1,12 @@
 from math import ceil
 from typing import Callable, Optional
-from colorama import Style, Fore
+
 import mpmath
+from colorama import Fore, Style
 
-from autotune.core import HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, Optimiser, \
-    ShapeFamilyScheduler, optimisation_metric_user
-
+from autotune.core import (
+    Evaluation, HyperparameterOptimisationProblem, OptimisationGoals, Optimiser, ShapeFamilyScheduler,
+    optimisation_metric_user)
 from autotune.optimisers.sequential.hyperband_optimiser import HyperbandOptimiser
 from autotune.optimisers.sequential.tpe_optimiser import TpeOptimiser
 

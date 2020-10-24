@@ -1,10 +1,12 @@
+from typing import Callable, Optional, Tuple
+
 import numpy as np
 from sigopt import Connection
 from sigopt.objects import Assignments
-from typing import Callable, Tuple, Optional
 
-from autotune.core import Optimiser, Evaluation, HyperparameterOptimisationProblem, Arm, OptimisationGoals, Evaluator, \
-    ShapeFamilyScheduler, optimisation_metric_user, SimulationProblem
+from autotune.core import (
+    Arm, Evaluation, Evaluator, HyperparameterOptimisationProblem, OptimisationGoals, Optimiser, ShapeFamilyScheduler,
+    SimulationProblem, optimisation_metric_user)
 
 SIGOPT_API_KEY = "RAGFJSAISOJGFQOXCAVIVQRNNGOQNYGDEYISHTETQZCNWJNA"
 

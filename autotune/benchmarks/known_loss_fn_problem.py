@@ -1,12 +1,12 @@
 from __future__ import division
 
-from typing import Optional, Dict, List
+from typing import Dict, List, Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
 
-from autotune.core import Arm, OptimisationGoals, SimulationProblem, SimulationEvaluator, Domain, \
-    HyperparameterOptimisationProblem
+from autotune.core import (
+    Arm, Domain, HyperparameterOptimisationProblem, OptimisationGoals, SimulationEvaluator, SimulationProblem)
 from autotune.util.io import print_evaluation
 
 

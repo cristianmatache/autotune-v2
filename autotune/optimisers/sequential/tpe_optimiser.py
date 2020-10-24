@@ -1,10 +1,12 @@
 import time
 from functools import partial
-from hyperopt import fmin, tpe, Trials, STATUS_OK
-from typing import Callable, Dict, Union, Optional
+from typing import Callable, Dict, Optional, Union
 
-from autotune.core import Optimiser, Evaluation, Arm, HyperparameterOptimisationProblem, Evaluator, OptimisationGoals, \
-    ShapeFamilyScheduler, optimisation_metric_user, SimulationProblem
+from hyperopt import STATUS_OK, Trials, fmin, tpe
+
+from autotune.core import (
+    Arm, Evaluation, Evaluator, HyperparameterOptimisationProblem, OptimisationGoals, Optimiser, ShapeFamilyScheduler,
+    SimulationProblem, optimisation_metric_user)
 
 
 class TpeOptimiser(Optimiser):

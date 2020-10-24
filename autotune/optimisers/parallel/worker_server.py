@@ -1,12 +1,12 @@
 from dataclasses import dataclass
-from typing import Type, List, Callable, Optional, Union
+from typing import Callable, List, Optional, Type, Union
 
+import dill
 from colorama import Fore, Style
 from flask import Flask
-import dill
 
-from autotune.core import HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, ShapeFamilyScheduler
-from autotune.optimisers import TpeOptimiser, SigOptimiser, RandomOptimiser
+from autotune.core import Evaluation, HyperparameterOptimisationProblem, OptimisationGoals, ShapeFamilyScheduler
+from autotune.optimisers import RandomOptimiser, SigOptimiser, TpeOptimiser
 from autotune.optimisers.parallel.block import Block
 
 COL = Fore.MAGENTA

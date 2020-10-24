@@ -1,13 +1,14 @@
 import argparse
 from argparse import Namespace
 from typing import Dict, List, Tuple
-import matplotlib.pyplot as plt
+
 import matplotlib.animation as animation
+import matplotlib.pyplot as plt
 import numpy as np
 
-from autotune.experiments.run_closest_loss_fn_approximation import get_known_functions, get_real_problem
 from autotune.benchmarks import KnownFnProblem
 from autotune.core import Arm, HyperparameterOptimisationProblem
+from autotune.experiments.run_closest_loss_fn_approximation import get_known_functions, get_real_problem
 
 PROBLEM = "mnist"
 N_FOLDS = 10

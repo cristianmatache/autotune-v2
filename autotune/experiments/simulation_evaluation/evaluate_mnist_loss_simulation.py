@@ -1,13 +1,13 @@
-import matplotlib.pyplot as plt
 import pickle
-from typing import List
 from os.path import join as join_path
+from typing import List
 
-from autotune.experiments.run_experiment import OUTPUT_DIR
+import matplotlib.pyplot as plt
+
 from autotune.core import Arm, ShapeFamily
-from autotune.experiments.simulation_evaluation.profiles import plot_profiles, plot_simulated, get_suplots_axes_layout
+from autotune.experiments.run_experiment import OUTPUT_DIR
+from autotune.experiments.simulation_evaluation.profiles import get_suplots_axes_layout, plot_profiles, plot_simulated
 from autotune.util.datastructures import flatten
-
 
 # This will fetch the latest experiment on the following problem with the following optimization method
 PROBLEM = "mnist"

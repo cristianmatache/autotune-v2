@@ -1,6 +1,6 @@
 import pickle
 from abc import abstractmethod
-from typing import Tuple, Optional, cast
+from typing import Optional, Tuple, cast
 
 import torch
 from torch import cuda

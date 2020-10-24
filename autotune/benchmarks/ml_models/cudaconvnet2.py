@@ -1,4 +1,4 @@
-from torch.nn import functional, Linear, BatchNorm2d, Conv2d, Module
+from torch.nn import BatchNorm2d, Conv2d, Linear, Module, functional
 
 
 class CudaConvNet2(Module):

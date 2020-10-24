@@ -1,9 +1,11 @@
 from datetime import datetime
-from logging import Logger as LoggingLogger, getLogger, CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET, basicConfig
+from logging import CRITICAL, DEBUG, ERROR, INFO, NOTSET, WARNING
+from logging import Logger as LoggingLogger
+from logging import basicConfig, getLogger
 from os import getpid, mkdir
 from pathlib import Path
 from traceback import format_exc
-from typing import ClassVar, Optional, Union, Dict
+from typing import ClassVar, Dict, Optional, Union
 from warnings import warn
 
 from colorama import Fore, Style

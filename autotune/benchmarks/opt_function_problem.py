@@ -1,13 +1,13 @@
 from __future__ import division
 
-from typing import Any, Tuple, Optional, Union, cast
+from typing import Any, Optional, Tuple, Union, cast
 
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 
-from autotune.core import HyperparameterOptimisationProblem, Evaluator, Arm, OptimisationGoals, ModelBuilder, Domain, \
-    Param
+from autotune.core import (
+    Arm, Domain, Evaluator, HyperparameterOptimisationProblem, ModelBuilder, OptimisationGoals, Param)
 from autotune.util.io import print_evaluation
 
 AVAILABLE_OPT_FUNCTIONS = ('rastrigin', 'wave', 'branin', 'egg', 'camel')

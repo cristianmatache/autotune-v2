@@ -8,19 +8,16 @@ from os.path import join as join_path
 import pandas as pd
 import torch
 
-# Optimisers
-from autotune.core import Optimiser
-from autotune.optimisers.sequential import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, \
-    SigOptimiser, TpeOptimiser, HybridHyperbandSigoptOptimiser, HybridHyperbandTpeTransferAllOptimiser, \
-    HybridHyperbandTpeNoTransferOptimiser, HybridHyperbandTpeTransferLongestOptimiser, \
-    HybridHyperbandTpeTransferSameOptimiser
-from autotune.optimisers.parallel import ParallelHyperbandOptimiser
-
+from autotune.benchmarks import (
+    AVAILABLE_OPT_FUNCTIONS, CifarProblem, MnistProblem, MrbiProblem, OptFunctionProblem, SvhnProblem)
 # Problems
-from autotune.core import HyperparameterOptimisationProblem, OptimisationGoals
-from autotune.benchmarks import MnistProblem, CifarProblem, SvhnProblem, MrbiProblem, OptFunctionProblem, \
-    AVAILABLE_OPT_FUNCTIONS
-
+# Optimisers
+from autotune.core import HyperparameterOptimisationProblem, OptimisationGoals, Optimiser
+from autotune.optimisers.parallel import ParallelHyperbandOptimiser
+from autotune.optimisers.sequential import (
+    HybridHyperbandSigoptOptimiser, HybridHyperbandTpeNoTransferOptimiser, HybridHyperbandTpeOptimiser,
+    HybridHyperbandTpeTransferAllOptimiser, HybridHyperbandTpeTransferLongestOptimiser,
+    HybridHyperbandTpeTransferSameOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, TpeOptimiser)
 
 INPUT_DIR = "D:/workspace/python/datasets/"
 OUTPUT_DIR = "D:/workspace/python/datasets/output"

@@ -1,13 +1,14 @@
 from dataclasses import dataclass, field
 from queue import Queue
-from typing import Sequence, Type, List, Callable, Optional, Union
+from typing import Callable, List, Optional, Sequence, Type, Union
 
 import mpmath
 from colorama import Fore, Style
 
-from autotune.core import Optimiser, HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, \
-    ShapeFamilyScheduler, ShapeFamily, UniformShapeFamilyScheduler
-from autotune.optimisers import TpeOptimiser, SigOptimiser, RandomOptimiser
+from autotune.core import (
+    Evaluation, HyperparameterOptimisationProblem, OptimisationGoals, Optimiser, ShapeFamily, ShapeFamilyScheduler,
+    UniformShapeFamilyScheduler)
+from autotune.optimisers import RandomOptimiser, SigOptimiser, TpeOptimiser
 
 COL = Fore.MAGENTA
 END = Style.RESET_ALL

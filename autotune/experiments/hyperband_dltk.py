@@ -1,9 +1,9 @@
-import pickle
 import argparse
-
-from autotune.optimisers.sequential.hyperband_optimiser import HyperbandOptimiser
-from autotune.benchmarks.dltk_problem import DLTKProblem
 import os
+import pickle
+
+from autotune.benchmarks.dltk_problem import DLTKProblem
+from autotune.optimisers.sequential.hyperband_optimiser import HyperbandOptimiser
 
 data_dir = '/home/jopasserat/postdoc/openmole/hyperparam-tuning/datasets'
 output_dir = '/tmp/exp1'

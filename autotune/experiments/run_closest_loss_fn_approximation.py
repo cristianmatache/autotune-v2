@@ -10,17 +10,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-# Optimisers
-from autotune.core import Optimiser, Arm
-from autotune.optimisers import HybridHyperbandTpeOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, \
-    TpeOptimiser, HybridHyperbandSigoptOptimiser, HybridHyperbandTpeTransferAllOptimiser, \
-    HybridHyperbandTpeNoTransferOptimiser, HybridHyperbandTpeTransferLongestOptimiser, \
-    HybridHyperbandTpeTransferSameOptimiser
-
+from autotune.benchmarks import (
+    AVAILABLE_OPT_FUNCTIONS, CifarProblem, KnownFnProblem, MnistProblem, MrbiProblem, OptFunctionProblem, SvhnProblem)
 # Problems
-from autotune.core import HyperparameterOptimisationProblem, OptimisationGoals
-from autotune.benchmarks import MnistProblem, CifarProblem, SvhnProblem, MrbiProblem, OptFunctionProblem, \
-    KnownFnProblem, AVAILABLE_OPT_FUNCTIONS
+# Optimisers
+from autotune.core import Arm, HyperparameterOptimisationProblem, OptimisationGoals, Optimiser
+from autotune.optimisers import (
+    HybridHyperbandSigoptOptimiser, HybridHyperbandTpeNoTransferOptimiser, HybridHyperbandTpeOptimiser,
+    HybridHyperbandTpeTransferAllOptimiser, HybridHyperbandTpeTransferLongestOptimiser,
+    HybridHyperbandTpeTransferSameOptimiser, HyperbandOptimiser, RandomOptimiser, SigOptimiser, TpeOptimiser)
 from autotune.util.datastructures import flatten
 
 KNOWN_FUNCTIONS_DIR = "../../loss_functions/"

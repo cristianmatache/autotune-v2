@@ -1,13 +1,13 @@
 from abc import abstractmethod
 from pathlib import Path
-from typing import Tuple, Optional, List, TypeVar
+from typing import List, Optional, Tuple, TypeVar
 
 import pandas as pd
 
 from autotune.core.arm import Arm
 from autotune.core.model_builder import ModelBuilder
 from autotune.core.optimisation_goals import OptimisationGoals
-from autotune.util.files import ensure_dir, PathType
+from autotune.util.files import PathType, ensure_dir
 
 TEvaluator = TypeVar('TEvaluator', bound='Evaluator')
 

@@ -1,7 +1,8 @@
 from __future__ import annotations
-from typing import Optional, Tuple, NamedTuple
-from abc import abstractmethod
+
 import random
+from abc import abstractmethod
+from typing import NamedTuple, Optional, Tuple
 
 from autotune.core import Arm
 

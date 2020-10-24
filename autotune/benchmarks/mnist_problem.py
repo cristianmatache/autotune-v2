@@ -4,7 +4,7 @@ import numpy as np
 
 from autotune.benchmarks.torch_evaluator import TorchEvaluator
 from autotune.benchmarks.torch_model_builders import LogisticRegressionBuilder
-from autotune.core import HyperparameterOptimisationProblem, Arm, OptimisationGoals, Domain, Param
+from autotune.core import Arm, Domain, HyperparameterOptimisationProblem, OptimisationGoals, Param
 from autotune.datasets.image_dataset_loaders import MNISTLoader
 from autotune.util.io import print_evaluation
 

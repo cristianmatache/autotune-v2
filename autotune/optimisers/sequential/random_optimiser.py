@@ -1,7 +1,8 @@
 from typing import Callable, Optional
 
-from autotune.core import HyperparameterOptimisationProblem, Optimiser, Evaluation, OptimisationGoals, \
-    ShapeFamilyScheduler, optimisation_metric_user, SimulationProblem
+from autotune.core import (
+    Evaluation, HyperparameterOptimisationProblem, OptimisationGoals, Optimiser, ShapeFamilyScheduler,
+    SimulationProblem, optimisation_metric_user)
 
 
 class RandomOptimiser(Optimiser):

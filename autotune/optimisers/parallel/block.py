@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Sequence, Optional
+from typing import Optional, Sequence
 
 from colorama import Fore, Style
 

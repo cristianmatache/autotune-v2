@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable, Tuple, TypeVar, cast, TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable, Tuple, TypeVar, cast
 
 from colorama import Fore, Style
 

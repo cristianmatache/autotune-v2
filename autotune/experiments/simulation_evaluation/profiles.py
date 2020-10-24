@@ -1,12 +1,13 @@
-import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
-from matplotlib.axes import Axes
 from typing import List, Optional, Tuple, Type
-import numpy as np
 
-from autotune.benchmarks.opt_function_simulation_problem import OptFunctionSimulationProblem, \
-    OptFunctionSimulationEvaluator
-from autotune.core import Arm, RoundRobinShapeFamilyScheduler, ShapeFamily, Evaluator, ShapeFamilyScheduler
+import matplotlib.gridspec as gridspec
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.axes import Axes
+
+from autotune.benchmarks.opt_function_simulation_problem import (
+    OptFunctionSimulationEvaluator, OptFunctionSimulationProblem)
+from autotune.core import Arm, Evaluator, RoundRobinShapeFamilyScheduler, ShapeFamily, ShapeFamilyScheduler
 
 
 def get_evaluator_by_arm(arm: Arm, evaluators: List[Evaluator]) -> Evaluator:

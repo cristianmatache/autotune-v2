@@ -1,6 +1,8 @@
-import matplotlib.pyplot as plt
 import pickle
 from os.path import join as join_path
+
+import matplotlib.pyplot as plt
+
 from autotune.experiments.run_experiment import OUTPUT_DIR
 
 # This will fetch the latest experiment on the following problem with the following optimization method

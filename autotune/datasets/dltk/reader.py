@@ -1,6 +1,6 @@
 # pylint: disable=all  # Inherited file
-import SimpleITK as sitk
 import numpy as np
+import SimpleITK as sitk
 import tensorflow as tf
 from dltk.io.augmentation import extract_class_balanced_example_array
 

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from types import SimpleNamespace
-from typing import Tuple, List, Union
+from typing import List, Tuple, Union
 
 
 @dataclass(init=False, frozen=True)

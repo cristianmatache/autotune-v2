@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import TypeVar, Generic, Type, Optional, Tuple
+from typing import Generic, Optional, Tuple, Type, TypeVar
 
 from autotune.core.arm import Arm
 

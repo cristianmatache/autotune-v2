@@ -1,12 +1,14 @@
 from math import ceil
+from os.path import join as path_join
 from typing import Callable, List, Optional
-from colorama import Style, Fore
+
 import mpmath
 import pandas as pd
-from os.path import join as path_join
+from colorama import Fore, Style
 
-from autotune.core import Optimiser, Evaluation, Evaluator, HyperparameterOptimisationProblem, OptimisationGoals, \
-    ShapeFamilyScheduler, optimisation_metric_user, SimulationProblem
+from autotune.core import (
+    Evaluation, Evaluator, HyperparameterOptimisationProblem, OptimisationGoals, Optimiser, ShapeFamilyScheduler,
+    SimulationProblem, optimisation_metric_user)
 
 COL = Fore.MAGENTA
 

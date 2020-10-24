@@ -1,10 +1,10 @@
-from typing import Tuple, Type, Optional
+from typing import Optional, Tuple, Type
 
 import numpy as np
 
 from autotune.benchmarks.torch_evaluator import TorchEvaluator
 from autotune.benchmarks.torch_model_builders import CNNBuilder
-from autotune.core import HyperparameterOptimisationProblem, Arm, OptimisationGoals, Domain, Param
+from autotune.core import Arm, Domain, HyperparameterOptimisationProblem, OptimisationGoals, Param
 from autotune.datasets.image_dataset_loaders import CIFARLoader, ImageDatasetLoader
 from autotune.util.io import print_evaluation
 

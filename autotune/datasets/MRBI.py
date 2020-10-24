@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Dict, List, Tuple, Any, Union
+from typing import Any, Dict, List, Tuple, Union
 
 import numpy as np
 from PIL import Image

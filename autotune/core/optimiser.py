@@ -1,6 +1,6 @@
 import time
 from abc import abstractmethod
-from typing import Callable, List, Optional, cast, Union
+from typing import Callable, List, Optional, Union, cast
 
 import numpy as np
 from colorama import Fore, Style

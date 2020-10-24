@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from autotune.benchmarks.cifar_problem import CifarProblem, HYPERPARAMS_DOMAIN, HYPERPARAMETERS_TO_OPTIMIZE
+from autotune.benchmarks.cifar_problem import HYPERPARAMETERS_TO_OPTIMIZE, HYPERPARAMS_DOMAIN, CifarProblem
 from autotune.core import Domain
 from autotune.datasets.image_dataset_loaders import MRBILoader
 

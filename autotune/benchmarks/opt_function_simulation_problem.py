@@ -6,10 +6,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 
-from autotune.benchmarks.opt_function_problem import OptFunctionBuilder, OptFunctionEvaluator, OptFunctionProblem, \
-    OPT_FUNCTIONS
-from autotune.core import Arm, OptimisationGoals, ModelBuilder, RoundRobinShapeFamilyScheduler, ShapeFamily, \
-    SimulationProblem, SimulationEvaluator
+from autotune.benchmarks.opt_function_problem import (
+    OPT_FUNCTIONS, OptFunctionBuilder, OptFunctionEvaluator, OptFunctionProblem)
+from autotune.core import (
+    Arm, ModelBuilder, OptimisationGoals, RoundRobinShapeFamilyScheduler, ShapeFamily, SimulationEvaluator,
+    SimulationProblem)
 from autotune.util.io import print_evaluation
 
 

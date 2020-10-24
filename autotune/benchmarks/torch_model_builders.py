@@ -1,9 +1,9 @@
 from abc import ABC
-from typing import Tuple, Callable, TypeVar
+from typing import Callable, Tuple, TypeVar
 
-from torch import cuda, backends
-from torch.nn import Module, DataParallel
-from torch.optim import Optimizer, SGD
+from torch import backends, cuda
+from torch.nn import DataParallel, Module
+from torch.optim import SGD, Optimizer
 
 from autotune.benchmarks.ml_models.cudaconvnet2 import CudaConvNet2
 from autotune.benchmarks.ml_models.logistic_regression import LogisticRegression

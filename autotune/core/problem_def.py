@@ -1,7 +1,7 @@
 # pylint: disable=assigning-non-slot  # Probably a pylint bug
 from abc import abstractmethod
 from pprint import PrettyPrinter
-from typing import Dict, Tuple, List, Union, Optional
+from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
 from hyperopt import hp

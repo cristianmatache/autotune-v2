@@ -1,5 +1,5 @@
 """LeNet in PyTorch."""
-from torch.nn import functional, Module, Conv2d, Linear
+from torch.nn import Conv2d, Linear, Module, functional
 
 
 class LeNet(Module):

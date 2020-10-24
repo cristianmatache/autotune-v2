@@ -1,8 +1,9 @@
-from sklearn.neighbors import KernelDensity
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
 from typing import List, Tuple
+
+import matplotlib.gridspec as gridspec
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.neighbors import KernelDensity
 
 from autotune.experiments.simulation_evaluation.profiles import get_dynamic_order_profile
 

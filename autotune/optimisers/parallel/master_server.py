@@ -1,18 +1,19 @@
 from dataclasses import dataclass, field
 from queue import Queue
-from typing import Type, List, Callable, Optional, Union
+from typing import Callable, List, Optional, Type, Union
 
 import mpmath
 from colorama import Fore, Style
 from flask import Flask
 
-from autotune.core import Optimiser, HyperparameterOptimisationProblem, Evaluation, OptimisationGoals, \
-    ShapeFamilyScheduler, ShapeFamily, UniformShapeFamilyScheduler
-from autotune.optimisers.sequential.tpe_optimiser import TpeOptimiser
-from autotune.optimisers.sequential.sigopt_optimiser import SigOptimiser
-from autotune.optimisers.sequential.random_optimiser import RandomOptimiser
+from autotune.core import (
+    Evaluation, HyperparameterOptimisationProblem, OptimisationGoals, Optimiser, ShapeFamily, ShapeFamilyScheduler,
+    UniformShapeFamilyScheduler)
 from autotune.optimisers.parallel.block import Block
 from autotune.optimisers.parallel.worker_server import Worker
+from autotune.optimisers.sequential.random_optimiser import RandomOptimiser
+from autotune.optimisers.sequential.sigopt_optimiser import SigOptimiser
+from autotune.optimisers.sequential.tpe_optimiser import TpeOptimiser
 
 COL = Fore.MAGENTA
 END = Style.RESET_ALL

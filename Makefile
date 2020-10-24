@@ -24,7 +24,7 @@ flake8:
 pylint:
 	python -m pylint autotune/ --rcfile=build-support/.pylintrc
 
-lint: flake8 docformatter-check # isort-check # pylint
+lint: flake8 isort-check docformatter-check # isort-check # pylint
 
 # TYPE CHECK -----------------------------------------------------------------------------------------------------------
 mypy:

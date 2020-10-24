@@ -1,10 +1,12 @@
 from math import ceil
 from typing import Callable, List, Optional
-from colorama import Style, Fore
-import mpmath
 
-from autotune.core import Optimiser, Evaluation, Evaluator, HyperparameterOptimisationProblem, OptimisationGoals, \
-    ShapeFamilyScheduler, optimisation_metric_user, SimulationProblem
+import mpmath
+from colorama import Fore, Style
+
+from autotune.core import (
+    Evaluation, Evaluator, HyperparameterOptimisationProblem, OptimisationGoals, Optimiser, ShapeFamilyScheduler,
+    SimulationProblem, optimisation_metric_user)
 
 COL = Fore.MAGENTA
 

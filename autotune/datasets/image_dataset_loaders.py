@@ -8,8 +8,8 @@ from torch.utils.data.dataset import Dataset
 from torchvision import transforms
 from torchvision.datasets import CIFAR10, MNIST, SVHN
 
-from autotune.datasets.MRBI import MRBI
 from autotune.datasets.dataset_loader import DatasetLoader
+from autotune.datasets.MRBI import MRBI
 
 
 class ImageDatasetLoader(DatasetLoader):

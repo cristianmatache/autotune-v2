@@ -1,13 +1,13 @@
 from __future__ import division
 
-from typing import Any, Tuple, Optional, Dict, cast
+from typing import Any, Dict, Optional, Tuple, cast
 
 import matplotlib.pyplot as plt
 import numpy as np
 from statsmodels.tsa.ar_model import AR
 
-from autotune.core import HyperparameterOptimisationProblem, Evaluator, Arm, OptimisationGoals, ModelBuilder, Domain, \
-    Param
+from autotune.core import (
+    Arm, Domain, Evaluator, HyperparameterOptimisationProblem, ModelBuilder, OptimisationGoals, Param)
 from autotune.datasets.bitmex_loader import BitmexLoader
 from autotune.util.io import print_evaluation
 
