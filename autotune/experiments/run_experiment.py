@@ -38,12 +38,12 @@ RANDOM_SEED = 70
 
 
 def optimisation_func(opt_goals: OptimisationGoals) -> float:
-    """validation_error"""
+    """validation_error."""
     return opt_goals.validation_error
 
 
 def optimisation_func_opt_function(opt_goals: OptimisationGoals) -> float:
-    """fval"""
+    """fval."""
     return opt_goals.fval
 
 

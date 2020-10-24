@@ -84,8 +84,9 @@ def plot_simulated(func_name: str, n_simulations: int, max_resources: int = 81, 
                    shape_families: Tuple[ShapeFamily, ...] = (ShapeFamily(None, 0.9, 10, 0.1),),
                    init_noise: float = 0, scheduler: Type[ShapeFamilyScheduler] = RoundRobinShapeFamilyScheduler) \
         -> List[List[float]]:
-    """ plots the surface of the values of simulated loss functions at n_resources, by default is plot the losses
-    at max resources, in which case their values would be 200-branin (if necessary aggressiveness is not disabled)
+    """plots the surface of the values of simulated loss functions at n_resources, by default is plot the losses at max
+    resources, in which case their values would be 200-branin (if necessary aggressiveness is not disabled)
+
     :param func_name: optimization function name eg. branin, egg
     :param n_simulations: number of simulations
     :param max_resources: maximum number of resources

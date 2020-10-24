@@ -2,8 +2,8 @@ import numpy as np
 
 
 def unbox_numpy(n):
-    """
-    Return native type boxed in numpy type
+    """Return native type boxed in numpy type.
+
     :param n: numpy type
     :return: unboxed value
     """

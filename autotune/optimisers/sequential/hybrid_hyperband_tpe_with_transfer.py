@@ -24,10 +24,8 @@ mpmath.mp.dps = 64
 
 class HybridHyperbandTpeWithTransferOptimiser(HyperbandOptimiser):
 
-    """
-    Hybrid method Hyperband-TPE adapted from https://arxiv.org/pdf/1801.01596.pdf
-    This method allows "history" transfer/bootstrapping from one bracket to another.
-    """
+    """Hybrid method Hyperband-TPE adapted from https://arxiv.org/pdf/1801.01596.pdf This method allows "history"
+    transfer/bootstrapping from one bracket to another."""
 
     def __init__(self, eta: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
                  optimisation_func: Callable[[OptimisationGoals], float] = Optimiser.default_optimisation_func,
@@ -115,8 +113,7 @@ class HybridHyperbandTpeWithTransferOptimiser(HyperbandOptimiser):
         pass
 
     def _get_trials(self, problem: HyperparameterOptimisationProblem, n_resources: int) -> Trials:
-        """ Based on the method found on Github issues to inject trials into Hyperopt
-        """
+        """Based on the method found on Github issues to inject trials into Hyperopt."""
         trials = Trials()
         if not self.eval_history:
             return trials
@@ -163,23 +160,22 @@ class HybridHyperbandTpeWithTransferOptimiser(HyperbandOptimiser):
 class HybridHyperbandTpeNoTransferOptimiser(HybridHyperbandTpeWithTransferOptimiser):
 
     def _is_transferable(self, evaluator_n_evaluated_resources: int, bracket_n_resources: int) -> bool:
-        """ No history transfer from previous brackets
-        """
+        """No history transfer from previous brackets."""
         return False
 
 
 class HybridHyperbandTpeTransferLongestOptimiser(HybridHyperbandTpeWithTransferOptimiser):
 
     def _is_transferable(self, evaluator_n_evaluated_resources: int, bracket_n_resources: int) -> bool:
-        """ Only transfer history that has been evaluated for max_iter resources (the survivors of previous brackets)
-        """
+        """Only transfer history that has been evaluated for max_iter resources (the survivors of previous brackets)"""
         return evaluator_n_evaluated_resources >= self.max_iter
 
 
 class HybridHyperbandTpeTransferAllOptimiser(HybridHyperbandTpeWithTransferOptimiser):
 
     def _is_transferable(self, evaluator_n_evaluated_resources: int, bracket_n_resources: int) -> bool:
-        """ Transfer history that has been evaluated for at least the number of resources that we intend to start with
+        """Transfer history that has been evaluated for at least the number of resources that we intend to start with.
+
         in the new bracket (that is, all comparable evaluations from previous brackets - where comparable means that the
         number of resources is not less that the number of resources that we want to generate)
         """
@@ -189,7 +185,8 @@ class HybridHyperbandTpeTransferAllOptimiser(HybridHyperbandTpeWithTransferOptim
 class HybridHyperbandTpeTransferSameOptimiser(HybridHyperbandTpeWithTransferOptimiser):
 
     def _is_transferable(self, evaluator_n_evaluated_resources: int, bracket_n_resources: int) -> bool:
-        """ Transfer history that has been evaluated for exactly the number of resources that we intend to start with
+        """Transfer history that has been evaluated for exactly the number of resources that we intend to start with.
+
         in the new bracket (that is, all comparable evaluations from previous brackets - where comparable means that the
         number of resources is not less that the number of resources that we want to generate)
         """

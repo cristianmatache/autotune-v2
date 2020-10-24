@@ -21,11 +21,11 @@ class KnownFnEvaluator(SimulationEvaluator):
 
     @print_evaluation(verbose=False, goals_to_print=("fval",))
     def evaluate(self, n_resources: int) -> OptimisationGoals:
-        """
-        Given an arm (draw of hyperparameter values), find the existing loss function that minimizes mean square
+        """Given an arm (draw of hyperparameter values), find the existing loss function that minimizes mean square
         error with the proposed arm. That is, the loss function that corresponds to the arm that is closest to the
         proposed arm (in terms of mean square error) will be returned. Note that hyperparameter values of an arm are
         normalized before applying mean square error.
+
         :param n_resources: this parameter is not used in this function but all optimisers require this parameter
         :return: the function value for the current arm can be found in OptimisationGoals.fval, Note that test_error and
         validation_error attributes are mandatory for OptimisationGoals objects but Branin has no machine learning model

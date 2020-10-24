@@ -7,9 +7,7 @@ from autotune.datasets.image_dataset_loaders import MRBILoader
 
 class MrbiProblem(CifarProblem):
 
-    """
-    Classification on MRBI dataset with a CNN
-    """
+    """Classification on MRBI dataset with a CNN."""
 
     def __init__(self, data_dir: str, output_dir: str,
                  hyperparams_domain: Domain = HYPERPARAMS_DOMAIN,

@@ -29,8 +29,7 @@ def train(model, train_data_dir, output_dir='./', gpu_dev=0):
     pass
 
 def test(model, test_data_dir):
-    ''' test model and return accuracy
-    '''
+    """test model and return accuracy."""
     #
 
     pass

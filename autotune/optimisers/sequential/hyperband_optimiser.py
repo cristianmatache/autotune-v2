@@ -42,8 +42,9 @@ class HyperbandOptimiser(Optimiser):
         return self.optimisation_func(evaluation.optimisation_goals)
 
     def _get_best_n_evaluators(self, n: int, evaluations: List[Evaluation]) -> List[Evaluator]:
-        """ Note that for minimization we sort in ascending order while for maximization we sort in descending order by
-        the value of the optimisation_func applied on evaluations
+        """Note that for minimization we sort in ascending order while for maximization we sort in descending order by
+        the value of the optimisation_func applied on evaluations.
+
         :param n: number of top "best evaluators" to retrieve
         :param evaluations: A list of ordered pairs (evaluator, result of evaluator's evaluate() method)
         :return: best n evaluators (those evaluators that gave the best n values on self.optimisation_goal)

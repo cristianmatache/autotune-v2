@@ -40,14 +40,14 @@ class HyperparameterOptimisationProblem(Logger):
         self.output_dir = output_dir
 
     def log_domain(self) -> None:
-        """Pretty prints the domain of the problem"""
+        """Pretty prints the domain of the problem."""
         self._log_info(f"\n> Problem {type(self).__name__} hyperparameters domain:")
         self._log_info(PrettyPrinter(indent=4).pformat(self.domain.__dict__))
 
     @abstractmethod
     def get_evaluator(self, arm: Optional[Arm] = None) -> Evaluator:
-        """
-        An evaluator must:
+        """An evaluator must:
+
         - generate random arm(s) if None is given
         - build the model based on this arm
         - train it

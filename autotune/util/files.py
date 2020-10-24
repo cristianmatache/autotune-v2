@@ -7,7 +7,8 @@ PathType = Union[str, Path]
 
 
 def ensure_dir(path: TPath) -> TPath:
-    """ If the directory at given path doesn't exist, it will create it
+    """If the directory at given path doesn't exist, it will create it.
+
     :param path: path to directory
     :return: path to directory
     """

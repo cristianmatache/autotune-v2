@@ -7,7 +7,8 @@ from scipy.signal import savgol_filter
 
 
 def _plot_gamma_process_distribs(n: int, k: int) -> None:
-    """ Overlaps all Gamma distributions of the Gamma process on which the simulation is based.
+    """Overlaps all Gamma distributions of the Gamma process on which the simulation is based.
+
     :param n: number of distributions
     :param k: mode
     """

@@ -13,7 +13,8 @@ FEvaluate = TypeVar('FEvaluate', bound=Callable[..., 'OptimisationGoals'])
 def print_evaluation(
         verbose: bool = False, goals_to_print: Tuple[str, ...] = ()
 ) -> Callable[[FEvaluate], FEvaluate]:
-    """ If verbose:
+    """If verbose:
+
     Before evaluation - prints the arm that will be evaluated
     After  evaluation - prints the OptimisationGoals (the results) for example, that includes validation_error in
                         several cases

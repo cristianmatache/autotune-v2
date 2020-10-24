@@ -48,8 +48,8 @@ class OptFunctionSimulationEvaluator(OptFunctionEvaluator, SimulationEvaluator):
 
     @print_evaluation(verbose=False, goals_to_print=())
     def evaluate(self, n_resources: int) -> OptimisationGoals:
-        """
-        Given an arm (draw of hyperparameter values), evaluate the Branin simulation function on it
+        """Given an arm (draw of hyperparameter values), evaluate the Branin simulation function on it.
+
         :param n_resources: this parameter is not used in this function but all optimisers require this parameter
         :return: the function value for the current arm can be found in OptimisationGoals.fval, Note that test_error and
         validation_error attributes are mandatory for OptimisationGoals objects but Branin has no machine learning model
@@ -121,8 +121,9 @@ class OptFunctionSimulationProblem(OptFunctionProblem, SimulationProblem):
             shape_families: Tuple[ShapeFamily, ...] = (ShapeFamily(None, 0.9, 10, 0.1),),
             init_noise: float = 0
     ) -> None:
-        """ plots the surface of the values of simulated loss functions at n_resources, by default is plot the losses
-        at max resources, in which case their values would be 200-branin (if necessary aggressiveness is not disabled)
+        """plots the surface of the values of simulated loss functions at n_resources, by default is plot the losses at
+        max resources, in which case their values would be 200-branin (if necessary aggressiveness is not disabled)
+
         :param n_simulations: number of simulations
         :param max_resources: maximum number of resources
         :param n_resources: show the surface of the values of simulated loss functions at n_resources

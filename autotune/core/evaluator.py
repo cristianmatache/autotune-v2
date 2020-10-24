@@ -13,8 +13,8 @@ TEvaluator = TypeVar('TEvaluator', bound='Evaluator')
 
 
 class Evaluator:
-    """
-    Deals with things that happen repeatedly for an arm (draw of hyperparameter values):
+    """Deals with things that happen repeatedly for an arm (draw of hyperparameter values):
+
     - train model
     - evaluate model with respect to the test/validation set(s)
     - report performance
@@ -46,8 +46,8 @@ class Evaluator:
 
     @abstractmethod
     def evaluate(self, n_resources: int) -> OptimisationGoals:
-        """
-        Aggregates the steps:
+        """Aggregates the steps:
+
             - train model (available through self._train)
             - evaluate model with respect to the test/validation set(s) (available through self._test)
             - report performance
@@ -57,20 +57,20 @@ class Evaluator:
 
     @abstractmethod
     def _train(self, epoch: int, max_batches: int, batch_size: int) -> float:
-        """Train for one epoch, returns train loss/error"""
+        """Train for one epoch, returns train loss/error."""
 
     @abstractmethod
     def _test(self, is_validation: bool) -> Tuple[float, ...]:
-        """
-        Compare the outputs of the trained model versus a benchmark dataset (i.e. validation/test sets)
+        """Compare the outputs of the trained model versus a benchmark dataset (i.e. validation/test sets)
+
         :param is_validation: whether the function is applied on the validation set or on the test set
         :return: values that will be used in OptimisationGoals (eg. test/validation error, number of true positives)
         """
 
     @abstractmethod
     def _save_checkpoint(self, epoch: int, val_error: float, test_error: float) -> None:
-        """
-        Stores the progress of the evaluation of an arm (i.e. a checkpoint)
+        """Stores the progress of the evaluation of an arm (i.e. a checkpoint)
+
         :param epoch: the number of the latest epoch
         :param val_error: validation error
         :param test_error: test error

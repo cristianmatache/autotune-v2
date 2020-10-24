@@ -11,8 +11,9 @@ ParamType = Param
 @dataclass(init=False, frozen=True)
 class Domain(SimpleNamespace):
 
-    """
-    Dictionary wrapper to store the domain of hyperparameters. For example:
+    """Dictionary wrapper to store the domain of hyperparameters.
+
+    For example:
     self.momentum = Param('momentum', 0.3, 0.999, distrib='uniform', scale='linear')
     """
 
@@ -24,8 +25,9 @@ class Domain(SimpleNamespace):
         super().__init__(**kwargs)
 
     def __getitem__(self, item: str) -> ParamType:
-        """ Allow dictionary-like access to attributes. That is:
-        instead of getattr(domain, item), one can use domain[item]
+        """Allow dictionary-like access to attributes.
+
+        That is: instead of getattr(domain, item), one can use domain[item]
         """
         return cast(ParamType, getattr(self, item))
 

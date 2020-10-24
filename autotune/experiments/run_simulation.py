@@ -58,7 +58,7 @@ SHAPE_FAMILIES = {
 
 
 def optimisation_func(opt_goals: OptimisationGoals) -> float:
-    """fval"""
+    """fval."""
     return opt_goals.fval
 
 

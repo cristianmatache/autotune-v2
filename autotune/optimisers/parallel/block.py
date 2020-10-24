@@ -11,7 +11,10 @@ END = Style.RESET_ALL
 
 @dataclass
 class Block:
-    """To be consumed by workers. Corresponds to (Ni, Ri) pairs of a bracket."""
+    """To be consumed by workers.
+
+    Corresponds to (Ni, Ri) pairs of a bracket.
+    """
     bracket: int
     i: int
     max_i: int

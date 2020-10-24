@@ -17,9 +17,7 @@ mpmath.mp.dps = 64
 
 class HybridHyperbandTpeOptimiser(HyperbandOptimiser):
 
-    """
-    Hybrid method Hyperband-TPE adapted from https://arxiv.org/pdf/1801.01596.pdf
-    """
+    """Hybrid method Hyperband-TPE adapted from https://arxiv.org/pdf/1801.01596.pdf."""
 
     def __init__(self, eta: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
                  optimisation_func: Callable[[OptimisationGoals], float] = Optimiser.default_optimisation_func,

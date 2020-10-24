@@ -34,10 +34,7 @@ class CudaConvNet(Module):
 
 
 class LRN(Module):
-    """
-    Helper class for local response normalisation
-    Is this efficient?
-    """
+    """Helper class for local response normalisation Is this efficient?"""
 
     def __init__(self, local_size: int = 1, alpha: float = 1.0, beta: float = 0.75, across_channels: bool = True):
         super().__init__()

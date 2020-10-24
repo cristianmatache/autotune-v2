@@ -14,10 +14,8 @@ from autotune.util.typing import MinOrMax
 
 
 class Optimiser:
-    """
-    Base class for all optimisers, results of evaluations should be stored in self.eval_history which is used to
-    find the optimum arm in terms of min/max self.optimisation_func(evaluation) for each evaluation in self.eval_history
-    """
+    """Base class for all optimisers, results of evaluations should be stored in self.eval_history which is used to find
+    the optimum arm in terms of min/max self.optimisation_func(evaluation) for each evaluation in self.eval_history."""
     time_zero: float     # Start time of optimization
     cum_time: float      # Cumulative time = time of last evaluation/iteration - start time
     num_iterations: int  # Number of iterations
@@ -78,8 +76,8 @@ class Optimiser:
         """
 
     def init_optimiser_metrics(self) -> None:
-        """
-        Optimizer metrics are:
+        """Optimizer metrics are:
+
         - time when the optimization started
         - time elapsed since we started optimization
         - number of iterations
@@ -122,8 +120,9 @@ class Optimiser:
                f" {self.optimisation_func.__doc__}"
 
     def _print_evaluation(self, opt_func_value: float) -> None:
-        """ Prints statistics for each evaluation, if the current evaluation is the best (optimal) so far, this will be
+        """Prints statistics for each evaluation, if the current evaluation is the best (optimal) so far, this will be
         printed in green, otherwise this will be printed in red.
+
         :param opt_func_value: value of the optimisation_func for a certain evaluation
         """
         num_spaces = 8

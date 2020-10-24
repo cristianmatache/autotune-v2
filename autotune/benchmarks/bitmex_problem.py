@@ -47,7 +47,8 @@ class BitmexEvaluator(Evaluator):
 
     @print_evaluation(verbose=True, goals_to_print=())
     def evaluate(self, n_resources: int) -> OptimisationGoals:
-        """ Given an arm (draw of hyperparameter values), evaluate the Branin function on it
+        """Given an arm (draw of hyperparameter values), evaluate the Branin function on it.
+
         :param n_resources: this parameter is not used in this function but all optimisers require this parameter
         :return: the function value for the current arm can be found in OptimisationGoals.fval, Note that test_error and
         validation_error attributes are mandatory for OptimisationGoals objects but Branin has no machine learning model
@@ -100,9 +101,7 @@ class BitmexEvaluator(Evaluator):
 
 
 class BitmexProblem(HyperparameterOptimisationProblem):
-    """
-    Predicting Bitcoin trade volumes based on data from BitMEX exchange
-    """
+    """Predicting Bitcoin trade volumes based on data from BitMEX exchange."""
 
     def __init__(self, output_dir: Optional[str] = None, hyperparams_domain: Domain = HYPERPARAMS_DOMAIN,
                  hyperparams_to_opt: Tuple[str, ...] = ()):

@@ -14,9 +14,7 @@ from autotune.util.logging import Logger
 
 
 class TorchEvaluator(Evaluator, Logger):
-    """
-    Framework for evaluators based on pytorch models
-    """
+    """Framework for evaluators based on pytorch models."""
 
     def __init__(self, model_builder: ModelBuilder[TModule, TOptimizer], dataset_loader: ImageDatasetLoader,
                  criterion: Module = torch.nn.CrossEntropyLoss(), output_dir: str = ".", file_name: str = "model.pth"):
@@ -65,7 +63,8 @@ class TorchEvaluator(Evaluator, Logger):
         return cast(int, start_epoch)
 
     def _train(self, epoch: int, max_batches: int, batch_size: int = 100) -> float:
-        """ Train for one epoch
+        """Train for one epoch.
+
         :param epoch: epoch number
         :param max_batches: maximum number of batches
         :param batch_size: size of batch (in terms of number of examples)
@@ -125,7 +124,8 @@ class TorchEvaluator(Evaluator, Logger):
 
     @abstractmethod
     def evaluate(self, n_resources: int) -> OptimisationGoals:
-        """ Aggregate the steps:
+        """Aggregate the steps:
+
             - train model (available through self._train)
             - evaluate model with respect to the test/validation set(s) (available through self._test)
             - report performance

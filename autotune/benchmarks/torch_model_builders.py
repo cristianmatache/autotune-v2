@@ -17,14 +17,12 @@ ConstructModelFunctionType = Callable[[TTorchModelBuilder], Tuple[Module, Optimi
 
 
 class TorchModelBuilder(ModelBuilder[TModule, TOptimizer], ABC):
-    """
-    Given an arm (draw of hyperparameters) and a machine learning model
-    constructs a pytorch model from the given hyperparameters (arm)
-    """
+    """Given an arm (draw of hyperparameters) and a machine learning model constructs a pytorch model from the given
+    hyperparameters (arm)"""
 
 
 def _update_model_for_gpu(construct_model_function: ConstructModelFunctionType) -> ConstructModelFunctionType:
-    """Decorator to update the model under construction and allow it to work with GPUs"""
+    """Decorator to update the model under construction and allow it to work with GPUs."""
     def wrapper(self: TorchModelBuilder[TModule, TOptimizer]) -> Tuple[TModule, TOptimizer]:
         model, optimiser = construct_model_function(self)
         if cuda.is_available():
@@ -36,7 +34,7 @@ def _update_model_for_gpu(construct_model_function: ConstructModelFunctionType) 
 
 
 class CNNBuilder(TorchModelBuilder[CudaConvNet2, SGD]):
-    """Torch CNN model"""
+    """Torch CNN model."""
 
     __slots__ = ('in_channels',)
 

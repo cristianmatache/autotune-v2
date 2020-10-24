@@ -23,8 +23,8 @@ class MnistEvaluator(TorchEvaluator):
 
     @print_evaluation(verbose=True, goals_to_print=("test_correct", "validation_error"))
     def evaluate(self, n_resources: int) -> OptimisationGoals:
-        """
-        Aggregate the steps:
+        """Aggregate the steps:
+
             - train model (available through self._train)
             - evaluate model with respect to the test/validation set(s) (available through self._test)
             - report performance
@@ -65,9 +65,7 @@ class MnistEvaluator(TorchEvaluator):
 
 
 class MnistProblem(HyperparameterOptimisationProblem):
-    """
-    Classification on MNIST dataset with logistic regression
-    """
+    """Classification on MNIST dataset with logistic regression."""
     dataset_loader: MNISTLoader
 
     def __init__(self, data_dir: str, output_dir: str,

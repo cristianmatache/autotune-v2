@@ -17,9 +17,7 @@ class ShapeFamily(NamedTuple):
 
 
 class EvaluatorParams(NamedTuple):
-    """
-    Like ShapeFamily plus max_res and noise, also presents defaults
-    """
+    """Like ShapeFamily plus max_res and noise, also presents defaults."""
     arm: Optional[Arm]
     ml_agg: float            # ML aggressiveness
     necessary_agg: float     # Necessary aggressiveness

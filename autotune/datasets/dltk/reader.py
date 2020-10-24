@@ -6,7 +6,7 @@ from dltk.io.augmentation import extract_class_balanced_example_array
 
 
 def read_fn(file_references, mode, params=None):
-    """Summary
+    """Summary.
 
     Args:
         file_references (TYPE): Description

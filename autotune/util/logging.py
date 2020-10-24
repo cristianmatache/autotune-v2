@@ -29,8 +29,8 @@ DEFAULT_LEVEL_COLORS = {
 
 
 class Logger:
-    """
-    Logging mixin. If the logging module is not initialized it falls back to printing (in a different color per level).
+    """Logging mixin. If the logging module is not initialized it falls back to printing (in a different color per
+    level).
 
     Usage examples:
         class X(Logger):

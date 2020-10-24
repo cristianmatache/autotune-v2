@@ -5,10 +5,10 @@ from typing import Tuple, List, Union
 
 @dataclass(init=False, frozen=True)
 class OptimisationGoals(SimpleNamespace):
-    """
-    Metrics in terms of which we can perform optimization (individually or by aggregation). That is, the optimizers will
-    minimize/maximize one of their attributes or even aggregations (Eg. weighted sum) of attributes, as indicated by
-    an optimization function (optimisation_func).
+    """Metrics in terms of which we can perform optimization (individually or by aggregation).
+
+    That is, the optimizers will minimize/maximize one of their attributes or even aggregations (Eg. weighted sum) of
+    attributes, as indicated by an optimization function (optimisation_func).
     """
 
     def __init__(self, **kwargs: Union[float, List[float]]):
@@ -22,7 +22,8 @@ class OptimisationGoals(SimpleNamespace):
         super().__init__(**kwargs)
 
     def goals_to_str(self, goals_to_print: Tuple[str, ...] = ()) -> str:
-        """ Formats  names and values for some/all attributes and formats them into a string
+        """Formats  names and values for some/all attributes and formats them into a string.
+
         :param goals_to_print: the attributes that will be formatted to a string, () or None to print all attributes
         :return: string with names and values for some/all attributes
         """

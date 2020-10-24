@@ -7,9 +7,7 @@ from autotune.datasets.image_dataset_loaders import SVHNLoader
 
 class SvhnProblem(CifarProblem):
 
-    """
-    Classification on SVHN dataset with a CNN
-    """
+    """Classification on SVHN dataset with a CNN."""
 
     def __init__(self, data_dir: str, output_dir: str,
                  hyperparams_domain: Domain = HYPERPARAMS_DOMAIN,

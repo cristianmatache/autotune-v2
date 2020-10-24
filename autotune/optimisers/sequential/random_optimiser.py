@@ -6,8 +6,8 @@ from autotune.core import HyperparameterOptimisationProblem, Optimiser, Evaluati
 
 class RandomOptimiser(Optimiser):
 
-    """ Random search
-    Note that in this class we will use the terms "evaluation" and "iteration" interchangeably.
+    """Random search Note that in this class we will use the terms "evaluation" and "iteration" interchangeably.
+
     An evaluation means: trying a combination of hyperparameters (an arm) and getting the validation, test errors
     """
 

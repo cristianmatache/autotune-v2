@@ -9,8 +9,7 @@ from autotune.core import Optimiser, Evaluation, Arm, HyperparameterOptimisation
 
 class TpeOptimiser(Optimiser):
 
-    """ TPE Bayesian optimisation based on hyperopt implementation
-    """
+    """TPE Bayesian optimisation based on hyperopt implementation."""
 
     def __init__(self, n_resources: int, max_iter: int = None, max_time: int = None, min_or_max: Callable = min,
                  optimisation_func: Callable[[OptimisationGoals], float] = Optimiser.default_optimisation_func,

@@ -49,8 +49,8 @@ DOMAINS = {
 def egg_holder(
         x1: Union[int, np.ndarray], x2: Union[int, np.ndarray], noise_variance: int = 0, scaled_noise: bool = False
 ) -> Union[int, np.ndarray]:
-    """
-    Egg Holder function
+    """Egg Holder function.
+
     :param x1: x
     :param x2: y
     :param noise_variance: how noisy to make egg holder
@@ -64,8 +64,8 @@ def egg_holder(
 def branin(
         x1: Union[int, np.ndarray], x2: Union[int, np.ndarray], noise_variance: float = 0, scaled_noise: bool = False
 ) -> Union[int, np.ndarray]:
-    """
-    Branin function
+    """Branin function.
+
     :param x1: x
     :param x2: y
     :param noise_variance: how noisy to make branin
@@ -86,8 +86,8 @@ def branin(
 def six_hump_camel(
         x1: Union[int, np.ndarray], x2: Union[int, np.ndarray], noise_variance: int = 0, scaled_noise: bool = False
 ) -> Union[int, np.ndarray]:
-    """
-    Six Hump Camel function
+    """Six Hump Camel function.
+
     :param x1: x
     :param x2: y
     :param noise_variance: how noisy to make six hump camel
@@ -103,8 +103,8 @@ def six_hump_camel(
 def drop_wave(
         x1: Union[int, np.ndarray], x2: Union[int, np.ndarray], noise_variance: int = 0, scaled_noise: bool = False
 ) -> Union[int, np.ndarray]:
-    """
-    Drop-wave function
+    """Drop-wave function.
+
     :param x1: x
     :param x2: y
     :param noise_variance: how noisy to make drop-wave
@@ -120,8 +120,8 @@ def drop_wave(
 def rastrigin(
         x1: Union[int, np.ndarray], x2: Union[int, np.ndarray], noise_variance: int = 0, scaled_noise: bool = False
 ) -> Union[int, np.ndarray]:
-    """
-    Rastrigin function
+    """Rastrigin function.
+
     :param x1: x
     :param x2: y
     :param noise_variance: how noisy to make rastrigin
@@ -167,8 +167,8 @@ class OptFunctionEvaluator(Evaluator):
 
     @print_evaluation(verbose=False, goals_to_print=())
     def evaluate(self, n_resources: int) -> OptimisationGoals:
-        """
-        Given an arm (draw of hyperparameter values), evaluate the Optimization (Eg. Branin) function on it
+        """Given an arm (draw of hyperparameter values), evaluate the Optimization (Eg. Branin) function on it.
+
         :param n_resources: this parameter is not used in this function but all optimisers require this parameter
         :return: the function value for the current arm can be found in OptimisationGoals.fval, Note that test_error and
         validation_error attributes are mandatory for OptimisationGoals objects but 6HC has no machine learning model
@@ -188,10 +188,7 @@ class OptFunctionEvaluator(Evaluator):
 
 class OptFunctionProblem(HyperparameterOptimisationProblem):
 
-    """
-    Canonical optimisation test problem
-    See https://www.sfu.ca/~ssurjano/optimization.html
-    """
+    """Canonical optimisation test problem See https://www.sfu.ca/~ssurjano/optimization.html."""
 
     def __init__(self, func_name: str, hyperparams_to_opt: Tuple[str, ...] = ()):
         """

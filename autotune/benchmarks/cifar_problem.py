@@ -34,14 +34,15 @@ HYPERPARAMETERS_TO_OPTIMIZE = ('learning_rate', 'n_units_1', 'n_units_2', 'n_uni
 class CifarEvaluator(TorchEvaluator):
 
     def _adjust_learning_rate(self, epoch: int, base_lr: float, gamma: float, step_size: int) -> None:
-        """ Sets the learning rate to the initial LR decayed by gamma every step_size epochs. """
+        """Sets the learning rate to the initial LR decayed by gamma every step_size epochs."""
         lr = base_lr * (gamma ** (epoch // step_size))
         for param_group in self.optimiser.param_groups:
             param_group['lr'] = lr
 
     @print_evaluation(verbose=True, goals_to_print=("validation_error", "test_error"))
     def evaluate(self, n_resources: int) -> OptimisationGoals:
-        """ Aggregate the steps:
+        """Aggregate the steps:
+
             - train model (available through self._train)
             - evaluate model with respect to the test/validation set(s) (available through self._test)
             - report performance
@@ -90,9 +91,7 @@ class CifarEvaluator(TorchEvaluator):
 
 class CifarProblem(HyperparameterOptimisationProblem):
 
-    """
-    Classification on CIFAR-10 dataset with a CNN
-    """
+    """Classification on CIFAR-10 dataset with a CNN."""
     dataset_loader: ImageDatasetLoader   # Used by SVHN and MRBI as well
 
     def __init__(

@@ -1,6 +1,4 @@
-"""
-Note this experiment is sequential only since it is really fast and hence there is no need for parallelization.
-"""
+"""Note this experiment is sequential only since it is really fast and hence there is no need for parallelization."""
 
 import argparse
 import pickle
@@ -44,12 +42,12 @@ PLOT_EACH = False
 
 
 def optimisation_func(opt_goals: OptimisationGoals) -> float:
-    """fval"""
+    """fval."""
     return opt_goals.fval
 
 
 def optimisation_func_opt_function(opt_goals: OptimisationGoals) -> float:
-    """fval"""
+    """fval."""
     return opt_goals.fval
 
 

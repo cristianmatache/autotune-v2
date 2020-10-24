@@ -8,10 +8,8 @@ TOptimizerType = TypeVar('TOptimizerType', covariant=True)
 
 
 class ModelBuilder(Generic[TModelType, TOptimizerType]):
-    """
-    Given an arm (draw of hyperparameters) and a machine learning model constructs the model
-    from the given hyperparameters
-    """
+    """Given an arm (draw of hyperparameters) and a machine learning model constructs the model from the given
+    hyperparameters."""
 
     __slots__ = 'arm', 'ml_model'
 

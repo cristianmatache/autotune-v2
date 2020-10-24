@@ -17,18 +17,18 @@ class Arm(SimpleNamespace):
     """
 
     def __init__(self, **kwargs: float):  # pylint: disable=useless-super-delegation  # Used for type hints only
-        """
-        If a custom arm is needed, the hyperparameter values can be set from a dictionary. For example, for all
+        """If a custom arm is needed, the hyperparameter values can be set from a dictionary. For example, for all
         informed optimisation methods creating Arm this way is required. If one needs random values for each hyperparam,
         please use draw_hp_val.
+
         :param kwargs: {"hyperparameter_name": hyperparameter value}
         """
         super().__init__(**kwargs)
 
     def set_default_values(self, *, domain: Domain, hyperparams_to_opt: Tuple[str, ...]) -> None:
-        """
-        Sets the hyperparameters that appear in the domain but we don't want to optimise to their default values
-        if they are not already set
+        """Sets the hyperparameters that appear in the domain but we don't want to optimise to their default values if
+        they are not already set.
+
         :param domain: domain of hyperparameters with names, ranges, distributions etc
                        Eg. Domain(momentum=Param(...), learning_rate=Param(...))
         :param hyperparams_to_opt: hyperparameters to optimise
@@ -42,8 +42,8 @@ class Arm(SimpleNamespace):
                 setattr(self, hp_name, hp_val)
 
     def draw_hp_val(self, *, domain: Domain, hyperparams_to_opt: Tuple[str, ...]) -> None:
-        """
-        Draws random values for the hyperparameters that we want to optimise
+        """Draws random values for the hyperparameters that we want to optimise.
+
         :param domain: domain of hyperparameters with names, ranges, distributions etc
                        Eg. Domain(momentum=Param(...), learning_rate=Param(...))
         :param hyperparams_to_opt: hyperparameters to optimise
@@ -56,8 +56,8 @@ class Arm(SimpleNamespace):
 
     @staticmethod
     def normalize(arm: Arm, *, domain: Domain) -> Arm:
-        """
-        Normalizes values of an arm as specified by the given domain
+        """Normalizes values of an arm as specified by the given domain.
+
         :param arm: arm to be normalized
         :param domain: domain of hyperparameters with names, ranges, distributions etc
                        Eg. Domain(momentum=Param(...), learning_rate=Param(...))
@@ -85,7 +85,8 @@ class Arm(SimpleNamespace):
         return hash(str(self))
 
     def __getitem__(self, hyperparam_name: str) -> float:
-        """ Allow dictionary-like access to attributes. That is:
-        instead of getattr(arm, hyperparam_name), one can use arm[hyperparam_name]
+        """Allow dictionary-like access to attributes.
+
+        That is: instead of getattr(arm, hyperparam_name), one can use arm[hyperparam_name]
         """
         return cast(float, getattr(self, hyperparam_name))
