@@ -18,7 +18,9 @@ jobs:
           pkg-manager: pip
       - run:
           name: Lint
-          command: make lint
+          command: |
+            python -m docformatter -r . --in-place --wrap-summaries=120 --wrap-descriptions=120
+            make lint
       - run:
           name: Type Check
           command: make mypy
