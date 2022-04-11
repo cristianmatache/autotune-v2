@@ -2,7 +2,7 @@ pandas
 mpmath
 scipy
 Pillow
-sigopt==4.0.0
+sigopt==8.4.0
 hyperopt==0.2.4
 matplotlib
 colorama
